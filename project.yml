@@ -51,7 +51,8 @@ targets:
         NSLocationWhenInUseUsageDescription: 用于保持 App 后台常驻（低功耗模式，仅保活用途）
         NSBluetoothAlwaysUsageDescription: 连接 XUI 板子（遥控/手柄/流文文字流）与蓝牙中继上网
         NSBluetoothPeripheralUsageDescription: 连接 XUI 板子
-        NSFaceIDUsageDescription: 验证面部后直接解锁 XVP 播放器，无需输入时间密码        NSAppTransportSecurity:
+        NSFaceIDUsageDescription: 验证面部后直接解锁 XVP 播放器，无需输入时间密码
+        NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
   KeyboardExt:
     type: app-extension
