@@ -6,7 +6,7 @@ import UIKit
 struct NESHomeView: View {
     @StateObject private var engine = NESEngine.shared
     @State private var games = NESEngine.romList()
-    @State private var active: (name: String, rom: URL)?
+    @State private var active: (name: String, rom: URL, icon: URL?)?
     private let cols = [GridItem(.adaptive(minimum: 96), spacing: 12)]
 
     var body: some View {
