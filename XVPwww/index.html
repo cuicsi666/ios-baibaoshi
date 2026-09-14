@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>XVP | 谢週五の藏经阁</title>
+    <meta name="description" content="数字生活存档">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="icon" type="image/png" href="intro/icon.png">
+    <link rel="apple-touch-icon" href="intro/icon.png">
+    <script id="check-dark-mode">
+        (() => {
+            const e = localStorage.getItem("vitepress-theme-appearance") || "auto",
+                a = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            (!e || e === "auto" ? a : e === "dark") && document.documentElement.classList.add("dark")
+        })();
+    </script>
+    <style>
+        :root {
+            --vp-c-bg: #ffffff;
+            --vp-c-bg-soft: #f6f6f7;
+            --vp-c-bg-elv: #ffffff;
+            --vp-c-bg-alt: #f6f6f7;
+            --vp-c-divider: #e2e2e3;
+            --vp-c-text-1: #3c3c43;
+            --vp-c-text-2: #67676c;
+            --vp-c-text-3: #929295;
+            --vp-c-brand-1: #3eaf7c;
+            --vp-c-brand-light: #48ce80;
+            --vp-c-brand-dark: #0069d1;
+            --vp-c-default-soft: #f6f6f7;
+            --vp-font-family-base: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+        .dark {
+            --vp-c-bg: #1b1b1f;
+            --vp-c-bg-soft: #202127;
+            --vp-c-bg-elv: #202127;
+            --vp-c-bg-alt: #161618;
+            --vp-c-divider: #2e2e32;
+            --vp-c-text-1: #dfdfd6;
+            --vp-c-text-2: #98989f;
+            --vp-c-text-3: #6a6a71;
+            --vp-c-brand-1: #3eaf7c;
+            --vp-c-brand-light: #48ce80;
+            --vp-c-default-soft: #202127;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            margin: 0;
+            background-color: var(--vp-c-bg);
+            color: var(--vp-c-text-1);
+            font-family: var(--vp-font-family-base);
+            line-height: 1.6;
+            transition: background-color .25s, color .25s;
+        }
+        a {
+            color: var(--vp-c-brand-1);
+            text-decoration: none;
+        }
+
+        /* ═══ 顶部导航（精简版 5nav 风格） ═══ */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background-color: var(--vp-c-bg);
+            border-bottom: 1px solid var(--vp-c-divider);
+            backdrop-filter: blur(8px);
+            transition: background-color .25s, border-color .25s;
+        }
+        .top-bar-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .top-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--vp-c-text-1);
+            white-space: nowrap;
+        }
+        .top-logo img {
+            height: 26px;
+            border-radius: 6px;
+        }
+        .top-menu {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+        .top-menu a {
+            color: var(--vp-c-text-2);
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            transition: color .2s, background-color .2s;
+        }
+        .top-menu a:hover {
+            color: var(--vp-c-brand-1);
+            background-color: var(--vp-c-bg-soft);
+        }
+        .theme-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--vp-c-text-2);
+            font-size: 16px;
+            padding: 6px;
+            border-radius: 8px;
+        }
+        .theme-btn:hover {
+            background-color: var(--vp-c-bg-soft);
+        }
+
+        /* ═══ App 详情（照抄 5nav.eu.org/app/embyx 的 app-detail 组件） ═══ */
+        .app-detail-container {
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            padding: 0 24px 48px;
+        }
+        .app-header {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 24px;
+        }
+        .app-hero-icon {
+            width: 144px;
+            height: 144px;
+            border-radius: 32px;
+            box-shadow: 0 4px 20px #0000001f;
+            margin-right: 32px;
+            object-fit: cover;
+            border: 1px solid var(--vp-c-divider);
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+            transition: transform .15s ease, box-shadow .15s ease;
+        }
+        .app-hero-icon:active {
+            transform: scale(.92);
+        }
+        .app-hero-icon.tapped {
+            transform: scale(.88);
+            box-shadow: 0 0 0 3px var(--vp-c-brand-1);
+        }
+        .app-hero-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 144px;
+            padding-top: 4px;
+        }
+        .app-hero-title {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 4px;
+            color: var(--vp-c-text-1);
+            letter-spacing: -.01em;
+            border: none;
+        }
+        .app-hero-subtitle {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--vp-c-text-2);
+            margin: 0 0 4px;
+            line-height: 1.3;
+            border: none;
+        }
+        .app-actions {
+            margin-top: auto;
+            padding-bottom: 4px;
+            display: flex;
+            gap: 12px;
+        }
+        .app-get-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 16px;
+            text-decoration: none;
+            transition: all .2s ease;
+            white-space: nowrap;
+            border: none;
+            cursor: pointer;
+        }
+        .primary-btn {
+            background-color: var(--vp-c-brand-1);
+            color: #fff !important;
+        }
+        .primary-btn:hover {
+            background-color: var(--vp-c-brand-light);
+        }
+        .secondary-btn {
+            background-color: var(--vp-c-bg-soft);
+            color: var(--vp-c-text-1) !important;
+            border: 1px solid var(--vp-c-divider);
+        }
+        .secondary-btn:hover {
+            background-color: var(--vp-c-default-soft);
+        }
+        .btn-icon {
+            width: 15px;
+            height: 15px;
+            margin-right: 4px;
+            flex-shrink: 0;
+        }
+        .app-divider {
+            height: 1px;
+            background-color: var(--vp-c-divider);
+            margin: 24px 0;
+            width: 100%;
+        }
+        /* 统计卡 */
+        .app-stats-scroll {
+            display: flex;
+            justify-content: space-evenly;
+            width: 100%;
+            color: var(--vp-c-text-2);
+            margin: 0 auto;
+        }
+        .app-stats-container {
+            display: flex;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .stat-item {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid var(--vp-c-divider);
+            padding: 0 16px;
+        }
+        .stat-item:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+        .stat-item:first-child {
+            padding-left: 0;
+        }
+        .stat-top {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--vp-c-text-2);
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            margin-bottom: 4px;
+        }
+        .stat-middle {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--vp-c-text-1);
+            line-height: 1.2;
+            margin-bottom: 4px;
+            white-space: nowrap;
+        }
+        .stat-bottom {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--vp-c-text-3);
+            white-space: nowrap;
+        }
+        /* 截图轮播 */
+        .app-screenshots-wrapper {
+            position: relative;
+            margin: 0 -24px;
+            display: flex;
+            align-items: center;
+        }
+        .screenshots-scroll {
+            width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            display: flex;
+            gap: 20px;
+            padding: 0 24px;
+        }
+        .screenshots-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .screenshot-img {
+            height: 440px !important;
+            width: auto !important;
+            max-width: none !important;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px #0000001f;
+            border: 1px solid var(--vp-c-divider);
+            scroll-snap-align: center;
+            flex-shrink: 0;
+        }
+        .screenshot-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: var(--vp-c-bg-elv);
+            border: 1px solid var(--vp-c-divider);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 12px #0000001a;
+            color: var(--vp-c-text-1);
+            transition: all .2s ease;
+            opacity: 0;
+        }
+        .app-screenshots-wrapper:hover .screenshot-nav {
+            opacity: 1;
+        }
+        .screenshot-nav:hover {
+            background-color: var(--vp-c-default-soft);
+            transform: translateY(-50%) scale(1.05);
+        }
+        .screenshot-nav.prev {
+            left: 32px;
+        }
+        .screenshot-nav.next {
+            right: 32px;
+        }
+        .screenshot-nav svg {
+            width: 20px;
+            height: 20px;
+        }
+        /* 内容区 */
+        .app-content-slot h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border: none;
+            padding: 0;
+            color: var(--vp-c-text-1);
+        }
+        .app-content-slot p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--vp-c-text-1);
+        }
+        .app-content-slot ul {
+            padding-left: 1.25em;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        .app-content-slot blockquote {
+            margin: 16px 0;
+            padding: 8px 16px;
+            border-left: 4px solid var(--vp-c-divider);
+            background-color: var(--vp-c-bg-soft);
+            border-radius: 0 8px 8px 0;
+        }
+        .app-content-slot blockquote code {
+            background: transparent;
+        }
+        .app-content-slot code {
+            font-size: 14px;
+            background-color: var(--vp-c-bg-soft);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--vp-c-divider);
+        }
+        .app-content-slot table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 16px 0;
+            font-size: 15px;
+        }
+        .app-content-slot th,
+        .app-content-slot td {
+            border: 1px solid var(--vp-c-divider);
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .app-content-slot th {
+            background-color: var(--vp-c-bg-soft);
+            font-weight: 600;
+        }
+        /* 页脚 */
+        .vp-footer {
+            border-top: 1px solid var(--vp-c-divider);
+            padding: 24px 0 32px;
+            text-align: center;
+            color: var(--vp-c-text-2);
+            font-size: 13px;
+            background-color: var(--vp-c-bg);
+        }
+        .vp-footer a {
+            color: var(--vp-c-text-1);
+        }
+        /* 密码浮层 */
+        .pwd-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .pwd-overlay.show {
+            display: flex;
+        }
+        .pwd-box {
+            background: var(--vp-c-bg-elv);
+            border: 1px solid var(--vp-c-divider);
+            border-radius: 20px;
+            padding: 28px 24px 24px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+        }
+        .pwd-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--vp-c-text-1);
+            margin-bottom: 4px;
+        }
+        .pwd-sub {
+            font-size: 12px;
+            color: var(--vp-c-text-3);
+            margin-bottom: 20px;
+        }
+        .pwd-dots {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+        .pwd-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--vp-c-divider);
+            background: transparent;
+            transition: all .15s;
+        }
+        .pwd-dot.filled {
+            background: var(--vp-c-brand-1);
+            border-color: var(--vp-c-brand-1);
+        }
+        .pwd-msg {
+            min-height: 18px;
+            font-size: 13px;
+            color: #e5484d;
+            margin-bottom: 12px;
+        }
+        .pwd-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .pwd-key {
+            padding: 13px 0;
+            border-radius: 12px;
+            background: var(--vp-c-bg-soft);
+            border: 1px solid var(--vp-c-divider);
+            color: var(--vp-c-text-1);
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+            transition: transform .1s, background-color .15s;
+        }
+        .pwd-key:active {
+            transform: scale(.94);
+            background-color: var(--vp-c-default-soft);
+        }
+
+        /* 5次点击提示 */
+        .tap-hint {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--vp-c-bg-elv);
+            border: 1px solid var(--vp-c-divider);
+            box-shadow: 0 8px 24px #0000002e;
+            color: var(--vp-c-text-1);
+            font-size: 14px;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 999px;
+            z-index: 99;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s ease;
+            white-space: nowrap;
+        }
+        .tap-hint.show {
+            opacity: 1;
+        }
+        @media (max-width: 640px) {
+            .app-hero-icon {
+                width: 96px;
+                height: 96px;
+                border-radius: 22px;
+                margin-right: 20px;
+            }
+            .app-hero-title {
+                font-size: 22px;
+            }
+            .app-hero-subtitle {
+                font-size: 14px;
+            }
+            .app-hero-info {
+                min-height: 96px;
+            }
+            .screenshot-img {
+                width: 85vw !important;
+                height: auto !important;
+                max-width: none !important;
+            }
+            .app-detail-container {
+                padding: 0 16px 40px;
+            }
+            .app-screenshots-wrapper {
+                margin: 0 -16px;
+            }
+            .screenshots-scroll {
+                padding: 0 16px;
+            }
+            .top-menu a.menu-hide {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部导航 -->
+    <header class="top-bar">
+        <div class="top-bar-inner">
+            <a class="top-logo" href="./">
+                <img src="intro/logo.png" alt="logo" onerror="this.style.display='none'">
+                <span>谢週五の藏经阁</span>
+            </a>
+            <nav class="top-menu">
+                <a href="#" id="navAppBtn" class="menu-hide" style="cursor:pointer">📱 应用</a>
+                <a href="https://github.com/juneix/EmbyX" target="_blank" rel="noopener noreferrer" class="menu-hide">GitHub</a>
+                <button class="theme-btn" id="themeBtn" title="切换主题" aria-label="切换主题">🌙</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 5次点击提示气泡 -->
+    <div class="tap-hint" id="tapHint">再点 <span id="tapLeft">5</span> 次进入 XVP 播放器</div>
+
+    <!-- 密码浮层 -->
+    <div class="pwd-overlay" id="pwdOverlay">
+        <div class="pwd-box">
+            <div class="pwd-title">🔒 输入密码</div>
+            <div class="pwd-dots">
+                <span class="pwd-dot"></span><span class="pwd-dot"></span><span class="pwd-dot"></span><span class="pwd-dot"></span>
+            </div>
+            <div class="pwd-msg" id="pwdMsg"></div>
+            <div class="pwd-keypad">
+                <button class="pwd-key" data-k="1">1</button><button class="pwd-key" data-k="2">2</button><button class="pwd-key" data-k="3">3</button>
+                <button class="pwd-key" data-k="4">4</button><button class="pwd-key" data-k="5">5</button><button class="pwd-key" data-k="6">6</button>
+                <button class="pwd-key" data-k="7">7</button><button class="pwd-key" data-k="8">8</button><button class="pwd-key" data-k="9">9</button>
+                <button class="pwd-key" data-k="c">✕</button><button class="pwd-key" data-k="0">0</button><button class="pwd-key" data-k="b">⌫</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="app-detail-container">
+        <div class="app-detail-container" style="padding:0">
+            <div class="app-header">
+                <img src="intro/icon.png" class="app-hero-icon" id="heroIcon" alt="XVP">
+                <div class="app-hero-info">
+                    <div class="app-hero-title" style="display:flex;align-items:baseline;gap:12px">XVP<span id="currentTime" style="font-size:16px;font-weight:600;color:var(--vp-c-text-3);letter-spacing:.02em;font-variant-numeric:tabular-nums">--:--</span></div>
+                    <div class="app-hero-subtitle">短视频版 Emby 播放器</div>
+                    <div class="app-actions">
+                        <button class="app-get-btn primary-btn" id="demoBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon lucide lucide-sparkles">
+                                <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path>
+                                <path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle>
+                            </svg> 演示
+                        </button>
+                        <a href="https://github.com/juneix/EmbyX" target="_blank" class="app-get-btn secondary-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon lucide lucide-github">
+                                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+                                <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                            </svg> 源码
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="app-divider"></div>
+
+            <div class="app-stats-scroll">
+                <div class="app-stats-container">
+                    <div class="stat-item"><span class="stat-top">类别</span><span class="stat-middle">🍿</span><span class="stat-bottom">娱乐</span></div>
+                    <div class="stat-item"><span class="stat-top">兼容性</span><span class="stat-middle">🌐</span><span class="stat-bottom">全平台</span></div>
+                    <div class="stat-item"><span class="stat-top">自托管</span><span class="stat-middle">开源</span><span class="stat-bottom">官方/自建</span></div>
+                    <div class="stat-item"><span class="stat-top">需搭配</span><span class="stat-middle">Emby</span><span class="stat-bottom">媒体服务器</span></div>
+                </div>
+            </div>
+            <div class="app-divider"></div>
+
+            <div class="app-screenshots-wrapper">
+                <button class="screenshot-nav prev" id="shotPrev" aria-label="上一张">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
+                </button>
+                <div class="screenshots-scroll" id="shotScroll">
+                    <img src="intro/shot-1.webp" class="screenshot-img" alt="截图">
+                    <img src="intro/shot-2.webp" class="screenshot-img" alt="截图">
+                    <img src="intro/shot-3.webp" class="screenshot-img" alt="截图">
+                    <img src="intro/shot-4.webp" class="screenshot-img" alt="截图">
+                    <img src="intro/shot-5.webp" class="screenshot-img" alt="截图">
+                </div>
+                <button class="screenshot-nav next" id="shotNext" aria-label="下一张">
+                    <svg fill="currentColor" viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>
+                </button>
+            </div>
+            <div class="app-divider"></div>
+
+            <div class="app-content-slot">
+                <h2 id="应用简介">📦 应用简介</h2>
+                <p>XVP 是一款专为 Emby / Jellyfin 打造的 Web 原生应用，完美复刻抖音·短视频沉浸式交互，让你的私人媒体库焕发全新的刷片体验。🎉</p>
+                <blockquote><p>🔍 使用教程请跳转 ➡️ <code>知识库 · XVP</code></p></blockquote>
+
+                <h2 id="功能特色">✨ 功能特色</h2>
+                <ul>
+                    <li><strong>流式播放</strong>：抖音操作习惯，沉浸式全屏体验</li>
+                    <li><strong>直接播放</strong>：安卓最高支持 8K AV1 不转码</li>
+                    <li><strong>海报视图</strong>：封面墙选片、顺序 &amp; 随机播放</li>
+                    <li><strong>Emby 同步</strong>：支持媒体库、播放列表、收藏夹</li>
+                    <li><strong>键鼠适配</strong>：纯按键控制，电脑、电视轻松摸鱼</li>
+                    <li><strong>PWA 支持</strong>：添加到主屏幕、作为应用安装</li>
+                    <li><strong>隐私第一</strong>：数据本地存储，绝不上传云端</li>
+                </ul>
+
+                <h2 id="播放性能">🔮 播放性能</h2>
+                <ul>
+                    <li>原生 HTML5 播放器，新设备体验最佳</li>
+                    <li>老设备需服务器转码播放</li>
+                </ul>
+                <table>
+                    <thead><tr><th style="text-align:center;">设备</th><th>HEVC 硬解</th><th>AV1 硬解</th></tr></thead>
+                    <tbody>
+                        <tr><td style="text-align:center;"><code>苹果</code></td><td>A9 (2015) / M1</td><td>A17 Pro (2023) / M3</td></tr>
+                        <tr><td style="text-align:center;"><code>安卓</code></td><td>千元机 (2016)</td><td>千元机 (2024)</td></tr>
+                        <tr><td style="text-align:center;"><code>PC</code></td><td>6～8 代酷睿·核显</td><td>11 代酷睿·核显</td></tr>
+                    </tbody>
+                </table>
+
+                <h2 id="使用技巧">🧩 使用技巧</h2>
+                <ul>
+                    <li><strong>配置建议</strong>：新建专用账号，每个媒体库 &lt; 1000 个视频</li>
+                    <li><strong>PWA 应用</strong>：浏览器 📲 添加到主屏幕 / 作为应用安装</li>
+                </ul>
+
+                <h2 id="快捷键指南">⌨️ 快捷键指南</h2>
+                <table>
+                    <thead><tr><th style="text-align:center;">按键</th><th>功能</th></tr></thead>
+                    <tbody>
+                        <tr><td style="text-align:center;"><code>W / S / ↑ / ↓</code></td><td>上一个 / 下一个视频</td></tr>
+                        <tr><td style="text-align:center;"><code>A / D / ← / →</code></td><td>快退 / 快进 15 秒</td></tr>
+                        <tr><td style="text-align:center;"><code>Space / 单击 OK</code></td><td>暂停 / 播放</td></tr>
+                        <tr><td style="text-align:center;"><code>U / 双击 OK</code></td><td>收藏视频</td></tr>
+                        <tr><td style="text-align:center;"><code>J / 菜单键</code></td><td>比例切换</td></tr>
+                        <tr><td style="text-align:center;"><code>M</code></td><td>音量开关</td></tr>
+                        <tr><td style="text-align:center;"><code>I</code></td><td>个人中心</td></tr>
+                        <tr><td style="text-align:center;"><code>E</code></td><td>视图切换</td></tr>
+                        <tr><td style="text-align:center;"><code>R</code></td><td>顺序 / 随机</td></tr>
+                        <tr><td style="text-align:center;"><code>F</code></td><td>全屏切换</td></tr>
+                        <tr><td style="text-align:center;"><code>G</code></td><td>选择媒体源</td></tr>
+                        <tr><td style="text-align:center;"><code>V</code></td><td>流媒体详情</td></tr>
+                    </tbody>
+                </table>
+
+                <h2 id="内测体验">🚀 内测体验</h2>
+                <p>更多应用和玩法，请加入群聊讨论：</p>
+                <p style="margin-top:12px"><a href="https://qm.qq.com/q/ZzOD5Qbhce" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background-color:var(--vp-c-brand-1);color:#fff!important;font-size:14px;font-weight:600;padding:10px 24px;border-radius:999px;text-decoration:none;transition:all .2s ease;box-shadow:0 4px 14px rgba(0,0,0,.15)">💬 加入 QQ 群 646913307</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="vp-footer">
+        <p>Made with ❤️ in Hunan</p>
+        <p>© 2024-2026 <a href="https://juneix.github.io" target="_blank">谢週五</a> 版权所有</p>
+    </footer>
+
+    <script>
+        // ═══════════════════════════════════════
+        // 顶部当前时间（实时刷新）
+        // ═══════════════════════════════════════
+        (function () {
+            var el = document.getElementById('currentTime');
+            if (!el) return;
+            function tick() {
+                var d = new Date();
+                var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+                el.textContent = pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
+            }
+            tick();
+            setInterval(tick, 1000);
+        })();
+
+        // ═══════════════════════════════════════
+        // 主题切换（与 5nav 一致，记住用户选择）
+        // ═══════════════════════════════════════
+        (function () {
+            const btn = document.getElementById('themeBtn');
+            function sync() {
+                const dark = document.documentElement.classList.contains('dark');
+                btn.textContent = dark ? '☀️' : '🌙';
+            }
+            sync();
+            btn.addEventListener('click', function () {
+                const dark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('vitepress-theme-appearance', dark ? 'dark' : 'light');
+                sync();
+            });
+        })();
+
+        // ═══════════════════════════════════════
+        // 截图轮播
+        // ═══════════════════════════════════════
+        (function () {
+            const scroll = document.getElementById('shotScroll');
+            const prev = document.getElementById('shotPrev');
+            const next = document.getElementById('shotNext');
+            prev.addEventListener('click', function () { scroll.scrollBy({ left: -420, behavior: 'smooth' }); });
+            next.addEventListener('click', function () { scroll.scrollBy({ left: 420, behavior: 'smooth' }); });
+        })();
+
+        // ═══════════════════════════════════════
+        // 点图标 5 次 → 输入时间密码 → 进入播放器
+        // ═══════════════════════════════════════
+        (function () {
+            const NEED = 5;
+            let count = 0;
+            const icon = document.getElementById('heroIcon');
+            const demoBtn = document.getElementById('demoBtn');
+            const hint = document.getElementById('tapHint');
+            const left = document.getElementById('tapLeft');
+            let hintTimer = null;
+
+            // ── 密码浮层 ──
+            const overlay = document.getElementById('pwdOverlay');
+            const dots = overlay.querySelectorAll('.pwd-dot');
+            const msg = document.getElementById('pwdMsg');
+            let pwd = '';
+
+            // 标准时间密码：12 小时制 HHMM，如 07:05→0705, 13:05→0105
+            function currentPwd() {
+                const d = new Date();
+                let h = d.getHours() % 12;
+                if (h === 0) h = 12; // 12:xx → 1205
+                const pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+                return pad(h) + pad(d.getMinutes());
+            }
+
+            function showHint(text) {
+                hint.textContent = text;
+                hint.classList.add('show');
+                clearTimeout(hintTimer);
+                hintTimer = setTimeout(function () { hint.classList.remove('show'); }, 1600);
+            }
+
+            function updateDots() {
+                dots.forEach(function (d, i) {
+                    d.classList.toggle('filled', i < pwd.length);
+                });
+            }
+
+            function pwdFail() {
+                msg.textContent = '密码错误，请重试';
+                pwd = '';
+                updateDots();
+            }
+
+            function openPwd() {
+                pwd = '';
+                msg.textContent = '';
+                updateDots();
+                overlay.classList.add('show');
+            }
+
+            function enter() {
+                if (pwd.length < 4) return;
+                // iOS 本地壳（file:// 协议）：本地验证时间密码后直接跳转
+                if (location.protocol === 'file:') {
+                    if (pwd === currentPwd()) {
+                        location.href = './player.html';
+                    } else {
+                        pwdFail();
+                    }
+                    return;
+                }
+                // Web 端：调服务端验证，正确则返回 token，带 token 才能访问播放器页面
+                fetch('./api/auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pwd: pwd })
+                }).then(function (res) {
+                    if (res.ok) {
+                        return res.json().then(function (data) {
+                            location.href = './player?token=' + encodeURIComponent(data.token);
+                        });
+                    }
+                    pwdFail();
+                }).catch(function () {
+                    pwdFail();
+                });
+            }
+
+            // 键盘输入 + 点击空白关闭
+            overlay.addEventListener('click', function (e) {
+                // 点击密码框外的空白区域 → 关闭密码框
+                if (e.target === overlay) {
+                    pwd = '';
+                    updateDots();
+                    overlay.classList.remove('show');
+                    return;
+                }
+                const k = e.target.getAttribute && e.target.getAttribute('data-k');
+                if (!k) return;
+                if (k === 'c') {
+                    pwd = '';
+                    updateDots();
+                } else if (k === 'b') {
+                    pwd = pwd.slice(0, -1);
+                    updateDots();
+                } else {
+                    if (pwd.length < 4) {
+                        pwd += k;
+                        updateDots();
+                        if (pwd.length === 4) enter();
+                    }
+                }
+            });
+
+            // 实体键盘支持
+            document.addEventListener('keydown', function (e) {
+                if (!overlay.classList.contains('show')) return;
+                if (e.key >= '0' && e.key <= '9') {
+                    if (pwd.length < 4) { pwd += e.key; updateDots(); if (pwd.length === 4) enter(); }
+                } else if (e.key === 'Backspace') {
+                    pwd = pwd.slice(0, -1);
+                    updateDots();
+                } else if (e.key === 'Escape') {
+                    pwd = '';
+                    updateDots();
+                    overlay.classList.remove('show');
+                }
+            });
+
+            // ── 5 次点击计数 ──
+            function tap() {
+                count++;
+                if (count >= NEED) {
+                    openPwd();
+                    return;
+                }
+                left.textContent = NEED - count;
+                showHint('再点 ' + (NEED - count) + ' 次进入 XVP 播放器');
+                icon.classList.add('tapped');
+                setTimeout(function () { icon.classList.remove('tapped'); }, 200);
+            }
+
+            icon.addEventListener('click', tap);
+            demoBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                tap();
+            });
+            // 顶部导航「应用」按钮：同样计入 5 次点击流程
+            var navAppBtn = document.getElementById('navAppBtn');
+            if (navAppBtn) {
+                navAppBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    tap();
+                });
+            }
+            // 键盘回车也算
+            icon.addEventListener('keydown', function (e) { if (e.key === 'Enter') tap(); });
+            icon.setAttribute('tabindex', '0');
+            icon.setAttribute('role', 'button');
+        })();
+    </script>
+</body>
+
+</html>

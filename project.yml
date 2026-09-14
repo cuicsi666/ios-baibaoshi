@@ -17,6 +17,9 @@ targets:
     sources:
       - path: Baibaoshi
       - path: Resources
+      - path: XVPwww
+        type: folder
+        buildPhase: resources
     dependencies:
       - target: KeyboardExt
         embed: true

@@ -110,6 +110,11 @@ struct RootView: View {
                            subtitle: ble.connected ? "已连接 · 文字流动中" : "板子说话 → 键盘流入",
                            icon: "text.cursor.rainbow", colors: Theme.flowtext, lines: 2)
             }
+            NavigationLink(destination: XVPPlayerView()) {
+                ModuleCard(title: "XVP 播放器",
+                           subtitle: "内置前端 · 时间密码 · 15 分钟锁定",
+                           icon: "play.rectangle.fill", colors: [Color(hex: 0x654EA3), Color(hex: 0xEAAFC8)], lines: 2)
+            }
         }
     }
 
