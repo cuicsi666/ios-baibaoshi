@@ -38,6 +38,10 @@ jobs:
             -archivePath build/Baibaoshi.xcarchive \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" | tee build.log | tail -40
 
+      - name: Show errors on failure
+        if: failure()
+        run: grep -E "error:" build.log | sort -u | head -40
+
       - name: Export IPA
         run: |
           mkdir -p build/Payload
