@@ -8,19 +8,12 @@
 
 #ifndef K6502_H_INCLUDED
 #define K6502_H_INCLUDED
+#include "InfoNES_Types.h"
+#define K6502_H_INCLUDED
 
 // Type definition
-#ifndef DWORD
-typedef unsigned long  DWORD;
-#endif
 
-#ifndef WORD
-typedef unsigned short WORD;
-#endif
 
-#ifndef BYTE
-typedef unsigned char  BYTE;
-#endif
 
 #ifndef NULL
 #define NULL 0
