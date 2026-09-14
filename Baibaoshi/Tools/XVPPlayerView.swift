@@ -27,8 +27,6 @@ extension Notification.Name {
 }
 
 struct XVPWebViewWrapper: UIViewControllerRepresentable {
-    let reloadToken: Int
-
     func makeUIViewController(context: Context) -> XVPViewController { XVPViewController() }
     func updateUIViewController(_ vc: XVPViewController, context: Context) {}
 }
