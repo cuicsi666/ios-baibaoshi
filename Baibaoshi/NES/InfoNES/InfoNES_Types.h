@@ -12,17 +12,10 @@
 /*-------------------------------------------------------------------*/
 /*  Type definition                                                  */
 /*-------------------------------------------------------------------*/
-#ifndef DWORD
-typedef unsigned long  DWORD;
-#endif /* !DWORD */
-
-#ifndef WORD
-typedef unsigned short WORD;
-#endif /* !WORD */
-
-#ifndef BYTE
-typedef unsigned char  BYTE;
-#endif /* !BYTE */
+#include <stdint.h>
+typedef uint32_t DWORD;
+typedef uint16_t WORD;
+typedef uint8_t  BYTE;
 
 /*-------------------------------------------------------------------*/
 /*  NULL definition                                                  */
