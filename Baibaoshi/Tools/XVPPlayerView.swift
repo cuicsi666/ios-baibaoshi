@@ -10,18 +10,11 @@ final class XVPWebView: WKWebView {
 }
 
 struct XVPPlayerView: View {
-    @State private var idleSeconds = 0
-    private let idleLimit: TimeInterval = 15 * 60
-    private let idleTimer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
-
     var body: some View {
-        XVPWebViewWrapper(reloadToken: idleSeconds >= Int(idleLimit))
+        XVPWebViewWrapper()
             .ignoresSafeArea()
             .statusBarHidden(true)
             .persistentSystemOverlays(.hidden)
-            .onReceive(idleTimer) { _ in
-                // 无操作计时由 WebView 触摸自动重置（见 Wrapper 内手势）
-            }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
                 NotificationCenter.default.post(name: .xvpGoHome, object: nil)
             }
@@ -48,7 +41,7 @@ class XVPViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     override func loadView() {
         let cfg = WKWebViewConfiguration()
         cfg.allowsInlineMediaPlayback = true
-        cfg.mediaTypesRequiringUserActionForPlayback = .none
+        cfg.mediaTypesRequiringUserActionForPlayback = []
         cfg.allowsPictureInPictureMediaPlayback = true
         webView = WKWebView(frame: .zero, configuration: cfg)
         webView.backgroundColor = .black
