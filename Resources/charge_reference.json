@@ -1,0 +1,49 @@
+{
+  "updated": "2026-09-15",
+  "source": "基于公开充电评测数据整理（ChargerLAB POWER-Z 实测 / Apple 20W PD 官方数据：30 分钟充至约 50%，80% 后进入涓流保护）",
+  "note": "rate 为该电量段的典型充电速率，单位：电量百分比 / 分钟",
+  "curves": [
+    {
+      "id": "fast_20w",
+      "name": "iPhone 13~16 · 20W PD 快充",
+      "match": ["iPhone14,", "iPhone15,", "iPhone16,", "iPhone17,", "iPhone18,"],
+      "segments": [
+        { "from": 0,  "to": 20, "rate": 1.55 },
+        { "from": 20, "to": 50, "rate": 1.35 },
+        { "from": 50, "to": 70, "rate": 1.05 },
+        { "from": 70, "to": 80, "rate": 0.80 },
+        { "from": 80, "to": 90, "rate": 0.50 },
+        { "from": 90, "to": 95, "rate": 0.32 },
+        { "from": 95, "to": 100, "rate": 0.24 }
+      ]
+    },
+    {
+      "id": "mid_20w",
+      "name": "iPhone 12 · 20W PD",
+      "match": ["iPhone13,"],
+      "segments": [
+        { "from": 0,  "to": 20, "rate": 1.35 },
+        { "from": 20, "to": 50, "rate": 1.20 },
+        { "from": 50, "to": 70, "rate": 0.95 },
+        { "from": 70, "to": 80, "rate": 0.72 },
+        { "from": 80, "to": 90, "rate": 0.45 },
+        { "from": 90, "to": 95, "rate": 0.30 },
+        { "from": 95, "to": 100, "rate": 0.22 }
+      ]
+    },
+    {
+      "id": "slow_18w",
+      "name": "iPhone 11 及更早 · 18W PD",
+      "match": ["iPhone12,", "iPhone11,", "iPhone10,"],
+      "segments": [
+        { "from": 0,  "to": 20, "rate": 1.10 },
+        { "from": 20, "to": 50, "rate": 1.00 },
+        { "from": 50, "to": 70, "rate": 0.85 },
+        { "from": 70, "to": 80, "rate": 0.65 },
+        { "from": 80, "to": 90, "rate": 0.42 },
+        { "from": 90, "to": 95, "rate": 0.28 },
+        { "from": 95, "to": 100, "rate": 0.20 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+name: Build IPA
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Debug project
+        run: |
+          echo "=== plist files ==="
+          find . -name "*.plist" -not -path "./.git/*"
+          echo "=== pbxproj INFOPLIST settings ==="
+          grep -n "INFOPLIST\|GENERATE_INFO" Baibaoshi.xcodeproj/project.pbxproj | head -10 || echo "NOT FOUND"
+          echo "=== Sources/Info.plist head ==="
+          head -8 Sources/Info.plist 2>/dev/null || echo "NO PLIST FILE"
+
+      - name: Archive (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project Baibaoshi.xcodeproj \
+            -scheme Baibaoshi \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/Baibaoshi.xcarchive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" | tee build.log | tail -40
+
+      - name: Export IPA
+        run: |
+          mkdir -p build/Payload
+          cp -R "build/Baibaoshi.xcarchive/Products/Applications/Baibaoshi.app" build/Payload/
+          cd build && zip -qry Baibaoshi.ipa Payload && ls -la Baibaoshi.ipa
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Baibaoshi-ipa
+          path: build/Baibaoshi.ipa
+          retention-days: 30

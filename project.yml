@@ -1,0 +1,80 @@
+name: Baibaoshi
+options:
+  bundleIdPrefix: com.cuicsi
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    CODE_SIGNING_ALLOWED: "NO"
+    CODE_SIGN_IDENTITY: ""
+    TARGETED_DEVICE_FAMILY: "1"
+targets:
+  Baibaoshi:
+    type: application
+    platform: iOS
+    sources:
+      - path: Baibaoshi
+      - path: Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cuicsi.baibaoshi
+        MARKETING_VERSION: "2.0"
+        CURRENT_PROJECT_VERSION: "2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_ENTITLEMENTS: Baibaoshi/Support/Baibaoshi.entitlements
+    info:
+      path: Baibaoshi/Info.plist
+      properties:
+        CFBundleDisplayName: 百宝箱
+        CFBundleName: Baibaoshi
+        CFBundleShortVersionString: "2.0"
+        CFBundleVersion: "2"
+        UILaunchScreen: {}
+        UIBackgroundModes:
+          - audio
+          - location
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIRequiredDeviceCapabilities: [arm64]
+        ITSAppUsesNonExemptEncryption: false
+        NSLocationAlwaysAndWhenInUseUsageDescription: 用于保持 App 后台常驻（低功耗模式，仅保活用途，不采集不上报位置），确保充电播报、XUI 蓝牙、流文连接不中断
+        NSLocationWhenInUseUsageDescription: 用于保持 App 后台常驻（低功耗模式，仅保活用途）
+        NSBluetoothAlwaysUsageDescription: 连接 XUI 板子（遥控/手柄/流文文字流）与蓝牙中继上网
+        NSBluetoothPeripheralUsageDescription: 连接 XUI 板子
+        NSMicrophoneUsageDescription: 超级按键按住说话需要录音识别
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+  KeyboardExt:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: KeyboardExt
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cuicsi.baibaoshi.keyboard
+        SWIFT_VERSION: "5.9"
+        CODE_SIGNING_ALLOWED: "NO"
+        IPHONEOS_DEPLOYMENT_TARGET: "16.0"
+        SKIP_INSTALL: "YES"
+        CODE_SIGN_ENTITLEMENTS: Baibaoshi/Support/KeyboardExt.entitlements
+    info:
+      path: KeyboardExt/Info.plist
+      properties:
+        CFBundleDisplayName: 百宝箱键盘
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.keyboard-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).KeyboardViewController
+schemes:
+  Baibaoshi:
+    build:
+      targets:
+        Baibaoshi: all
+        KeyboardExt: all
+    run:
+      config: Debug
+    archive:
+      config: Release
