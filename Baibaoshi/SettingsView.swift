@@ -5,11 +5,13 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var theme = ThemeManager.shared
     @ObservedObject var keepAlive = KeepAliveService.shared
+    @ObservedObject var updater = UpdateService.shared
     @EnvironmentObject var chargeHistory: ChargeHistory
     @Environment(\.colorScheme) private var scheme
 
     @AppStorage("bb.keepAlive") private var keepAliveOn = true
     @State private var showClearAlert = false
+    @State private var showShare = false
 
     var body: some View {
         Form {
@@ -21,6 +23,8 @@ struct SettingsView: View {
                     Label("主题", systemImage: theme.isDark ? "moon.fill" : "sun.max.fill")
                 }
             }
+
+            softwareUpdateSection
 
             Section {
                 Toggle(isOn: $keepAliveOn) {
@@ -117,4 +121,95 @@ struct SettingsView: View {
     private var authColor: Color {
         keepAlive.locationAuth == .authorizedAlways ? .green : .orange
     }
+
+    // MARK: 软件更新（Gitea Release → 飞牛静态分发 → 全能签安装）
+
+    @ViewBuilder private var softwareUpdateSection: some View {
+        Section("软件更新") {
+            if updater.checking {
+                HStack(spacing: 10) {
+                    ProgressView()
+                    Text("正在检查更新…").foregroundColor(.secondary)
+                }
+            } else if updater.hasUpdate {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "arrow.down.circle.fill")
+                            .foregroundColor(.green)
+                        Text("发现新版本 V\(updater.newVersion)")
+                            .font(.system(size: 15, weight: .semibold))
+                        Spacer()
+                        Text("当前 V\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1")")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                    }
+                    if !updater.releaseNotes.isEmpty {
+                        Text(updater.releaseNotes)
+                            .font(.system(size: 12))
+                            .foregroundColor(.secondary)
+                            .lineLimit(6)
+                    }
+                }
+
+                if updater.downloading {
+                    VStack(alignment: .leading, spacing: 6) {
+                        ProgressView(value: updater.downloadProgress)
+                        Text("下载中 \(Int(updater.downloadProgress * 100))%")
+                            .font(.system(size: 11))
+                            .foregroundColor(.secondary)
+                    }
+                } else if updater.downloadedIPA != nil {
+                    Button {
+                        showShare = true
+                    } label: {
+                        Label("安装更新（选择全能签）", systemImage: "square.and.arrow.up.fill")
+                            .font(.system(size: 14, weight: .semibold))
+                    }
+                } else {
+                    Button {
+                        updater.download()
+                    } label: {
+                        Label("下载更新包", systemImage: "arrow.down.circle")
+                            .font(.system(size: 14, weight: .semibold))
+                    }
+                }
+                if !updater.message.isEmpty {
+                    Text(updater.message)
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                }
+            } else {
+                Button {
+                    updater.check { _ in }
+                } label: {
+                    Label("检查更新", systemImage: "arrow.triangle.2.circlepath")
+                }
+                if !updater.message.isEmpty {
+                    Text(updater.message)
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Label("当前版本", systemImage: "app.badge.fill")
+                    Spacer()
+                    Text("V\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1")")
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .sheet(isPresented: $showShare) {
+            if let vc = updater.shareSheet() {
+                ShareSheet(vc: vc)
+                    .ignoresSafeArea()
+            }
+        }
+    }
+}
+
+// MARK: - UIActivityViewController 包装（分享给全能签）
+
+struct ShareSheet: UIViewControllerRepresentable {
+    let vc: UIViewController
+    func makeUIViewController(context: Context) -> UIViewController { vc }
+    func updateUIViewController(_ vc: UIViewController, context: Context) {}
 }

@@ -4,7 +4,6 @@ import UserNotifications
 @main
 struct BaibaoshiApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject private var volume = VolumeMonitor()
     @StateObject private var router = RouterPoller()
     @StateObject private var idioms = IdiomStore()
     @StateObject private var ble = BLEManager.shared
@@ -15,7 +14,6 @@ struct BaibaoshiApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                .environmentObject(volume)
                 .environmentObject(router)
                 .environmentObject(idioms)
                 .environmentObject(ble)

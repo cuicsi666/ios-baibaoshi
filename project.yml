@@ -26,8 +26,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cuicsi.baibaoshi
-        MARKETING_VERSION: "3.0"
-        CURRENT_PROJECT_VERSION: "3"
+        MARKETING_VERSION: "4.0"
+        CURRENT_PROJECT_VERSION: "4"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_ENTITLEMENTS: Baibaoshi/Support/Baibaoshi.entitlements
     info:
@@ -35,8 +35,8 @@ targets:
       properties:
         CFBundleDisplayName: 百宝箱
         CFBundleName: Baibaoshi
-        CFBundleShortVersionString: "3.0"
-        CFBundleVersion: "3"
+        CFBundleShortVersionString: "4.0"
+        CFBundleVersion: "4"
         UILaunchScreen: {}
         UIBackgroundModes:
           - audio
@@ -51,7 +51,7 @@ targets:
         NSLocationWhenInUseUsageDescription: 用于保持 App 后台常驻（低功耗模式，仅保活用途）
         NSBluetoothAlwaysUsageDescription: 连接 XUI 板子（遥控/手柄/流文文字流）与蓝牙中继上网
         NSBluetoothPeripheralUsageDescription: 连接 XUI 板子
-        NSAppTransportSecurity:
+        NSFaceIDUsageDescription: 验证面部后直接解锁 XVP 播放器，无需输入时间密码        NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
   KeyboardExt:
     type: app-extension

@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import LocalAuthentication
 
 // MARK: - XVP 播放器（原 ObjC 壳的 SwiftUI 重制）
 // WKWebView 全屏壳：15 分钟无操作回主页 · 进后台回主页 · 任务快照遮罩防偷看
@@ -32,7 +33,8 @@ struct XVPWebViewWrapper: UIViewControllerRepresentable {
 }
 
 /// 原 RootVC 移植：WebView + 15 分钟无操作锁定 + 后台回主页 + JS alert 桥接
-class XVPViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
+/// 5 击解锁：优先 Face ID（原生），失败回退前端时间密码
+class XVPViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
     private var webView: WKWebView!
     private var idleTimer: Timer?
 
@@ -41,6 +43,9 @@ class XVPViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         cfg.allowsInlineMediaPlayback = true
         cfg.mediaTypesRequiringUserActionForPlayback = []
         cfg.allowsPictureInPictureMediaPlayback = true
+        let uc = WKUserContentController()
+        uc.add(self, name: "xvp")
+        cfg.userContentController = uc
         webView = WKWebView(frame: .zero, configuration: cfg)
         webView.backgroundColor = .black
         webView.scrollView.bounces = false
@@ -57,6 +62,41 @@ class XVPViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         let tap = UITapGestureRecognizer(target: self, action: #selector(onTouch))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+    }
+
+    // 前端 5 击 → Face ID 优先
+    func userContentController(_ userContentController: WKUserContentController,
+                               didReceive message: WKScriptMessage) {
+        guard message.name == "xvp", message.body as? String == "five" else { return }
+        tryFaceID()
+    }
+
+    private func tryFaceID() {
+        let ctx = LAContext()
+        ctx.localizedFallbackTitle = ""
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) else {
+            // 设备无生物识别 → 回退网页时间密码
+            webView.evaluateJavaScript("window.__xvpOpenPwd && window.__xvpOpenPwd()", completionHandler: nil)
+            return
+        }
+        ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
+                           localizedReason: "验证面部解锁 XVP 播放器") { [weak self] ok, _ in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                if ok {
+                    self.enterPlayer()
+                } else {
+                    self.webView.evaluateJavaScript("window.__xvpOpenPwd && window.__xvpOpenPwd()", completionHandler: nil)
+                }
+            }
+        }
+    }
+
+    private func enterPlayer() {
+        if let url = Bundle.main.url(forResource: "player", withExtension: "html", subdirectory: "www") {
+            webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+        }
+        resetIdleTimer()
     }
 
     private func loadHome() {

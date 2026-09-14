@@ -123,36 +123,36 @@ struct ModuleCard: View {
     @Environment(\.colorScheme) private var scheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             ZStack {
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
                     .fill(Theme.gradient(colors))
-                    .frame(width: 46, height: 46)
-                    .shadow(color: colors.last!.opacity(0.45), radius: 8, y: 4)
+                    .frame(width: 34, height: 34)
+                    .shadow(color: colors.last!.opacity(0.4), radius: 5, y: 3)
                 Image(systemName: icon)
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white)
             }
             Text(title)
-                .font(.system(size: 17, weight: .semibold, design: .rounded))
+                .font(.system(size: 14, weight: .semibold, design: .rounded))
                 .foregroundColor(.primary)
                 .lineLimit(1)
             Text(subtitle)
-                .font(.system(size: 12, weight: .medium))
+                .font(.system(size: 10, weight: .medium))
                 .foregroundColor(.secondary)
                 .lineLimit(lines)
                 .multilineTextAlignment(.leading)
         }
-        .frame(maxWidth: .infinity, minHeight: 148, alignment: .topLeading)
-        .padding(16)
+        .frame(maxWidth: .infinity, minHeight: 108, alignment: .topLeading)
+        .padding(12)
         .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Theme.cardBg(scheme == .dark))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .strokeBorder(Theme.stroke(scheme == .dark), lineWidth: 1)
                 )
-                .shadow(color: Color.black.opacity(scheme == .dark ? 0.3 : 0.05), radius: 10, y: 4)
+                .shadow(color: Color.black.opacity(scheme == .dark ? 0.25 : 0.04), radius: 7, y: 3)
         )
     }
 }

@@ -809,6 +809,8 @@
                 updateDots();
                 overlay.classList.add('show');
             }
+            // iOS 壳暴露：Face ID 失败时原生回调打开密码框
+            window.__xvpOpenPwd = openPwd;
 
             function enter() {
                 if (pwd.length < 4) return;
@@ -883,6 +885,12 @@
             function tap() {
                 count++;
                 if (count >= NEED) {
+                    // iOS 原生壳：优先 Face ID，由原生决定进播放器或回退密码框
+                    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.xvp) {
+                        window.webkit.messageHandlers.xvp.postMessage('five');
+                        count = 0;
+                        return;
+                    }
                     openPwd();
                     return;
                 }

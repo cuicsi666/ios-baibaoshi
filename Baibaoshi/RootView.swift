@@ -1,19 +1,18 @@
 import SwiftUI
 
-// MARK: - 百宝箱根视图：全部模块卡片化展示
+// MARK: - 百宝箱根视图：模块卡片化展示
 
 struct RootView: View {
-    @EnvironmentObject var volume: VolumeMonitor
     @EnvironmentObject var router: RouterPoller
     @EnvironmentObject var idioms: IdiomStore
     @EnvironmentObject var monitor: BatteryMonitor
     @EnvironmentObject var chargeHistory: ChargeHistory
     @EnvironmentObject var ble: BLEManager
-    @ObservedObject var nav = NavService.shared
     @ObservedObject var theme = ThemeManager.shared
     @ObservedObject var keepAlive = KeepAliveService.shared
+    @ObservedObject var updater = UpdateService.shared
 
-    private let cols = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
+    private let cols = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
 
     var greeting: String {
         let h = Calendar.current.component(.hour, from: Date())
@@ -35,14 +34,14 @@ struct RootView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 14) {
                     header
                     appSection
                     toolSection
                     footer
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 30)
+                .padding(.horizontal, 14)
+                .padding(.bottom, 24)
             }
             .background(Theme.background(theme.scheme).ignoresSafeArea())
             .navigationBarTitleDisplayMode(.inline)
@@ -50,7 +49,7 @@ struct RootView: View {
                 ToolbarItem(placement: .principal) {
                     HStack(spacing: 6) {
                         Image(systemName: "shippingbox.fill")
-                            .foregroundStyle(ModuleTheme.gradient(ModuleTheme.charge))
+                            .foregroundStyle(Theme.gradient(Theme.charge))
                         Text("百宝箱").font(.headline)
                     }
                 }
@@ -59,15 +58,16 @@ struct RootView: View {
                         theme.isDark.toggle()
                     } label: {
                         Image(systemName: theme.isDark ? "sun.max.fill" : "moon.fill")
-                            .font(.system(size: 15, weight: .semibold))
+                            .font(.system(size: 14, weight: .semibold))
                             .foregroundColor(theme.isDark ? .orange : .indigo)
                     }
                 }
             }
         }
         .onAppear {
-            router.start(); idioms.start(); NavService.shared.load()
+            router.start(); idioms.start()
             KeepAliveService.shared.applySettings()
+            updater.silentCheck()
         }
         .preferredColorScheme(theme.scheme)
     }
@@ -76,10 +76,10 @@ struct RootView: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Text("\(greeting)，崔老板")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
                     .foregroundColor(.primary)
                 Spacer()
-                Text("🦞").font(.system(size: 32))
+                Text("🦞").font(.system(size: 30))
             }
             HStack(spacing: 6) {
                 Text(dateText + " · 百宝箱已就绪")
@@ -92,14 +92,14 @@ struct RootView: View {
                 }
             }
         }
-        .padding(.top, 12)
+        .padding(.top, 10)
     }
 
-    // MARK: 应用区（融合的独立应用）
+    // MARK: 应用区
 
     @ViewBuilder private var appSection: some View {
         sectionTitle("应用", systemImage: "square.grid.2x2.fill")
-        LazyVGrid(columns: cols, spacing: 14) {
+        LazyVGrid(columns: cols, spacing: 10) {
             NavigationLink(destination: CBHomeView()) {
                 ModuleCard(title: "电管家",
                            subtitle: chargeSubtitle,
@@ -112,40 +112,26 @@ struct RootView: View {
             }
             NavigationLink(destination: XVPPlayerView()) {
                 ModuleCard(title: "XVP 播放器",
-                           subtitle: "内置前端 · 时间密码 · 15 分钟锁定",
-                           icon: "play.rectangle.fill", colors: [Color(hex: 0x654EA3), Color(hex: 0xEAAFC8)], lines: 2)
+                           subtitle: "内置前端 · 时间密码",
+                           icon: "play.rectangle.fill", colors: [Color(hex: 0x654EA3), Color(hex: 0xEAAFC8)])
             }
         }
     }
 
-    // MARK: 工具区（原百宝匣七件套）
+    // MARK: 工具区
 
     @ViewBuilder private var toolSection: some View {
         sectionTitle("工具", systemImage: "wrench.and.screwdriver.fill")
-        LazyVGrid(columns: cols, spacing: 14) {
-            NavigationLink(destination: HapticsLabView()) {
-                ModuleCard(title: "震动实验室", subtitle: "12 种触感 · 节奏大师", icon: "iphone.radiowaves.left.and.right", colors: ModuleTheme.haptics)
-            }
-            NavigationLink(destination: VolumeTestView()) {
-                ModuleCard(title: "音量测试", subtitle: "当前 \(Int(volume.volume * 100))% · 图形化", icon: "speaker.wave.3.fill", colors: ModuleTheme.volume)
-            }
-            NavigationLink(destination: ApiLabView()) {
-                ModuleCard(title: "API 实验室", subtitle: "内置 + 自定义调用", icon: "antenna.radiowaves.left.and.right", colors: ModuleTheme.api)
-            }
+        LazyVGrid(columns: cols, spacing: 10) {
             NavigationLink(destination: IdiomView()) {
-                ModuleCard(title: "励志成语", subtitle: idioms.current.text, icon: "text.book.closed.fill", colors: ModuleTheme.idiom, lines: 2)
+                ModuleCard(title: "励志成语", subtitle: idioms.current.text, icon: "text.book.closed.fill", colors: Theme.idiom, lines: 2)
             }
             NavigationLink(destination: RouterMonitorView()) {
-                ModuleCard(title: "路由器监控", subtitle: routerSub, icon: "wifi.router.fill", colors: ModuleTheme.router, lines: 2)
-            }
-            NavigationLink(destination: NavStationView()) {
-                ModuleCard(title: "导航站", subtitle: "全站 \(nav.linksCount) 站点 · 随机逛", icon: "map.fill", colors: ModuleTheme.nav)
-            }
-            NavigationLink(destination: WebEntryView(config: .music)) {
-                ModuleCard(title: "AI 音乐", subtitle: "music-dl · 边搜边下", icon: "music.note.list", colors: ModuleTheme.music)
+                ModuleCard(title: "路由器监控", subtitle: routerSub, icon: "wifi.router.fill", colors: Theme.router, lines: 2)
             }
             NavigationLink(destination: SettingsView()) {
-                ModuleCard(title: "设置", subtitle: "主题 · 保活 · 通知 · 数据", icon: "gearshape.fill", colors: [Color(hex: 0x8E9AAF), Color(hex: 0x5C6672)])
+                ModuleCard(title: "设置", subtitle: updater.hasUpdate ? "有新版本 V\(updater.newVersion) 🆕" : "主题 · 保活 · 更新",
+                           icon: "gearshape.fill", colors: [Color(hex: 0x8E9AAF), Color(hex: 0x5C6672)])
             }
         }
     }
@@ -165,7 +151,7 @@ struct RootView: View {
 
     private var footer: some View {
         VStack(spacing: 6) {
-            Text("百宝箱 V2 · 全能工具台")
+            Text("百宝箱 V4 · 全能工具台")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
             if keepAlive.enabled {
@@ -175,19 +161,19 @@ struct RootView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 6)
+        .padding(.top, 4)
     }
 
     private func sectionTitle(_ text: String, systemImage: String) -> some View {
         HStack(spacing: 8) {
             Image(systemName: systemImage)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(ModuleTheme.gradient(ModuleTheme.charge))
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(Theme.gradient(Theme.charge))
             Text(text)
-                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .font(.system(size: 18, weight: .bold, design: .rounded))
                 .foregroundColor(.primary)
             Spacer()
         }
-        .padding(.top, 4)
+        .padding(.top, 2)
     }
 }
