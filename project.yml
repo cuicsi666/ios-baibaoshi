@@ -19,6 +19,15 @@ targets:
         excludes:
           - "NES/InfoNES/mapper"
       - path: Resources
+        excludes:
+          - "ROMs"
+          - "NESIcons"
+      - path: Resources/ROMs
+        type: folder
+        buildPhase: resources
+      - path: Resources/NESIcons
+        type: folder
+        buildPhase: resources
       - path: www
         type: folder
         buildPhase: resources
