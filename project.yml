@@ -17,6 +17,9 @@ targets:
     sources:
       - path: Baibaoshi
       - path: Resources
+    dependencies:
+      - target: KeyboardExt
+        embed: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cuicsi.baibaoshi
