@@ -17,33 +17,7 @@ struct NESHomeView: View {
                 } else {
                     LazyVGrid(columns: cols, spacing: 12) {
                         ForEach(games, id: \.name) { g in
-                            Button {
-                                active = g
-                                engine.start(rom: g.rom)
-                            } label: {
-                                VStack(spacing: 6) {
-                                    ZStack {
-                                        if let url = g.icon, let img = UIImage(contentsOfFile: url.path) {
-                                            Image(uiImage: img)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .frame(width: 96, height: 88)
-                                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                                        } else {
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .fill(Color.gray.opacity(0.3))
-                                                .frame(width: 96, height: 88)
-                                            Image(systemName: "gamecontroller.fill").foregroundColor(.secondary)
-                                        }
-                                    }
-                                    .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
-                                    Text(g.name)
-                                        .font(.system(size: 11, weight: .medium))
-                                        .foregroundColor(.primary)
-                                        .lineLimit(1)
-                                }
-                            }
-                            .buttonStyle(.plain)
+                            gameCard(g)
                         }
                     }
                     .padding(.horizontal, 4)
@@ -66,6 +40,36 @@ struct NESHomeView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder private func gameCard(_ g: (name: String, rom: URL, icon: URL?)) -> some View {
+        Button {
+            active = g
+            engine.start(rom: g.rom)
+        } label: {
+            VStack(spacing: 6) {
+                ZStack {
+                    if let url = g.icon, let img = UIImage(contentsOfFile: url.path) {
+                        Image(uiImage: img)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 96, height: 88)
+                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    } else {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(width: 96, height: 88)
+                        Image(systemName: "gamecontroller.fill").foregroundColor(.secondary)
+                    }
+                }
+                .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
+                Text(g.name)
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.primary)
+                    .lineLimit(1)
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     private var themeScheme: ColorScheme { ThemeManager.shared.isDark ? .dark : .light }
@@ -190,11 +194,15 @@ struct JoyStick: View {
 
     /// 8 扇区（每 45° 一向，天然支持斜向组合）
     static func bitsFor(dx: CGFloat, dy: CGFloat, deadZone: CGFloat) -> UInt32 {
-        let (up, down, left, right): UInt32 = (16, 32, 64, 128)
+        let up: UInt32 = 16
+        let down: UInt32 = 32
+        let left: UInt32 = 64
+        let right: UInt32 = 128
         if sqrt(dx * dx + dy * dy) < deadZone { return 0 }
         var deg = atan2(dy, dx) * 180 / .pi + 360 + 22.5   // 以右为 0°，顺时针
         if deg >= 360 { deg -= 360 }
-        switch Int(deg / 45) {
+        let sector = Int(deg / 45)
+        switch sector {
         case 0: return right
         case 1: return right | down
         case 2: return down

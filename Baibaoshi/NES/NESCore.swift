@@ -99,9 +99,10 @@ final class NESEngine: ObservableObject {
                 let abl = UnsafeMutableAudioBufferListPointer(ablPtr)
                 guard let mData = abl[0].mData else { return noErr }
                 let out = mData.assumingMemoryBound(to: Int16.self)
-                let got = nes_audio_pull(out, Int32(frameCount))
-                if got < Int(frameCount) {
-                    for i in got..<Int(frameCount) { out[i] = 0 }
+                let total = Int(frameCount)
+                let got = Int(nes_audio_pull(out, Int32(total)))
+                if got < total {
+                    for i in got..<total { out[i] = 0 }
                 }
                 return noErr
             }
