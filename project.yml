@@ -30,6 +30,10 @@ targets:
         CURRENT_PROJECT_VERSION: "4"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_ENTITLEMENTS: Baibaoshi/Support/Baibaoshi.entitlements
+        SWIFT_OBJC_BRIDGING_HEADER: Baibaoshi/Support/Baibaoshi-Bridging-Header.h
+        OTHER_LDFLAGS: "-lssh2 -lmbedtls -lmbedx509 -lmbedcrypto"
+        LIBRARY_SEARCH_PATHS: "$(PROJECT_DIR)/deps/prefix/lib $(PROJECT_DIR)/deps/libssh2-build/src"
+        HEADER_SEARCH_PATHS: "$(PROJECT_DIR)/deps/libssh2-src/include $(PROJECT_DIR)/deps/prefix/include"
     info:
       path: Baibaoshi/Info.plist
       properties:

@@ -27,6 +27,29 @@ jobs:
           echo "=== Sources/Info.plist head ==="
           head -8 Sources/Info.plist 2>/dev/null || echo "NO PLIST FILE"
 
+      - name: Build libssh2 + mbedtls (iOS arm64)
+        run: |
+          brew install cmake
+          mkdir -p deps && cd deps
+          [ -d mbedtls-src ] || git clone -q --depth 1 -b v3.6.2 https://github.com/Mbed-TLS/mbedtls.git mbedtls-src
+          [ -d libssh2-src ] || git clone -q --depth 1 -b libssh2-1.11.1 https://github.com/libssh2/libssh2.git libssh2-src
+          cmake -S mbedtls-src -B mbedtls-build \
+            -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=iphoneos -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=16.0 -DCMAKE_BUILD_TYPE=Release \
+            -DENABLE_TESTING=OFF -DENABLE_PROGRAMS=OFF \
+            -DCMAKE_INSTALL_PREFIX=$PWD/prefix
+          cmake --build mbedtls-build -j
+          cmake --install mbedtls-build
+          cmake -S libssh2-src -B libssh2-build \
+            -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=iphoneos -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=16.0 -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_SHARED_LIBS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF \
+            -DCRYPTO_BACKEND=MbedTLS \
+            -DCMAKE_INCLUDE_PATH=$PWD/prefix/include \
+            -DCMAKE_LIBRARY_PATH=$PWD/prefix/lib
+          cmake --build libssh2-build -j
+          ls prefix/lib libssh2-build/src/*.a 2>/dev/null || true
+
       - name: Archive (unsigned)
         run: |
           set -o pipefail

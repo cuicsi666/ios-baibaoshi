@@ -115,6 +115,11 @@ struct RootView: View {
                            subtitle: "内置前端 · 时间密码",
                            icon: "play.rectangle.fill", colors: [Color(hex: 0x654EA3), Color(hex: 0xEAAFC8)])
             }
+            NavigationLink(destination: VAppPlayerView()) {
+                ModuleCard(title: "V监控",
+                           subtitle: "ESXi + OpenWrt 直连监控",
+                           icon: "server.rack", colors: [Color(hex: 0x2C3E50), Color(hex: 0x4CA1AF)], lines: 2)
+            }
         }
     }
 
