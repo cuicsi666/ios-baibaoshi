@@ -45,10 +45,11 @@ jobs:
             -DCMAKE_OSX_DEPLOYMENT_TARGET=16.0 -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF \
             -DCRYPTO_BACKEND=MbedTLS \
+            -DCMAKE_C_FLAGS="-DLIBSSH2_MBEDTLS -I$PWD/prefix/include" \
             -DCMAKE_INCLUDE_PATH=$PWD/prefix/include \
             -DCMAKE_LIBRARY_PATH=$PWD/prefix/lib
           cmake --build libssh2-build -j
-          ls prefix/lib libssh2-build/src/*.a 2>/dev/null || true
+          ls -la libssh2-build/src/*.a prefix/lib/*.a
 
       - name: Archive (unsigned)
         run: |
