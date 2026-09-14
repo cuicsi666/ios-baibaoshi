@@ -17,7 +17,7 @@ targets:
     sources:
       - path: Baibaoshi
       - path: Resources
-      - path: XVPwww
+      - path: www
         type: folder
         buildPhase: resources
     dependencies:
