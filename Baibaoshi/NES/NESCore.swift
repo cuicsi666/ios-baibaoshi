@@ -1,36 +1,21 @@
 import Foundation
 import AVFoundation
-import CoreGraphics
 import UIKit
 
-// MARK: - NES 引擎（InfoNES core 桥 + 音频 + 帧渲染）
+// MARK: - NES 引擎（InfoNES core 桥 + 音频 + 游戏库）
+// 帧渲染由 NESScreenUIView（CADisplayLink 直驱）负责
 
 final class NESEngine: ObservableObject {
     static let shared = NESEngine()
 
-    @Published var frameImage: CGImage?
     @Published var running = false
     @Published var soundOn = true
     @Published var currentGame = ""
+    @Published var errorMessage = ""
 
-    static let width = 256
-    static let height = 240
-
-    private var frameBuf: UnsafeMutablePointer<UInt16>!
-    private var rgbaBuf: UnsafeMutablePointer<UInt8>!
-    private var displayLink: CADisplayLink?
     private var audioEngine: AVAudioEngine?
-    private var lastFrameTick = 0
 
-    private init() {
-        frameBuf = UnsafeMutablePointer<UInt16>.allocate(capacity: 256 * 240)
-        rgbaBuf = UnsafeMutablePointer<UInt8>.allocate(capacity: 256 * 240 * 4)
-    }
-
-    deinit {
-        frameBuf?.deallocate()
-        rgbaBuf?.deallocate()
-    }
+    private init() {}
 
     // MARK: 启动 / 停止
 
@@ -39,50 +24,25 @@ final class NESEngine: ObservableObject {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         try? FileManager.default.createDirectory(at: docs, withIntermediateDirectories: true)
         nes_set_sav_dir(docs.path)
-        guard nes_start(rom.path) == 0 else { return }
+        AppLog.log("NES", "启动游戏: \(rom.lastPathComponent)")
+        guard nes_start(rom.path) == 0 else {
+            let err = nes_last_error()
+            AppLog.error("NES", "nes_start 失败 code=\(err) rom=\(rom.lastPathComponent)")
+            errorMessage = "游戏加载失败（代码 \(err)），请重试或换一个游戏"
+            return
+        }
         currentGame = rom.deletingPathExtension().lastPathComponent
         running = true
         startAudioIfNeeded()
-        startDisplayLink()
+        AppLog.log("NES", "启动成功 rate=\(nes_sample_rate())")
     }
 
     func stop() {
         guard running else { return }
+        AppLog.log("NES", "停止: \(currentGame)")
         nes_stop()
         running = false
         stopAudio()
-        displayLink?.invalidate()
-        displayLink = nil
-    }
-
-    // MARK: 帧渲染（CADisplayLink 拉 WorkFrame → CGImage）
-
-    private func startDisplayLink() {
-        let dl = CADisplayLink(target: self, selector: #selector(renderTick))
-        dl.preferredFramesPerSecond = 60
-        dl.add(to: .main, forMode: .common)
-        displayLink = dl
-    }
-
-    @objc private func renderTick() {
-        guard running, nes_running() == 1 else { return }
-        let _ = nes_frame_copy(frameBuf)
-
-        let w = Self.width, h = Self.height
-        for i in 0..<(w * h) {
-            let px = frameBuf[i]
-            let r = UInt8((px >> 11) & 0x1F), g = UInt8((px >> 5) & 0x3F), b = UInt8(px & 0x1F)
-            rgbaBuf[i * 4] = UInt8((Int(r) * 255) / 31)
-            rgbaBuf[i * 4 + 1] = UInt8((Int(g) * 255) / 63)
-            rgbaBuf[i * 4 + 2] = UInt8((Int(b) * 255) / 31)
-            rgbaBuf[i * 4 + 3] = 255
-        }
-
-        let ctx = CGContext(data: rgbaBuf, width: w, height: h,
-                            bitsPerComponent: 8, bytesPerRow: w * 4,
-                            space: CGColorSpaceCreateDeviceRGB(),
-                            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
-        frameImage = ctx?.makeImage()
     }
 
     // MARK: 音频（AVAudioSourceNode 拉环形缓冲，引擎自动重采样）
@@ -93,7 +53,10 @@ final class NESEngine: ObservableObject {
             let engine = AVAudioEngine()
             let rate = Double(nes_sample_rate())
             guard let fmt = AVAudioFormat(commonFormat: .pcmFormatInt16,
-                                          sampleRate: rate, channels: 1, interleaved: true) else { return }
+                                          sampleRate: rate, channels: 1, interleaved: true) else {
+                AppLog.error("NES", "音频格式创建失败 rate=\(rate)")
+                return
+            }
             let src = AVAudioSourceNode(format: fmt) { [weak self] _, _, frameCount, ablPtr -> OSStatus in
                 guard let self = self else { return noErr }
                 let abl = UnsafeMutableAudioBufferListPointer(ablPtr)
@@ -111,8 +74,9 @@ final class NESEngine: ObservableObject {
             engine.prepare()
             try engine.start()
             audioEngine = engine
+            AppLog.log("NES", "音频引擎启动 rate=\(rate)")
         } catch {
-            print("NES 音频启动失败: \(error)")
+            AppLog.error("NES", "音频启动失败: \(error.localizedDescription)")
         }
     }
 
@@ -123,7 +87,8 @@ final class NESEngine: ObservableObject {
 
     func toggleSound() {
         soundOn.toggle()
-        if soundOn { startAudioIfNeeded() } else { stopAudio() }
+        AppLog.log("NES", "声音切换: \(soundOn ? "开" : "关")")
+        if soundOn, running { startAudioIfNeeded() } else { stopAudio() }
     }
 
     // MARK: 手柄
@@ -133,15 +98,20 @@ final class NESEngine: ObservableObject {
     // MARK: 游戏库
 
     static func romList() -> [(name: String, rom: URL, icon: URL?)] {
-        guard let romDir = Bundle.main.url(forResource: "ROMs", withExtension: nil) else { return [] }
+        guard let romDir = Bundle.main.url(forResource: "ROMs", withExtension: nil) else {
+            AppLog.error("NES", "ROMs 目录缺失")
+            return []
+        }
         let icons = Bundle.main.url(forResource: "NESIcons", withExtension: nil)
         let files = (try? FileManager.default.contentsOfDirectory(at: romDir, includingPropertiesForKeys: nil)) ?? []
-        return files
+        let list = files
             .filter { $0.pathExtension.lowercased() == "nes" }
             .sorted { $0.lastPathComponent < $1.lastPathComponent }
-            .map { rom in
+            .map { rom -> (name: String, rom: URL, icon: URL?) in
                 let icon = icons?.appendingPathComponent(rom.deletingPathExtension().lastPathComponent + ".png")
                 return (rom.deletingPathExtension().lastPathComponent, rom, icon)
             }
+        AppLog.log("NES", "游戏库加载 \(list.count) 个")
+        return list
     }
 }

@@ -15,6 +15,7 @@ int  nes_frame_ready(void);
 int  nes_frame_copy(uint16_t *out);
 int  nes_audio_pull(int16_t *out, int maxSamples);
 int  nes_sample_rate(void);
+int  nes_last_error(void);
 void nes_set_sav_dir(const char *dir);
 
 #ifdef __cplusplus

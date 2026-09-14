@@ -7,26 +7,17 @@ struct NESHomeView: View {
     @StateObject private var engine = NESEngine.shared
     @State private var games = NESEngine.romList()
     @State private var active: (name: String, rom: URL, icon: URL?)?
-    private let cols = [GridItem(.adaptive(minimum: 96), spacing: 12)]
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 12) {
-                if engine.running, let g = active {
-                    NESGameView(gameName: g.name)
-                } else {
-                    LazyVGrid(columns: cols, spacing: 12) {
-                        ForEach(games, id: \.name) { g in
-                            gameCard(g)
-                        }
-                    }
-                    .padding(.horizontal, 4)
-                }
+        Group {
+            if engine.running, let g = active {
+                NESGameView(gameName: g.name)
+            } else {
+                libraryGrid
             }
-            .padding(.vertical, 8)
         }
-        .background(Theme.background(themeScheme))
-        .navigationTitle("游戏机")
+        .background(Color.black.ignoresSafeArea())
+        .navigationTitle(engine.running ? "" : "游戏机")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -40,6 +31,27 @@ struct NESHomeView: View {
                 }
             }
         }
+        .onAppear {
+            if games.isEmpty { games = NESEngine.romList() }
+        }
+        .alert(engine.errorMessage, isPresented: .init(
+            get: { !engine.errorMessage.isEmpty },
+            set: { _ in engine.errorMessage = "" }
+        )) {
+            Button("知道了", role: .cancel) {}
+        }
+    }
+
+    private var libraryGrid: some View {
+        ScrollView(showsIndicators: false) {
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 96), spacing: 12)], spacing: 12) {
+                ForEach(games, id: \.name) { g in
+                    gameCard(g)
+                }
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 10)
+        }
     }
 
     @ViewBuilder private func gameCard(_ g: (name: String, rom: URL, icon: URL?)) -> some View {
@@ -47,32 +59,36 @@ struct NESHomeView: View {
             active = g
             engine.start(rom: g.rom)
         } label: {
-            VStack(spacing: 6) {
-                ZStack {
-                    if let url = g.icon, let img = UIImage(contentsOfFile: url.path) {
-                        Image(uiImage: img)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 96, height: 88)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    } else {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(width: 96, height: 88)
-                        Image(systemName: "gamecontroller.fill").foregroundColor(.secondary)
-                    }
-                }
-                .shadow(color: .black.opacity(0.25), radius: 4, y: 2)
-                Text(g.name)
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.primary)
-                    .lineLimit(1)
-            }
+            gameCardContent(g)
         }
         .buttonStyle(.plain)
     }
 
-    private var themeScheme: ColorScheme { ThemeManager.shared.isDark ? .dark : .light }
+    @ViewBuilder private func gameCardContent(_ g: (name: String, rom: URL, icon: URL?)) -> some View {
+        VStack(spacing: 6) {
+            gameThumb(g)
+            Text(g.name)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(.white)
+                .lineLimit(1)
+        }
+    }
+
+    @ViewBuilder private func gameThumb(_ g: (name: String, rom: URL, icon: URL?)) -> some View {
+        if let url = g.icon, let img = UIImage(contentsOfFile: url.path) {
+            Image(uiImage: img)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 96, height: 88)
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.1), lineWidth: 1))
+        } else {
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.gray.opacity(0.3))
+                .frame(width: 96, height: 88)
+                .overlay(Image(systemName: "gamecontroller.fill").foregroundColor(.secondary))
+        }
+    }
 }
 
 // MARK: - 游戏页：屏幕 + 复古手柄
@@ -83,24 +99,14 @@ struct NESGameView: View {
     let gameName: String
 
     var body: some View {
-        VStack(spacing: 14) {
-            // 屏幕
-            if let img = engine.frameImage {
-                Image(uiImage: UIImage(cgImage: img))
-                    .resizable()
-                    .interpolation(.none)
-                    .aspectRatio(CGSize(width: 256, height: 240), contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.12), lineWidth: 2))
-                    .shadow(color: .black.opacity(0.4), radius: 10)
-                    .padding(.horizontal, 12)
-            } else {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(Color.black)
-                    .aspectRatio(CGSize(width: 256, height: 240), contentMode: .fit)
-                    .overlay(Text("载入中…").foregroundColor(.gray))
-                    .padding(.horizontal, 12)
-            }
+        VStack(spacing: 10) {
+            // 屏幕（UIKit 直驱，绕开 SwiftUI 每帧重绘）
+            NESScreenView()
+                .aspectRatio(CGSize(width: 256, height: 240), contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.12), lineWidth: 2))
+                .shadow(color: .black.opacity(0.4), radius: 10)
+                .padding(.horizontal, 12)
 
             Text(gameName)
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
@@ -109,7 +115,6 @@ struct NESGameView: View {
 
             Spacer(minLength: 2)
 
-            // 手柄
             ControllerPad(padBits: $padBits)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 6)
@@ -117,6 +122,67 @@ struct NESGameView: View {
         .onDisappear { padBits = 0; engine.setPad(0) }
         .background(Color.black.ignoresSafeArea())
     }
+}
+
+// MARK: - 屏幕视图（CADisplayLink 直驱 UIImageView）
+
+final class NESScreenUIView: UIView {
+    private var link: CADisplayLink?
+    private var imageViewAdded = false
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .black
+        layer.magnificationFilter = .nearest
+        layer.minificationFilter = .nearest
+        let dl = CADisplayLink(target: self, selector: #selector(tick))
+        dl.preferredFramesPerSecond = 30
+        dl.add(to: .main, forMode: .common)
+        link = dl
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    deinit { link?.invalidate() }
+
+    @objc private func tick() {
+        guard NESEngine.shared.running, nes_running() == 1 else { return }
+        let w = 256, h = 240
+        var rgb = [UInt16](repeating: 0, count: w * h)
+        let _ = nes_frame_copy(&rgb)
+        var rgba = [UInt8](repeating: 0, count: w * h * 4)
+        rgba.withUnsafeMutableBufferPointer { rp in
+            let p = rp.baseAddress!
+            for i in 0..<(w * h) {
+                let px = rgb[i]
+                p[i * 4]     = UInt8((Int((px >> 11) & 0x1F) * 255) / 31)
+                p[i * 4 + 1] = UInt8((Int((px >> 5) & 0x3F) * 255) / 63)
+                p[i * 4 + 2] = UInt8((Int(px & 0x1F) * 255) / 31)
+                p[i * 4 + 3] = 255
+            }
+        }
+        let ctx = CGContext(data: &rgba, width: w, height: h,
+                            bitsPerComponent: 8, bytesPerRow: w * 4,
+                            space: CGColorSpaceCreateDeviceRGB(),
+                            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        guard let img = ctx?.makeImage() else { return }
+        if !imageViewAdded {
+            let iv = UIImageView(image: UIImage(cgImage: img))
+            iv.frame = bounds
+            iv.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            addSubview(iv)
+            imageViewAdded = true
+        } else if let iv = subviews.first as? UIImageView {
+            iv.image = UIImage(cgImage: img)
+        }
+    }
+}
+
+struct NESScreenView: UIViewRepresentable {
+    func makeUIView(context: Context) -> NESScreenUIView { NESScreenUIView(frame: .zero) }
+    func updateUIView(_ v: NESScreenUIView, context: Context) {}
 }
 
 // MARK: - 手柄（摇杆 + AB + 选择/开始）

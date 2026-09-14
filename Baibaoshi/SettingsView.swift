@@ -12,6 +12,16 @@ struct SettingsView: View {
     @AppStorage("bb.keepAlive") private var keepAliveOn = true
     @State private var showClearAlert = false
     @State private var showShare = false
+    @State private var uploadMsg = ""
+
+    private var logSummary: String {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("app.log")
+        guard let size = (try? FileManager.default.attributesOfItem(atPath: url.path)[.size]) as? Int, size > 0 else {
+            return "暂无"
+        }
+        return ByteCountFormatter.string(fromByteCount: Int64(size), countStyle: .file)
+    }
 
     var body: some View {
         Form {
@@ -62,10 +72,10 @@ struct SettingsView: View {
             }
 
             Section("充电监控") {
-                NavigationLink {
-                    CBSettingsView()
-                } label: {
-                    Label("电管家通知与目标", systemImage: "bolt.fill")
+                HStack {
+                    Label("控制入口", systemImage: "bolt.fill")
+                    Spacer()
+                    Text("电管家模块页底部").font(.system(size: 13)).foregroundColor(.secondary)
                 }
                 HStack {
                     Label("历史会话", systemImage: "clock.arrow.circlepath")
@@ -78,6 +88,26 @@ struct SettingsView: View {
                     Label("清除充电历史", systemImage: "trash")
                 }
                 .disabled(chargeHistory.sessions.isEmpty)
+            }
+
+            Section("诊断日志") {
+                HStack {
+                    Label("本地日志", systemImage: "doc.text")
+                    Spacer()
+                    Text(logSummary).font(.system(size: 12)).foregroundColor(.secondary)
+                }
+                Button {
+                    uploadMsg = "上传中…"
+                    AppLog.log("Diag", "手动上传日志")
+                    AppLog.upload { msg in uploadMsg = msg }
+                } label: {
+                    Label("上传日志到服务器", systemImage: "icloud.and.arrow.up")
+                }
+                if !uploadMsg.isEmpty {
+                    Text(uploadMsg).font(.system(size: 11)).foregroundColor(.secondary)
+                }
+            } footer: {
+                Text("日志记录模块运行与崩溃现场，出问题时上传给小龙虾分析")
             }
 
             Section("关于") {

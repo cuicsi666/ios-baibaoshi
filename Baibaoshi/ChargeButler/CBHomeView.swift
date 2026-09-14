@@ -19,6 +19,7 @@ struct CBHomeView: View {
                     } else {
                         IdleCard()
                     }
+                    ChargeNotifyCard()
                 }
                 .padding(.horizontal, 18)
                 .padding(.top, 6)

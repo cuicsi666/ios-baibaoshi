@@ -34,6 +34,22 @@ final class BatteryMonitor: ObservableObject {
     var keepAliveEnabled: Bool { ud.object(forKey: "bb.keepAlive") as? Bool ?? true }
     var targetLevel: Int { ud.object(forKey: "targetLevel") as? Int ?? 100 }
 
+    /// 通知时段：all=全天 / day=白班(7:00-19:00) / night=夜班(19:00-次日7:00)
+    var notifyWindow: String { ud.string(forKey: "notifyWindow") ?? "all" }
+
+    private func isDayShiftNow() -> Bool {
+        let h = Calendar.current.component(.hour, from: Date())
+        return h >= 7 && h < 19
+    }
+
+    func inNotifyWindow() -> Bool {
+        switch notifyWindow {
+        case "day": return isDayShiftNow()
+        case "night": return !isDayShiftNow()
+        default: return true
+        }
+    }
+
     // MARK: 启动
 
     func start() {
@@ -116,6 +132,10 @@ final class BatteryMonitor: ObservableObject {
 
     private func handleStepNotify() {
         guard notifyEnabled, stepNotifyEnabled, let s = session else { return }
+        guard inNotifyWindow() else {
+            AppLog.log("Charge", "时段外跳过播报 level=\(level) window=\(notifyWindow)")
+            return
+        }
         guard newLevelReached5(s: s) else { return }
 
         let target = targetLevel
@@ -143,6 +163,7 @@ final class BatteryMonitor: ObservableObject {
 
     private func handleFullNotify() {
         guard notifyEnabled, fullNotifyEnabled, !fullNotified, var s = session else { return }
+        guard inNotifyWindow() else { return }
         let target = targetLevel
         let hitFull = state == .full && target >= 100
         let hitTarget = target < 100 && level >= target

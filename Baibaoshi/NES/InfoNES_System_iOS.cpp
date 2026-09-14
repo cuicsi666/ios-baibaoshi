@@ -17,6 +17,7 @@
 /*  iOS 桥接状态                                                      */
 /*-------------------------------------------------------------------*/
 static pthread_t gNesThread;
+static pthread_mutex_t gFrameLock = PTHREAD_MUTEX_INITIALIZER;
 static volatile int gRunning = 0;
 static volatile int gQuitReq = 0;
 static volatile int gFrameReady = 0;
@@ -108,9 +109,11 @@ void InfoNES_ReleaseRom() {
   if ( VROM ) { free( VROM ); VROM = NULL; }
 }
 
-/* 每帧回调：标记帧就绪（Swift 端 CADisplayLink 拉取） */
+/* 每帧回调：锁内标记（模拟器线程写 WorkFrame，与 Swift 拷贝互斥） */
 void InfoNES_LoadFrame() {
+  pthread_mutex_lock( &gFrameLock );
   gFrameReady = 1;
+  pthread_mutex_unlock( &gFrameLock );
 }
 
 void InfoNES_PadState( DWORD *pdwPad1, DWORD *pdwPad2, DWORD *pdwSystem ) {
@@ -268,8 +271,10 @@ int nes_start( const char *romPath ) {
 
   BuildPalette();
   InfoNES_Init();
+  gStartError = 0;
   if ( InfoNES_Load( gRomPath ) != 0 ) {
     InfoNES_Fin();
+    gStartError = -1;
     return -1;
   }
   LoadSRAM();
@@ -302,11 +307,17 @@ int nes_frame_ready( void ) {
   return r;
 }
 
-// 拷贝当前帧（RGB565 256x240），返回像素数
+// 拷贝当前帧（RGB565 256x240），返回像素数（与模拟器线程互斥）
 int nes_frame_copy( unsigned short *out ) {
+  pthread_mutex_lock( &gFrameLock );
   memcpy( out, WorkFrame, sizeof( WorkFrame ) );
+  pthread_mutex_unlock( &gFrameLock );
   return NES_DISP_WIDTH * NES_DISP_HEIGHT;
 }
+
+// 最近一次 nes_start 的错误码（0=无）
+static int gStartError = 0;
+int nes_last_error( void ) { return gStartError; }
 
 // 音频拉流：返回实际样本数
 int nes_audio_pull( short *out, int maxSamples ) {
