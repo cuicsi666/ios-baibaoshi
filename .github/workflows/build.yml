@@ -31,7 +31,7 @@ jobs:
         run: |
           brew install cmake
           mkdir -p deps && cd deps
-          [ -d mbedtls-src ] || git clone -q --depth 1 -b v3.6.2 https://github.com/Mbed-TLS/mbedtls.git mbedtls-src
+          [ -d mbedtls-src ] || git clone -q --depth 1 -b v3.6.2 --recursive https://github.com/Mbed-TLS/mbedtls.git mbedtls-src
           [ -d libssh2-src ] || git clone -q --depth 1 -b libssh2-1.11.1 https://github.com/libssh2/libssh2.git libssh2-src
           cmake -S mbedtls-src -B mbedtls-build \
             -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_SYSROOT=iphoneos -DCMAKE_OSX_ARCHITECTURES=arm64 \
