@@ -120,6 +120,11 @@ struct RootView: View {
                            subtitle: "ESXi + OpenWrt 直连监控",
                            icon: "server.rack", colors: [Color(hex: 0x2C3E50), Color(hex: 0x4CA1AF)], lines: 2)
             }
+            NavigationLink(destination: NESHomeView()) {
+                ModuleCard(title: "游戏机",
+                           subtitle: "71 款经典 · 摇杆 + 震动音效",
+                           icon: "gamecontroller.fill", colors: [Color(hex: 0x7F00FF), Color(hex: 0xE100FF)], lines: 2)
+            }
         }
     }
 
