@@ -39,10 +39,16 @@ typealias ModuleTheme = Theme
 
 // MARK: - 语义色 + 电管家色板（合并进 Theme）
 
+// MARK: - 页面背景语义色（Assets 双外观 + 缺失 fallback，防崩溃）
+
+private func assetColor(_ name: String, fallback: UInt32) -> Color {
+    if let ui = UIColor(named: name) { return Color(ui) }
+    return Color(hex: fallback)
+}
+
 extension Theme {
-    // 页面背景语义色（Assets 双外观，自动适配白黑主题）
-    static var bgTop: Color { Color("BbBgTop") }
-    static var bgBottom: Color { Color("BbBgBottom") }
+    static var bgTop: Color { assetColor("BbBgTop", fallback: 0xF4F6FB) }
+    static var bgBottom: Color { assetColor("BbBgBottom", fallback: 0xE6EAF3) }
 
     // 电管家色板（原 AppTheme）
     static let mint = Color(hex: 0x34E0A1)

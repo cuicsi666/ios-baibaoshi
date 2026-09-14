@@ -85,7 +85,7 @@ struct SettingsView: View {
                 HStack(alignment: .top) {
                     Label("模块", systemImage: "square.grid.2x2")
                     Spacer()
-                    Text("电管家 · XUI 遥控 · 超级按键 · 流文 · 龙虾帮 · 工具七件套")
+                    Text("电管家 · 流文 · 工具七件套")
                         .font(.system(size: 13))
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.trailing)

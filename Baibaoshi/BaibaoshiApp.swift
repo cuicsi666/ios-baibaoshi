@@ -29,11 +29,6 @@ struct BaibaoshiApp: App {
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        // 崩溃捕获（XUI 模块）
-        CrashCatcher.install()
-        // XUI 蓝牙 + 中继（启动即初始化，后台保持连接）
-        _ = XUIManager.shared
-        _ = XUITunnelRelay.shared
         // 充电监控
         UNUserNotificationCenter.current().delegate = self
         NotificationManager.shared.requestAuthorization()

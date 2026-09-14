@@ -38,9 +38,12 @@ final class KeepAliveService: NSObject, ObservableObject, CLLocationManagerDeleg
         lm.pausesLocationUpdatesAutomatically = false
         lm.requestAlwaysAuthorization()
         guard CLLocationManager.locationServicesEnabled() else { return }
-        lm.allowsBackgroundLocationUpdates = true
-        lm.startUpdatingLocation()
-        started = true
+        // 仅在已获始终授权时开启后台定位（避免权限中间态异常）
+        if manager.authorizationStatus == .authorizedAlways {
+            lm.allowsBackgroundLocationUpdates = true
+            lm.startUpdatingLocation()
+            started = true
+        }
         refreshActive()
     }
 

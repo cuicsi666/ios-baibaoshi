@@ -103,27 +103,12 @@ struct RootView: View {
             NavigationLink(destination: CBHomeView()) {
                 ModuleCard(title: "电管家",
                            subtitle: chargeSubtitle,
-                           icon: "bolt.fill", colors: ModuleTheme.charge)
-            }
-            NavigationLink(destination: XUIRemoteHomeView()) {
-                ModuleCard(title: "XUI 遥控",
-                           subtitle: "板子遥控 · 手柄 · 中继",
-                           icon: "cpu.fill", colors: ModuleTheme.xui)
-            }
-            NavigationLink(destination: SuperKeyView().environmentObject(RecorderService.shared)) {
-                ModuleCard(title: "超级按键",
-                           subtitle: "说话 → 识别 → AI → 播报",
-                           icon: "mic.fill", colors: ModuleTheme.superkey)
+                           icon: "bolt.fill", colors: Theme.charge)
             }
             NavigationLink(destination: FlowTextView()) {
                 ModuleCard(title: "流文",
                            subtitle: ble.connected ? "已连接 · 文字流动中" : "板子说话 → 键盘流入",
-                           icon: "text.cursor.rainbow", colors: ModuleTheme.flowtext, lines: 2)
-            }
-            NavigationLink(destination: WebAssistantView()) {
-                ModuleCard(title: "龙虾帮",
-                           subtitle: "OpenClaw 控制台 · 三端切换",
-                           icon: "globe.asia.australia.fill", colors: ModuleTheme.lobang, lines: 2)
+                           icon: "text.cursor.rainbow", colors: Theme.flowtext, lines: 2)
             }
         }
     }
