@@ -15,7 +15,7 @@ final class ThemeManager: ObservableObject {
 
 // MARK: - 模块渐变色
 
-enum ModuleTheme {
+enum Theme {
     static let haptics  = [Color(hex: 0xFF9A5A), Color(hex: 0xFF5E62)]   // 震动 橙红
     static let volume   = [Color(hex: 0x36D1DC), Color(hex: 0x5B86E5)]   // 音量 青蓝
     static let api      = [Color(hex: 0xA86BFF), Color(hex: 0xFF6BB8)]   // API 紫粉
@@ -34,9 +34,12 @@ enum ModuleTheme {
     }
 }
 
-// MARK: - 语义色（随 colorScheme 自适应）
+/// 兼容别名
+typealias ModuleTheme = Theme
 
-enum Theme {
+// MARK: - 语义色 + 电管家色板（合并进 Theme）
+
+extension Theme {
     // 页面背景语义色（Assets 双外观，自动适配白黑主题）
     static var bgTop: Color { Color("BbBgTop") }
     static var bgBottom: Color { Color("BbBgBottom") }

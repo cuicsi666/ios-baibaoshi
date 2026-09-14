@@ -5,7 +5,7 @@ import Combine
 
 /// 后台保活服务：定位（始终授权·低功耗） + 充电时静音音频 双保险
 /// 防止 iOS 冻结 App —— 电管家播报、XUI 蓝牙、流文连接全时段在线
-final class KeepAliveService: NSObject, ObservableObject {
+final class KeepAliveService: NSObject, ObservableObject, CLLocationManagerDelegate {
     static let shared = KeepAliveService()
 
     @Published var active = false
