@@ -157,6 +157,16 @@ void InfoNES_SoundClose() {
   gRingRead = gRingWrite = 0;
 }
 
+/* pAPUInit 调用 */
+void InfoNES_SoundInit( void ) {
+  gRingRead = gRingWrite = 0;
+}
+
+/* 错误提示框（Reset 失败时调用）——静默打日志 */
+void InfoNES_MessageBox( char *pszMsg, ... ) {
+  (void)pszMsg;
+}
+
 /*-------------------------------------------------------------------*/
 /*  SRAM 存档（<savDir>/<rom>.sav，目录由 Swift 注入）                  */
 /*-------------------------------------------------------------------*/
