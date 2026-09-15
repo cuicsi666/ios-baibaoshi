@@ -110,9 +110,11 @@ final class AppLog {
 extension Data {
     func appendTo(fileURL: URL) {
         if let fh = FileHandle(forWritingAtPath: fileURL.path) {
-            fh.seekToEndOfFile(); write(self); fh.closeFile()
+            fh.seekToEndOfFile()
+            fh.write(self)
+            fh.closeFile()
         } else {
-            try? write(to: fileURL)
+            try? self.write(to: fileURL)
         }
     }
 }

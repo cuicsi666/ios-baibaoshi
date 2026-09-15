@@ -22,8 +22,8 @@ struct ChargeNotifyCard: View {
                     .font(.system(size: 11, weight: .medium))
                     .padding(.horizontal, 9)
                     .padding(.vertical, 4)
-                    .background(Capsule().fill(AppTheme.teal.opacity(0.14)))
-                    .foregroundColor(AppTheme.teal)
+                    .background(Capsule().fill(Theme.teal.opacity(0.14)))
+                    .foregroundColor(Theme.teal)
             }
 
             Toggle(isOn: $notifyOn) {
@@ -34,7 +34,7 @@ struct ChargeNotifyCard: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .tint(AppTheme.teal)
+            .tint(Theme.teal)
             .onChange(of: notifyOn) { _ in m.applySettings() }
 
             if notifyOn {
@@ -53,7 +53,7 @@ struct ChargeNotifyCard: View {
                 Toggle(isOn: $fullOn) {
                     Text("充满 / 达标提醒").font(.system(size: 14, weight: .medium))
                 }
-                .tint(AppTheme.teal)
+                .tint(Theme.teal)
                 .onChange(of: fullOn) { _ in m.applySettings() }
 
                 HStack {

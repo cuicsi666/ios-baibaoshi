@@ -90,7 +90,7 @@ struct SettingsView: View {
                 .disabled(chargeHistory.sessions.isEmpty)
             }
 
-            Section("诊断日志") {
+            Section {
                 HStack {
                     Label("本地日志", systemImage: "doc.text")
                     Spacer()
@@ -106,6 +106,8 @@ struct SettingsView: View {
                 if !uploadMsg.isEmpty {
                     Text(uploadMsg).font(.system(size: 11)).foregroundColor(.secondary)
                 }
+            } header: {
+                Text("诊断日志")
             } footer: {
                 Text("日志记录模块运行与崩溃现场，出问题时上传给小龙虾分析")
             }
