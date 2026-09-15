@@ -22,6 +22,7 @@ static volatile int gRunning = 0;
 static volatile int gQuitReq = 0;
 static volatile int gFrameReady = 0;
 static volatile unsigned int gPadBits = 0;
+static int gStartError = 0;
 static char gRomPath[1024];
 static char gRomBase[256];
 
@@ -315,8 +316,6 @@ int nes_frame_copy( unsigned short *out ) {
   return NES_DISP_WIDTH * NES_DISP_HEIGHT;
 }
 
-// 最近一次 nes_start 的错误码（0=无）
-static int gStartError = 0;
 int nes_last_error( void ) { return gStartError; }
 
 // 音频拉流：返回实际样本数
