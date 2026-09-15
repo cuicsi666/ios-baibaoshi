@@ -33,6 +33,8 @@ static volatile int gRingRead = 0;
 static volatile int gRingWrite = 0;
 static int gSampleRate = 22050;
 static int gSamplesPerSync = 735;
+static volatile int gPrefilled = 0;
+static short gLastSample = 0;
 
 extern int LoadSRAM();
 extern int SaveSRAM();
@@ -110,8 +112,23 @@ void InfoNES_ReleaseRom() {
   if ( VROM ) { free( VROM ); VROM = NULL; }
 }
 
-/* 每帧回调：锁内标记（模拟器线程写 WorkFrame，与 Swift 拷贝互斥） */
+/* 每帧回调：60.098fps 帧率限制 + 帧就绪标记 */
 void InfoNES_LoadFrame() {
+  /* 帧率限制：NES 60.098fps，防止全速狂奔吃满 CPU */
+  static long long nextFrameUs = 0;
+  struct timeval now;
+  gettimeofday( &now, NULL );
+  long long nowUs = (long long)now.tv_sec * 1000000LL + now.tv_usec;
+  if ( nextFrameUs == 0 ) nextFrameUs = nowUs;
+  if ( nowUs < nextFrameUs ) {
+    usleep( (useconds_t)( nextFrameUs - nowUs ) );
+  }
+  nextFrameUs += 16639;                 // 60.098fps
+  gettimeofday( &now, NULL );
+  nowUs = (long long)now.tv_sec * 1000000LL + now.tv_usec;
+  if ( nextFrameUs < nowUs - 100000 )   // 落后超过 100ms 直接归位，不追赶
+    nextFrameUs = nowUs;
+
   pthread_mutex_lock( &gFrameLock );
   gFrameReady = 1;
   pthread_mutex_unlock( &gFrameLock );
@@ -139,6 +156,8 @@ int InfoNES_SoundOpen( int samples_per_sync, int sample_rate ) {
   gSampleRate = sample_rate;
   gSamplesPerSync = samples_per_sync;
   gRingRead = gRingWrite = 0;
+  gPrefilled = 0;
+  gLastSample = 0;
   return 1;
 }
 
@@ -314,18 +333,44 @@ int nes_frame_copy( unsigned short *out ) {
   return NES_DISP_WIDTH * NES_DISP_HEIGHT;
 }
 
+// 拷贝当前帧并转 RGBA8（C 循环，比 Swift 快）
+int nes_frame_copy_rgba( unsigned char *out ) {
+  pthread_mutex_lock( &gFrameLock );
+  int total = NES_DISP_WIDTH * NES_DISP_HEIGHT;
+  WORD *pw = WorkFrame;
+  for ( int i = 0; i < total; i++ ) {
+    WORD px = pw[ i ];
+    out[ i * 4 ]     = (unsigned char)( ( ( px >> 11 ) & 0x1f ) * 255 / 31 );
+    out[ i * 4 + 1 ] = (unsigned char)( ( ( px >> 5 ) & 0x3f ) * 255 / 63 );
+    out[ i * 4 + 2 ] = (unsigned char)( ( px & 0x1f ) * 255 / 31 );
+    out[ i * 4 + 3 ] = 255;
+  }
+  pthread_mutex_unlock( &gFrameLock );
+  return total;
+}
+
 int nes_last_error( void ) { return gStartError; }
 
-// 音频拉流：返回实际样本数
+// 音频拉流：预填充门槛（防启动爆音）+ 欠载 hold 上一样本（平滑）
 int nes_audio_pull( short *out, int maxSamples ) {
+  int avail = ( gRingWrite - gRingRead + NES_RING_SIZE ) % NES_RING_SIZE;
+  if ( !gPrefilled ) {
+    if ( avail < 8192 ) {                       // 预填约 186ms 再开播
+      memset( out, 0, maxSamples * sizeof( short ) );
+      return maxSamples;
+    }
+    gPrefilled = 1;
+  }
   int n = 0;
   while ( gRingRead != gRingWrite && n < maxSamples ) {
-    out[ n++ ] = gRing[ gRingRead ];
+    gLastSample = gRing[ gRingRead ];
+    out[ n++ ] = gLastSample;
     gRingRead = ( gRingRead + 1 ) % NES_RING_SIZE;
   }
-  // 欠载时补零（避免爆音）
-  for ( ; n < maxSamples && n < 32; n++ ) out[ n ] = 0;
-  return n;
+  while ( n < maxSamples ) {                    // 欠载：保持上一采样，避免咔哒声
+    out[ n++ ] = gLastSample;
+  }
+  return maxSamples;
 }
 
 int nes_sample_rate( void ) { return gSampleRate; }

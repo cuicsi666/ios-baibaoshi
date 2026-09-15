@@ -129,6 +129,7 @@ struct NESGameView: View {
 final class NESScreenUIView: UIView {
     private var link: CADisplayLink?
     private var imageViewAdded = false
+    private var rgbaBuf = [UInt8](repeating: 0, count: 256 * 240 * 4)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -150,20 +151,11 @@ final class NESScreenUIView: UIView {
     @objc private func tick() {
         guard NESEngine.shared.running, nes_running() == 1 else { return }
         let w = 256, h = 240
-        var rgb = [UInt16](repeating: 0, count: w * h)
-        let _ = nes_frame_copy(&rgb)
-        var rgba = [UInt8](repeating: 0, count: w * h * 4)
-        rgba.withUnsafeMutableBufferPointer { rp in
-            let p = rp.baseAddress!
-            for i in 0..<(w * h) {
-                let px = rgb[i]
-                p[i * 4]     = UInt8((Int((px >> 11) & 0x1F) * 255) / 31)
-                p[i * 4 + 1] = UInt8((Int((px >> 5) & 0x3F) * 255) / 63)
-                p[i * 4 + 2] = UInt8((Int(px & 0x1F) * 255) / 31)
-                p[i * 4 + 3] = 255
-            }
+        // C 层拷贝+转换（无 Swift 逐像素开销），缓冲复用零分配
+        let _ = rgbaBuf.withUnsafeMutableBytes { raw in
+            nes_frame_copy_rgba(raw.baseAddress!.assumingMemoryBound(to: UInt8.self))
         }
-        let ctx = CGContext(data: &rgba, width: w, height: h,
+        let ctx = CGContext(data: &rgbaBuf, width: w, height: h,
                             bitsPerComponent: 8, bytesPerRow: w * 4,
                             space: CGColorSpaceCreateDeviceRGB(),
                             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)

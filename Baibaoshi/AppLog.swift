@@ -88,13 +88,35 @@ final class AppLog {
             let text = "[CRASH] NSException \(ex.name.rawValue)\nreason: \(ex.reason ?? "?")\n" +
                        ex.callStackSymbols.prefix(15).joined(separator: "\n")
             AppLog.shared.appendSync(text)
+            UserDefaults.standard.set(true, forKey: "applog.hadCrash")
         }
         for sig in [SIGABRT, SIGSEGV, SIGBUS, SIGILL, SIGFPE] {
             signal(sig) { s in
                 AppLog.shared.appendSync("[CRASH] signal=\(s)")
+                UserDefaults.standard.set(true, forKey: "applog.hadCrash")
                 signal(s, SIG_DFL)
                 raise(s)
             }
+        }
+    }
+
+    /// 自动上报：崩溃后必传；否则每 24h 例行一次（App 启动后调用）
+    static func maybeAutoUpload() {
+        let ud = UserDefaults.standard
+        let hadCrash = ud.bool(forKey: "applog.hadCrash")
+        let last = ud.object(forKey: "applog.lastUpload") as? Date
+        let due = (last == nil) || Date().timeIntervalSince(last!) > 86400
+        guard hadCrash || due else { return }
+        guard let size = (try? FileManager.default.attributesOfItem(atPath: shared.logURL.path)[.size]) as? Int, size > 200 else { return }
+        ud.set(Date(), forKey: "applog.lastUpload")
+        if hadCrash {
+            AppLog.log("Diag", "检测到崩溃记录，自动上传日志")
+        } else {
+            AppLog.log("Diag", "例行自动上传日志")
+        }
+        ud.set(false, forKey: "applog.hadCrash")
+        upload { msg in
+            AppLog.log("Diag", "自动上传结果: \(msg)")
         }
     }
 
