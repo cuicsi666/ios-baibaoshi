@@ -120,6 +120,9 @@ struct NESGameView: View {
                 .padding(.bottom, 6)
         }
         .onDisappear { padBits = 0; engine.setPad(0) }
+        .onChange(of: padBits) { bits in
+            engine.setPad(bits)   // 手柄状态实时写入模拟器
+        }
         .background(Color.black.ignoresSafeArea())
     }
 }
