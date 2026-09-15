@@ -95,9 +95,12 @@ final class NESEngine: ObservableObject {
 
     func setPad(_ bits: UInt32) { nes_set_pad(bits) }
 
-    // MARK: 游戏库
+    // MARK: 游戏库（只扫一次，消除视图重建时的重复遍历）
+
+    private static var cachedRomList: [(name: String, rom: URL, icon: URL?)]?
 
     static func romList() -> [(name: String, rom: URL, icon: URL?)] {
+        if let cached = cachedRomList { return cached }
         guard let romDir = Bundle.main.url(forResource: "ROMs", withExtension: nil) else {
             AppLog.error("NES", "ROMs 目录缺失")
             return []
@@ -112,6 +115,7 @@ final class NESEngine: ObservableObject {
                 return (rom.deletingPathExtension().lastPathComponent, rom, icon)
             }
         AppLog.log("NES", "游戏库加载 \(list.count) 个")
+        cachedRomList = list
         return list
     }
 }

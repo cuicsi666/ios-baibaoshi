@@ -595,7 +595,10 @@ void InfoNES_Cycle()
 
   // Emulation loop
   for (;;)
-  {    
+  {
+    // iOS: 每帧检查外部退出请求（系统层 Menu 返回 -1 = quit）
+    if ( InfoNES_Menu() == -1 )
+      return;
     int nStep;
 
     // Set a flag if a scanning line is a hit in the sprite #0

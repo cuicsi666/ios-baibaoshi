@@ -271,14 +271,13 @@ int nes_start( const char *romPath ) {
   strncpy( gRomBase, base ? base + 1 : romPath, sizeof( gRomBase ) - 1 );
 
   BuildPalette();
-  InfoNES_Init();
   gStartError = 0;
+  // 与 SDL 版一致：Load 后由 InfoNES_Main 内部 Init（避免重复初始化）
   if ( InfoNES_Load( gRomPath ) != 0 ) {
-    InfoNES_Fin();
+    InfoNES_ReleaseRom();
     gStartError = -1;
     return -1;
   }
-  LoadSRAM();
   gQuitReq = 0;
   gRunning = 1;
   pthread_create( &gNesThread, NULL, NesThreadFunc, NULL );
@@ -286,14 +285,13 @@ int nes_start( const char *romPath ) {
   return 0;
 }
 
+// 停止：请求退出 → join 线程（core 在 Main 末尾自释放）→ 存 SRAM
 void nes_stop( void ) {
   if ( !gRunning ) return;
   gQuitReq = 1;
-  // 主循环里 Menu 每帧被询问，几十 ms 内退出
-  int wait = 0;
-  while ( gRunning && wait < 100 ) { usleep( 10000 ); wait++; }
+  pthread_join( gNesThread, NULL );   // 线程内 InfoNES_Main 已调用 InfoNES_Fin
+  gRunning = 0;
   SaveSRAM();
-  InfoNES_Fin();
 }
 
 int nes_running( void ) { return gRunning; }
