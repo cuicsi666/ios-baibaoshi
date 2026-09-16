@@ -203,7 +203,7 @@ static NSString *RegexFirst(NSString *s, NSString *pattern) {
     if (!s) return nil;
     NSRegularExpression *re = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:nil];
     NSTextCheckingResult *m = [re firstMatchInString:s options:0 range:NSMakeRange(0, s.length)];
-    if (m && m.numberOfRanges > 1) return [s substringWithRange:[m rangeAtIndex:1]
+    if (m && m.numberOfRanges > 1) return [s substringWithRange:[m rangeAtIndex:1]];
     return nil;
 }
 static NSString *RegexLineFirst(NSString *line, NSString *pattern) {
@@ -304,10 +304,10 @@ static NSMutableArray *ParseOutput(NSString *raw) {
             NSString *nm = RegexLineFirst(sl, @"Snapshot Name\\s*:\\s*(.+)");
             NSString *sid = RegexLineFirst(sl, @"Snapshot Id\\s*:\\s*(\\d+)");
             NSString *sd = RegexLineFirst(sl, @"Snapshot Created On\\s*:\\s*(.+)");
-            if (nm) curName = [nm stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]
+            if (nm) curName = [nm stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
             if (sid) curId = sid;
             if (sd) {
-                curDate = [sd stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]
+                curDate = [sd stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                 if (curName && curId) {
                     [v.snapshots addObject:@{@"name": curName, @"id": curId, @"date": curDate}];
                 }
@@ -319,7 +319,7 @@ static NSMutableArray *ParseOutput(NSString *raw) {
     d[@"cores"] = @(cores);
     d[@"vms"] = vms;
     d[@"has_meta"] = @(asLines.count > 0 || snapBlocks.count > 0);
-    return [NSMutableArray arrayWithArray:@[d]
+    return [NSMutableArray arrayWithArray:@[d]];
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -397,7 +397,7 @@ static BOOL SOAPLogin(NSString *host, int port, NSString *user, NSString *pass, 
     if ([r containsString:@"<faultstring>"]) {
         NSRegularExpression *re = [NSRegularExpression regularExpressionWithPattern:@"<faultstring>([^<]+)</faultstring>" options:0 error:nil];
         NSTextCheckingResult *m = [re firstMatchInString:r options:0 range:NSMakeRange(0, r.length)];
-        if (m) *errOut = [r substringWithRange:[m rangeAtIndex:1]
+        if (m) *errOut = [r substringWithRange:[m rangeAtIndex:1]];
         return NO;
     }
     return gSoapCookie.length > 0;
@@ -434,8 +434,8 @@ static NSMutableDictionary *ParseSoapResponse(NSString *xml) {
     // ── VM ──
     NSRegularExpression *vmRe = [NSRegularExpression regularExpressionWithPattern:@"<obj type=\"VirtualMachine\">([^<]+)</obj>(.*?)</objects>" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [vmRe enumerateMatchesInString:xml options:0 range:NSMakeRange(0, xml.length) usingBlock:^(NSTextCheckingResult *m, NSMatchingFlags f, BOOL *stop) {
-        NSString *vid = [xml substringWithRange:[m rangeAtIndex:1]
-        NSString *b = [xml substringWithRange:[m rangeAtIndex:2]
+        NSString *vid = [xml substringWithRange:[m rangeAtIndex:1]];
+        NSString *b = [xml substringWithRange:[m rangeAtIndex:2]];
         NSString *nm = RegexFirst(b, @"<name>name</name><val[^>]*>([^<]+)</val>");
         if (!nm) return;
         VMInfo *v = [VMInfo new];
@@ -471,8 +471,8 @@ static NSMutableDictionary *ParseSoapResponse(NSString *xml) {
     NSRegularExpression *asRe = [NSRegularExpression regularExpressionWithPattern:@"<key type=\"VirtualMachine\">(\\d+)</key>.*?<startAction>(\\w+)</startAction>" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     NSMutableDictionary *asMap = [NSMutableDictionary dictionary];
     [asRe enumerateMatchesInString:xml options:0 range:NSMakeRange(0, xml.length) usingBlock:^(NSTextCheckingResult *m, NSMatchingFlags f, BOOL *stop) {
-        NSString *vid = [xml substringWithRange:[m rangeAtIndex:1]
-        NSString *act = [xml substringWithRange:[m rangeAtIndex:2]
+        NSString *vid = [xml substringWithRange:[m rangeAtIndex:1]];
+        NSString *act = [xml substringWithRange:[m rangeAtIndex:2]];
         asMap[vid] = act;
     }];
     for (VMInfo *v in vms) {
@@ -482,7 +482,7 @@ static NSMutableDictionary *ParseSoapResponse(NSString *xml) {
     // ── 主机 ──
     NSRegularExpression *hRe = [NSRegularExpression regularExpressionWithPattern:@"<obj type=\"HostSystem\">([^<]+)</obj>(.*?)</objects>" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     [hRe enumerateMatchesInString:xml options:0 range:NSMakeRange(0, xml.length) usingBlock:^(NSTextCheckingResult *m, NSMatchingFlags f, BOOL *stop) {
-        NSString *b = [xml substringWithRange:[m rangeAtIndex:2]
+        NSString *b = [xml substringWithRange:[m rangeAtIndex:2]];
         NSString *cpuMhz = RegexFirst(b, @"<name>summary.quickStats.overallCpuUsage</name><val[^>]*>([^<]+)</val>");
         NSString *memMB = RegexFirst(b, @"<name>summary.quickStats.overallMemoryUsage</name><val[^>]*>([^<]+)</val>");
         NSString *upSec = RegexFirst(b, @"<name>summary.quickStats.uptime</name><val[^>]*>([^<]+)</val>");
@@ -519,7 +519,7 @@ static NSMutableDictionary *ParseSoapResponse(NSString *xml) {
     NSRegularExpression *dsRe = [NSRegularExpression regularExpressionWithPattern:@"<obj type=\"Datastore\">([^<]+)</obj>(.*?)</objects>" options:NSRegularExpressionDotMatchesLineSeparators error:nil];
     NSMutableArray *dsList = [NSMutableArray array];
     [dsRe enumerateMatchesInString:xml options:0 range:NSMakeRange(0, xml.length) usingBlock:^(NSTextCheckingResult *m, NSMatchingFlags f, BOOL *stop) {
-        NSString *b = [xml substringWithRange:[m rangeAtIndex:2]
+        NSString *b = [xml substringWithRange:[m rangeAtIndex:2]];
         NSString *nm = RegexFirst(b, @"<name>name</name><val[^>]*>([^<]+)</val>");
         NSString *cap = RegexFirst(b, @"<name>summary.capacity</name><val[^>]*>([^<]+)</val>");
         NSString *free = RegexFirst(b, @"<name>summary.freeSpace</name><val[^>]*>([^<]+)</val>");
@@ -559,7 +559,7 @@ static NSString *SOAPOp(NSString *host, int port, NSString *xmlBody) {
     if ([r containsString:@"<faultstring>"]) {
         NSRegularExpression *re = [NSRegularExpression regularExpressionWithPattern:@"<faultstring>([^<]+)</faultstring>" options:0 error:nil];
         NSTextCheckingResult *m = [re firstMatchInString:r options:0 range:NSMakeRange(0, r.length)];
-        if (m) return [r substringWithRange:[m rangeAtIndex:1]
+        if (m) return [r substringWithRange:[m rangeAtIndex:1]];
         return @"操作失败";
     }
     return nil;
@@ -654,7 +654,7 @@ static void PlayConfirmSound(void) {
         _thumbView.layer.shadowRadius = 3;
         [self addSubview:_thumbView];
         // 箭头
-        _arrowIcon = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:@"arrow.right"]
+        _arrowIcon = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:@"arrow.right"]];
         _arrowIcon.tintColor = [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1];
         _arrowIcon.frame = CGRectMake(0, 0, 20, 20);
         _arrowIcon.center = CGPointMake(_thumbView.bounds.size.width / 2, _thumbView.bounds.size.height / 2);
@@ -854,7 +854,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_subLabel];
         _rightLabel = [UILabel new];
         _rightLabel.font = [UIFont systemFontOfSize:10];
-        _rightLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+        _rightLabel.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         _rightLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_rightLabel];
     }
@@ -960,7 +960,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_nameLabel];
         _infoLabel = [UILabel new];
         _infoLabel.font = [UIFont systemFontOfSize:10];
-        _infoLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        _infoLabel.textColor = UIColor.systemGrayColor;
         [self addSubview:_infoLabel];
         _powerSwitch = [UISwitch new];
         _powerSwitch.transform = CGAffineTransformMakeScale(0.62, 0.62);
@@ -970,7 +970,7 @@ static void PlayConfirmSound(void) {
         _snapBtn.titleLabel.font = [UIFont systemFontOfSize:10];
         [_snapBtn setTitle:@"📸 快照" forState:UIControlStateNormal];
         _snapBtn.layer.borderWidth = 0.6;
-        _snapBtn.layer.borderColor = [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1].CGColor;
+        _snapBtn.layer.borderColor = [UIColor systemBlueColor].CGColor;
         _snapBtn.layer.cornerRadius = 6;
         [_snapBtn setTitleColor:[UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1] forState:UIControlStateNormal];
         [_snapBtn addTarget:self action:@selector(snapTapped) forControlEvents:UIControlEventTouchUpInside];
@@ -980,8 +980,8 @@ static void PlayConfirmSound(void) {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
         _autoBtn.layer.borderWidth = 0.6;
         _autoBtn.layer.cornerRadius = 6;
-        _autoBtn.layer.borderColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]CGColor;
-        [_autoBtn setTitleColor:[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1].CGColor;
+        [_autoBtn setTitleColor:[UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1] forState:UIControlStateNormal];
         [_autoBtn addTarget:self action:@selector(autoTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_autoBtn];
         _rebootBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -989,7 +989,7 @@ static void PlayConfirmSound(void) {
         [_rebootBtn setTitle:@"🔄 重启" forState:UIControlStateNormal];
         _rebootBtn.layer.borderWidth = 0.6;
         _rebootBtn.layer.cornerRadius = 6;
-        _rebootBtn.layer.borderColor = [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1].CGColor;
+        _rebootBtn.layer.borderColor = [UIColor systemOrangeColor].CGColor;
         [_rebootBtn setTitleColor:[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1] forState:UIControlStateNormal];
         [_rebootBtn addTarget:self action:@selector(rebootTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_rebootBtn];
@@ -1029,12 +1029,12 @@ static void PlayConfirmSound(void) {
 - (void)setAutoUI:(BOOL)on {
     if (on) {
         [_autoBtn setTitle:@"⚡自启:开" forState:UIControlStateNormal];
-        _autoBtn.layer.borderColor = [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1].CGColor;
+        _autoBtn.layer.borderColor = [UIColor systemGreenColor].CGColor;
         [_autoBtn setTitleColor:[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1] forState:UIControlStateNormal];
     } else {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
-        _autoBtn.layer.borderColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]CGColor;
-        [_autoBtn setTitleColor:[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1].CGColor;
+        [_autoBtn setTitleColor:[UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1] forState:UIControlStateNormal];
     }
 }
 @end
@@ -1106,7 +1106,7 @@ static void PlayConfirmSound(void) {
     [super viewDidLoad];
 
     // 主流简洁背景：iOS 系统分组灰白
-    self.view.backgroundColor = [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]
+    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
 
     // 标题（纯文字，状态圆点移到右上角）
     self.title = @"ESXi 监控";
@@ -1192,7 +1192,7 @@ static void PlayConfirmSound(void) {
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, 0, w - 32, 44);
     self.statusLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
-    self.statusLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = UIColor.systemGrayColor;
     self.statusLabel.text = @"";
     [statusCard addSubview:self.statusLabel];
     y += 44 + 12;
@@ -1218,7 +1218,7 @@ static void PlayConfirmSound(void) {
     [shutdownHostBtn setTitleColor:[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1] forState:UIControlStateNormal];
     shutdownHostBtn.layer.cornerRadius = 10;
     shutdownHostBtn.layer.borderWidth = 1;
-    shutdownHostBtn.layer.borderColor = [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1].CGColor;
+    shutdownHostBtn.layer.borderColor = [UIColor systemRedColor].CGColor;
     shutdownHostBtn.frame = CGRectMake(12, 30, (w - 36) / 2, 40);
     [shutdownHostBtn addTarget:self action:@selector(confirmShutdownHost) forControlEvents:UIControlEventTouchUpInside];
     [hostCard addSubview:shutdownHostBtn];
@@ -1228,7 +1228,7 @@ static void PlayConfirmSound(void) {
     [rebootHostBtn setTitleColor:[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1] forState:UIControlStateNormal];
     rebootHostBtn.layer.cornerRadius = 10;
     rebootHostBtn.layer.borderWidth = 1;
-    rebootHostBtn.layer.borderColor = [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1].CGColor;
+    rebootHostBtn.layer.borderColor = [UIColor systemOrangeColor].CGColor;
     rebootHostBtn.frame = CGRectMake(12 + (w - 36) / 2 + 12, 30, (w - 36) / 2, 40);
     [rebootHostBtn addTarget:self action:@selector(confirmRebootHost) forControlEvents:UIControlEventTouchUpInside];
     [hostCard addSubview:rebootHostBtn];
@@ -1283,7 +1283,7 @@ static void PlayConfirmSound(void) {
 }
 
 - (void)openSettings {
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[SettingsVC new]
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:[SettingsVC new]];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -1291,7 +1291,7 @@ static void PlayConfirmSound(void) {
     if (!self.logs) self.logs = [NSMutableArray array];
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
     fmt.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-    NSString *ts = [fmt stringFromDate:[NSDate date]
+    NSString *ts = [fmt stringFromDate:[NSDate date]];
     [self.logs insertObject:[NSString stringWithFormat:@"[%@] %@", ts, msg] atIndex:0];
     if (self.logs.count > 100) [self.logs removeObjectsInRange:NSMakeRange(100, self.logs.count - 100)];
     self.logLabel.text = [self.logs componentsJoinedByString:@"\n"];
@@ -1407,7 +1407,7 @@ static void PlayConfirmSound(void) {
         NSMutableArray *found = [NSMutableArray array];
         [re enumerateMatchesInString:tempLine options:0 range:NSMakeRange(0, tempLine.length)
             usingBlock:^(NSTextCheckingResult *m, NSMatchingFlags f, BOOL *stop) {
-                [found addObject:[tempLine substringWithRange:m.range]
+                [found addObject:[tempLine substringWithRange:m.range]];
             }];
         nums = found;
     }
@@ -1496,7 +1496,7 @@ static void PlayConfirmSound(void) {
         double capT = [ds1[@"total"] doubleValue] / 1000.0 / 1000.0 / 1000.0 / 1000.0;
         double usedT = [ds1[@"used"] doubleValue] / 1000.0 / 1000.0 / 1000.0 / 1000.0;
         self.ds1Card.valueLabel.text = [NSString stringWithFormat:@"已用 %.2fT / 总 %.1fT", usedT, capT];
-        self.ds1Card.titleLabel.text = [NSString stringWithFormat:@"%@ 存储", ds1[@"name"]
+        self.ds1Card.titleLabel.text = [NSString stringWithFormat:@"%@ 存储", ds1[@"name"]];
         [self.ds1Card setPct:ds1pct];
     } else {
         self.ds1Card.valueLabel.text = @"--";
@@ -1506,7 +1506,7 @@ static void PlayConfirmSound(void) {
         double capT = [ds2[@"total"] doubleValue] / 1000.0 / 1000.0 / 1000.0 / 1000.0;
         double usedT = [ds2[@"used"] doubleValue] / 1000.0 / 1000.0 / 1000.0 / 1000.0;
         self.ds2Card.valueLabel.text = [NSString stringWithFormat:@"已用 %.2fT / 总 %.1fT", usedT, capT];
-        self.ds2Card.titleLabel.text = [NSString stringWithFormat:@"%@ 存储", ds2[@"name"]
+        self.ds2Card.titleLabel.text = [NSString stringWithFormat:@"%@ 存储", ds2[@"name"]];
         [self.ds2Card setPct:ds2pct];
     } else {
         self.ds2Card.valueLabel.text = @"--";
@@ -1532,7 +1532,7 @@ static void PlayConfirmSound(void) {
             NSDictionary *meta = self.vmMetaCache[v.vmid];
             if (meta) {
                 v.autostart = [meta[@"autostart"] boolValue];
-                v.snapshots = [NSMutableArray arrayWithArray:meta[@"snapshots"]
+                v.snapshots = [NSMutableArray arrayWithArray:meta[@"snapshots"]];
             }
         }
     }
@@ -1628,7 +1628,7 @@ static void PlayConfirmSound(void) {
     NSString *opName = shutdown ? @"关机" : @"重启";
     self.statusLabel.text = [NSString stringWithFormat:@"主机%@中…", opName];
     self.statusLabel.textColor = UIColor.systemOrangeColor;
-    [self addLog:[NSString stringWithFormat:@"主机%@中…", opName]
+    [self addLog:[NSString stringWithFormat:@"主机%@中…", opName]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSString *host = SGet(@"esxi_host", @"6.6.6.149");
@@ -1645,11 +1645,11 @@ static void PlayConfirmSound(void) {
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"主机%@失败：%@", opName, opErr];
                 weakSelf.statusLabel.textColor = UIColor.systemRedColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"❌ 主机%@失败：%@", opName, opErr]
+                [weakSelf addLog:[NSString stringWithFormat:@"❌ 主机%@失败：%@", opName, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"主机%@指令已发送", opName];
                 weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"✅ 主机%@指令已发送", opName]
+                [weakSelf addLog:[NSString stringWithFormat:@"✅ 主机%@指令已发送", opName]];
             }
             [weakSelf refreshNow];
         });
@@ -1697,7 +1697,7 @@ static void PlayConfirmSound(void) {
 - (void)doRebootVM:(NSString *)vmId name:(NSString *)name {
     self.statusLabel.text = @"重启中…";
     self.statusLabel.textColor = UIColor.systemOrangeColor;
-    [self addLog:[NSString stringWithFormat:@"重启虚拟机 %@…", name]
+    [self addLog:[NSString stringWithFormat:@"重启虚拟机 %@…", name]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSString *host = SGet(@"esxi_host", @"6.6.6.149");
@@ -1713,11 +1713,11 @@ static void PlayConfirmSound(void) {
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"重启失败：%@", opErr];
                 weakSelf.statusLabel.textColor = UIColor.systemRedColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 重启失败：%@", name, opErr]
+                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 重启失败：%@", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ 重启成功", name];
                 weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 重启成功", name]
+                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 重启成功", name]];
             }
             [weakSelf refreshNow];
         });
@@ -1740,7 +1740,7 @@ static void PlayConfirmSound(void) {
 - (void)doShutdownVM:(NSString *)vmId name:(NSString *)name {
     self.statusLabel.text = @"关机中…";
     self.statusLabel.textColor = UIColor.systemOrangeColor;
-    [self addLog:[NSString stringWithFormat:@"关闭虚拟机 %@…", name]
+    [self addLog:[NSString stringWithFormat:@"关闭虚拟机 %@…", name]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSString *host = SGet(@"esxi_host", @"6.6.6.149");
@@ -1756,11 +1756,11 @@ static void PlayConfirmSound(void) {
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"关机失败：%@", opErr];
                 weakSelf.statusLabel.textColor = UIColor.systemRedColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 关机失败：%@", name, opErr]
+                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 关机失败：%@", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ 已关机", name];
                 weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 已关机", name]
+                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 已关机", name]];
             }
             [weakSelf refreshNow];
         });
@@ -1777,7 +1777,7 @@ static void PlayConfirmSound(void) {
 - (void)doToggleVM:(NSString *)vmId on:(BOOL)on name:(NSString *)name {
     self.statusLabel.text = on ? @"开机中…" : @"关机中…";
     self.statusLabel.textColor = UIColor.systemOrangeColor;
-    [self addLog:[NSString stringWithFormat:@"%@ 虚拟机 %@…", on ? @"开机" : @"关机", name]
+    [self addLog:[NSString stringWithFormat:@"%@ 虚拟机 %@…", on ? @"开机" : @"关机", name]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSString *host = SGet(@"esxi_host", @"6.6.6.149");
@@ -1795,11 +1795,11 @@ static void PlayConfirmSound(void) {
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@失败：%@", on ? @"开机" : @"关机", opErr];
                 weakSelf.statusLabel.textColor = UIColor.systemRedColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ %@ 失败：%@", on ? @"开机" : @"关机", name, opErr]
+                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ %@ 失败：%@", on ? @"开机" : @"关机", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ %@ 成功", on ? @"开机" : @"关机", name];
                 weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ %@ 成功", on ? @"开机" : @"关机", name]
+                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ %@ 成功", on ? @"开机" : @"关机", name]];
             }
             [weakSelf refreshNow];
         });
@@ -1828,14 +1828,14 @@ static void PlayConfirmSound(void) {
         message:snapCount > 0 ? [NSString stringWithFormat:@"当前 %d 个快照", snapCount] : @"暂无快照"
         preferredStyle:UIAlertControllerStyleActionSheet];
     [sheet addAction:[UIAlertAction actionWithTitle:@"📸 创建新快照" style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction *a) { [self confirmCreateSnapshot:vmId]; }]
+        handler:^(UIAlertAction *a) { [self confirmCreateSnapshot:vmId]; }]];
     if (snapCount > 0) {
         [sheet addAction:[UIAlertAction actionWithTitle:@"🔄 恢复最近快照" style:UIAlertActionStyleDefault
-            handler:^(UIAlertAction *a) { [self revertLatestSnapshot:vmId]; }]
+            handler:^(UIAlertAction *a) { [self revertLatestSnapshot:vmId]; }]];
         [sheet addAction:[UIAlertAction actionWithTitle:@"🗑 删除全部快照" style:UIAlertActionStyleDestructive
-            handler:^(UIAlertAction *a) { [self removeAllSnapshots:vmId]; }]
+            handler:^(UIAlertAction *a) { [self removeAllSnapshots:vmId]; }]];
     }
-    [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]
+    [sheet addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [self presentViewController:sheet animated:YES completion:nil];
 }
 
@@ -1861,24 +1861,24 @@ static void PlayConfirmSound(void) {
         tf.placeholder = @"快照名称（留空自动命名）";
         tf.font = [UIFont systemFontOfSize:13];
     }];
-    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]
+    [alert addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil]];
     [alert addAction:[UIAlertAction actionWithTitle:@"创建" style:UIAlertActionStyleDefault
         handler:^(UIAlertAction *a) {
             NSString *snapName = alert.textFields.firstObject.text;
             if (snapName.length == 0) {
                 NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
                 fmt.dateFormat = @"yyyyMMdd_HHmmss";
-                snapName = [NSString stringWithFormat:@"snap_%@", [fmt stringFromDate:[NSDate date]]
+                snapName = [NSString stringWithFormat:@"snap_%@", [fmt stringFromDate:[NSDate date]]];
             }
             [self doSnapshot:vmId name:vmName snapName:snapName];
-        }]
+        }]];
     [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)doSnapshot:(NSString *)vmId name:(NSString *)name snapName:(NSString *)snapName {
     self.statusLabel.text = @"快照创建中…";
     self.statusLabel.textColor = UIColor.systemOrangeColor;
-    [self addLog:[NSString stringWithFormat:@"快照 %@ 创建中…", snapName]
+    [self addLog:[NSString stringWithFormat:@"快照 %@ 创建中…", snapName]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSString *host = SGet(@"esxi_host", @"6.6.6.149");
@@ -1895,11 +1895,11 @@ static void PlayConfirmSound(void) {
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"快照失败：%@", opErr];
                 weakSelf.statusLabel.textColor = UIColor.systemRedColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 快照失败：%@", name, opErr]
+                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 快照失败：%@", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"快照 %@ 创建成功", snapName];
                 weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 快照创建成功（%@）", name, snapName]
+                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 快照创建成功（%@）", name, snapName]];
             }
             [weakSelf refreshNow];
         });
@@ -1914,11 +1914,11 @@ static void PlayConfirmSound(void) {
     vc.slideText = @"滑动恢复";
     __weak typeof(self) weakSelf = self;
     vc.onConfirm = ^{
-        [weakSelf addLog:[NSString stringWithFormat:@"正在恢复 %@ 到最近快照…", vmName]
+        [weakSelf addLog:[NSString stringWithFormat:@"正在恢复 %@ 到最近快照…", vmName]];
         NSString *xml = [NSString stringWithFormat:
             @"<?xml version=\"1.0\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soapenv:Body><RevertToCurrentSnapshot_Task xmlns=\"urn:vim25\"><_this type=\"VirtualMachine\">%@</_this><host xsi:nil=\"true\"/><suppressPowerOn>false</suppressPowerOn></RevertToCurrentSnapshot_Task></soapenv:Body></soapenv:Envelope>", vmId];
         [weakSelf runSOAPOp:xml success:[NSString stringWithFormat:@"✅ %@ 已恢复到最近快照", vmName]
-            fail:[NSString stringWithFormat:@"❌ %@ 快照恢复失败", vmName]
+            fail:[NSString stringWithFormat:@"❌ %@ 快照恢复失败", vmName]];
     };
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [self presentViewController:vc animated:NO completion:nil];
@@ -1932,11 +1932,11 @@ static void PlayConfirmSound(void) {
     vc.slideText = @"滑动删除";
     __weak typeof(self) weakSelf = self;
     vc.onConfirm = ^{
-        [weakSelf addLog:[NSString stringWithFormat:@"正在删除 %@ 全部快照…", vmName]
+        [weakSelf addLog:[NSString stringWithFormat:@"正在删除 %@ 全部快照…", vmName]];
         NSString *xml = [NSString stringWithFormat:
             @"<?xml version=\"1.0\"?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><soapenv:Body><RemoveAllSnapshots_Task xmlns=\"urn:vim25\"><_this type=\"VirtualMachine\">%@</_this></RemoveAllSnapshots_Task></soapenv:Body></soapenv:Envelope>", vmId];
         [weakSelf runSOAPOp:xml success:[NSString stringWithFormat:@"✅ %@ 全部快照已删除", vmName]
-            fail:[NSString stringWithFormat:@"❌ %@ 快照删除失败", vmName]
+            fail:[NSString stringWithFormat:@"❌ %@ 快照删除失败", vmName]];
     };
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [self presentViewController:vc animated:NO completion:nil];
@@ -1957,7 +1957,7 @@ static void PlayConfirmSound(void) {
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@：%@", fl, opErr];
                 weakSelf.statusLabel.textColor = UIColor.systemRedColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"%@：%@", fl, opErr]
+                [weakSelf addLog:[NSString stringWithFormat:@"%@：%@", fl, opErr]];
             } else {
                 weakSelf.statusLabel.text = succ;
                 weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
@@ -1986,7 +1986,7 @@ static void PlayConfirmSound(void) {
     NSString *vmName = [self vmName:vmId];
     self.statusLabel.text = on ? @"开启自启中…" : @"关闭自启中…";
     self.statusLabel.textColor = UIColor.systemOrangeColor;
-    [self addLog:[NSString stringWithFormat:@"%@ %@ 开机自启…", on ? @"开启" : @"关闭", vmName]
+    [self addLog:[NSString stringWithFormat:@"%@ %@ 开机自启…", on ? @"开启" : @"关闭", vmName]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSString *host = SGet(@"esxi_host", @"6.6.6.149");
@@ -2005,14 +2005,14 @@ static void PlayConfirmSound(void) {
             if (err && err.length > 0) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"自启设置失败：%@", err];
                 weakSelf.statusLabel.textColor = UIColor.systemRedColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 自启设置失败：%@", vmName, err]
+                [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 自启设置失败：%@", vmName, err]];
                 for (VMRowView *row in weakSelf.vmRows) {
                     if ([row.vmId isEqualToString:vmId]) { [row setAutoUI:!on]; break; }
                 }
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ %@ 开机自启%@", on ? @"已开启" : @"已关闭", vmName, on ? @"" : @""];
                 weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
-                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 开机自启已%@", vmName, on ? @"开启" : @"关闭"]
+                [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 开机自启已%@", vmName, on ? @"开启" : @"关闭"]];
                 for (VMRowView *row in weakSelf.vmRows) {
                     if ([row.vmId isEqualToString:vmId]) { [row setAutoUI:on]; break; }
                 }
@@ -2099,7 +2099,7 @@ static void PlayConfirmSound(void) {
     UILabel *secTitle = [UILabel new];
     secTitle.text = @"ESXi 连接信息";
     secTitle.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    secTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+    secTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     secTitle.frame = CGRectMake(x + 4, y, w, 18);
     [scroll addSubview:secTitle];
     y += 26;
@@ -2131,7 +2131,7 @@ static void PlayConfirmSound(void) {
         UILabel *lb = [UILabel new];
         lb.text = labels[i];
         lb.font = [UIFont systemFontOfSize:11];
-        lb.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+        lb.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         lb.frame = CGRectMake(14, ry + 6, w - 28, 14);
         [card addSubview:lb];
         // 输入框（等宽，圆角边框）
@@ -2171,7 +2171,7 @@ static void PlayConfirmSound(void) {
     UILabel *tip = [UILabel new];
     tip.text = @"App 直接连接 ESXi，不经过任何中转服务。\n保存后回到首页自动生效。";
     tip.font = [UIFont systemFontOfSize:12];
-    tip.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+    tip.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     tip.numberOfLines = 0;
     tip.frame = CGRectMake(12, 8, w - 24, 42);
     [tipCard addSubview:tip];
@@ -2181,7 +2181,7 @@ static void PlayConfirmSound(void) {
     UILabel *verTitle = [UILabel new];
     verTitle.text = @"📜 版本构建历史";
     verTitle.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    verTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+    verTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     verTitle.frame = CGRectMake(x + 4, y, w, 18);
     [scroll addSubview:verTitle];
     y += 26;
@@ -2263,7 +2263,7 @@ static void PlayConfirmSound(void) {
         UILabel *dateLb = [UILabel new];
         dateLb.text = v[@"date"];
         dateLb.font = [UIFont systemFontOfSize:11];
-        dateLb.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+        dateLb.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         dateLb.textAlignment = NSTextAlignmentRight;
         dateLb.frame = CGRectMake(w - 90, 8, 76, 18);
         [vCard addSubview:dateLb];
@@ -2446,7 +2446,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         _dlTitle = [UILabel new];
         _dlTitle.text = @"↓ 下载";
         _dlTitle.font = [UIFont systemFontOfSize:11];
-        _dlTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+        _dlTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         _dlTitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_dlTitle];
 
@@ -2460,7 +2460,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         _ulTitle = [UILabel new];
         _ulTitle.text = @"↑ 上传";
         _ulTitle.font = [UIFont systemFontOfSize:11];
-        _ulTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+        _ulTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         _ulTitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_ulTitle];
 
@@ -2494,7 +2494,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     CGContextAddArc(ctx, cx, cy, r, M_PI, 2*M_PI, 0);
     CGContextStrokePath(ctx);
     // 进度
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor systemBlueColor].CGColor);
     CGContextAddArc(ctx, cx, cy, r, M_PI, M_PI + self.dlRatio * M_PI, 0);
     CGContextStrokePath(ctx);
     // 上传弧线（右半圆，绿色）
@@ -2502,7 +2502,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.92 green:0.94 blue:0.96 alpha:1].CGColor);
     CGContextAddArc(ctx, cx, cy, r, 0, M_PI, 0);
     CGContextStrokePath(ctx);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor systemGreenColor].CGColor);
     CGContextAddArc(ctx, cx, cy, r, 0, self.ulRatio * M_PI, 0);
     CGContextStrokePath(ctx);
 }
@@ -2564,7 +2564,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 - (void)addLog:(NSString *)msg {
     // 操作日志已移除，仅在状态栏显示
     self.statusLabel.text = msg;
-    self.statusLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = UIColor.systemGrayColor;
 }
 
 - (UILabel *)sectionLabelWithTitle:(NSString *)t {
@@ -2578,7 +2578,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]
+    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
     self.title = @"OpenWrt";
 
     // 左上角状态
@@ -2679,7 +2679,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     [rebootBtn setTitleColor:[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1] forState:UIControlStateNormal];
     rebootBtn.layer.cornerRadius = 10;
     rebootBtn.layer.borderWidth = 1;
-    rebootBtn.layer.borderColor = [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1].CGColor;
+    rebootBtn.layer.borderColor = [UIColor systemOrangeColor].CGColor;
     rebootBtn.frame = CGRectMake(12, 8, w - 24, 40);
     [rebootBtn addTarget:self action:@selector(confirmRebootWrt) forControlEvents:UIControlEventTouchUpInside];
     [self.hostCard addSubview:rebootBtn];
@@ -2702,7 +2702,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *devSub = [UILabel new];
     devSub.text = @"当前在线设备";
     devSub.font = [UIFont systemFontOfSize:12];
-    devSub.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]
+    devSub.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     devSub.textAlignment = NSTextAlignmentCenter;
     devSub.frame = CGRectMake(12, 46, w - 24, 18);
     [self.deviceBox addSubview:devSub];
@@ -2713,7 +2713,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     [smartNameBtn setTitleColor:[UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1] forState:UIControlStateNormal];
     smartNameBtn.layer.cornerRadius = 8;
     smartNameBtn.layer.borderWidth = 1;
-    smartNameBtn.layer.borderColor = [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1].CGColor;
+    smartNameBtn.layer.borderColor = [UIColor systemBlueColor].CGColor;
     smartNameBtn.frame = CGRectMake(16, y + 86, w, 36);
     [smartNameBtn addTarget:self action:@selector(smartNameTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:smartNameBtn];
@@ -2724,7 +2724,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = UIColor.systemGrayColor;
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 26;
@@ -2862,7 +2862,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         // 去掉 " up " 前缀
         NSRange upR = [body rangeOfString:@" up "];
         if (upR.location != NSNotFound) body = [body substringFromIndex:upR.location + 4];
-        body = [body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]
+        body = [body stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         // body 形如: "3 days, 19:56" / "19:56" / "3 days" / "10 min"
         NSRegularExpression *reDay = [NSRegularExpression regularExpressionWithPattern:@"(\\d+)\\s+day" options:0 error:nil];
         NSRegularExpression *reHM = [NSRegularExpression regularExpressionWithPattern:@"(\\d+):(\\d+)" options:0 error:nil];
@@ -2879,8 +2879,8 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.upCard.subLabel.text = secs > 0 ? @"自上次重启以来" : @"";
 
     // 内存（busybox free -k，单位 KB；使用 (total-available)/total 口径，与主流监控一致）
-    NSArray *mems = [memLine componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]
-    NSArray *memClean = [mems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]
+    NSArray *mems = [memLine componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSArray *memClean = [mems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
     // Mem: total used free shared buff/cache available
     if (memClean.count >= 7) {
         double totalKB = [memClean[1] doubleValue];
@@ -2908,8 +2908,8 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     }
 
     // 硬盘
-    NSArray *disks = [diskLine componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]
-    NSArray *diskClean = [disks filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]
+    NSArray *disks = [diskLine componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSArray *diskClean = [disks filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
     if (diskClean.count >= 5) {
         NSString *totalS = diskClean[1];
         NSString *usedS = diskClean[2];
@@ -2929,7 +2929,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
             NSString *monthStr = tp[2];
             if (rxB > 0 || txB > 0) {
                 self.trafficVal.text = [NSString stringWithFormat:@"↓ 下载 %@   ↑ 上传 %@",
-                    [self formatBytes:rxB], [self formatBytes:txB]
+                    [self formatBytes:rxB], [self formatBytes:txB]];
                 self.trafficSub.text = [NSString stringWithFormat:@"%@ 月累计（外网口）", monthStr];
             } else {
                 self.trafficVal.text = @"--";
@@ -2953,7 +2953,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         NSTimeInterval prevTs = 0;
         NSTimeInterval firstTs = 0;   // 最早一条记录（用于判断 IP 未变更时长）
         for (int i = (int)histLines.count - 1; i >= 0; i--) {
-            NSString *ln = [histLines[i] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]
+            NSString *ln = [histLines[i] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
             if (ln.length == 0) continue;
             NSArray *parts = [ln componentsSeparatedByString:@"|"];
             if (parts.count == 2) {
@@ -3028,7 +3028,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
                 NSArray *p = [ln componentsSeparatedByString:@" "];
                 if (p.count >= 4 && [p[2] length] > 0) {
                     [devs addObject:[NSMutableDictionary dictionaryWithDictionary:@{
-                        @"ip": p[2], @"mac": p[1], @"name": p[3]}]
+                        @"ip": p[2], @"mac": p[1], @"name": p[3]}]];
                 }
             }
             // 设备变化通知（工具箱开关开启时）
@@ -3047,7 +3047,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     NSMutableArray *nowMacs = [NSMutableArray array];
     NSMutableDictionary *nameByMac = [NSMutableDictionary dictionary];
     for (NSDictionary *d in nowDevs) {
-        [nowMacs addObject:d[@"mac"]
+        [nowMacs addObject:d[@"mac"]];
         nameByMac[d[@"mac"]] = d[@"name"];
     }
     if (oldMacs && oldMacs.count > 0) {
@@ -3056,7 +3056,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
             if (![oldMacs containsObject:mac]) {
                 NSString *nm = nameByMac[mac] ?: @"设备";
                 if ([nm isEqualToString:@"*"]) nm = @"新设备";
-                [self showDeviceBanner:[NSString stringWithFormat:@"📱 %@ 已连接", nm] detail:[NSString stringWithFormat:@"%@", [self ipForMac:mac inDevs:nowDevs]]
+                [self showDeviceBanner:[NSString stringWithFormat:@"📱 %@ 已连接", nm] detail:[NSString stringWithFormat:@"%@", [self ipForMac:mac inDevs:nowDevs]]];
                 PlayConfirmSound();
             }
         }
@@ -3085,7 +3085,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     dispatch_async(dispatch_get_main_queue(), ^{
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
             message:detail preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleDefault handler:nil]
+        [alert addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
     });
 }
@@ -3129,7 +3129,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
             if (result.length == 0) [result appendString:@"暂无设备"];
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"🔤 设备识别"
                 message:result preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:nil]
+            [alert addAction:[UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:nil]];
             [weakSelf presentViewController:alert animated:YES completion:nil];
             weakSelf.statusLabel.text = @"扫描完成";
             weakSelf.statusLabel.textColor = UIColor.systemGreenColor;
@@ -3255,7 +3255,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]
+    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
     self.title = @"工具箱";
 
     self.scrollView = [UIScrollView new];
@@ -3274,10 +3274,10 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d1 = [UILabel new];
     d1.text = @"检测外网连通、DNS、丢包、延迟、网速";
     d1.font = [UIFont systemFontOfSize:12];
-    d1.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    d1.textColor = UIColor.systemGrayColor;
     d1.frame = CGRectMake(14, 10, w - 28, 18);
     [card1 addSubview:d1];
-    UIButton *b1 = [self makeBtn:@"开始体检" color:[UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]
+    UIButton *b1 = [self makeBtn:@"开始体检" color:[UIColor systemBlueColor]
         frame:CGRectMake(14, 38, w - 28, 40) action:@selector(confirmHealthCheck)];
     [card1 addSubview:b1];
     self.healthResultBox = [[GlassCard alloc] initWithFrame:CGRectMake(16, y + 88, w, 0)];
@@ -3292,7 +3292,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.healthProgress = [UILabel new];
     self.healthProgress.text = @"";
     self.healthProgress.font = [UIFont systemFontOfSize:12];
-    self.healthProgress.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.healthProgress.textColor = UIColor.systemGrayColor;
     self.healthProgress.textAlignment = NSTextAlignmentCenter;
     self.healthProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [card1 addSubview:self.healthProgress];
@@ -3311,7 +3311,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *dSpeed = [UILabel new];
     dSpeed.text = @"一键测试宽带下载/上传速率（约 20 秒）";
     dSpeed.font = [UIFont systemFontOfSize:12];
-    dSpeed.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    dSpeed.textColor = UIColor.systemGrayColor;
     dSpeed.frame = CGRectMake(14, 10, w - 28, 18);
     [speedCard addSubview:dSpeed];
     UIButton *bSpeed = [self makeBtn:@"开始测速" color:[UIColor systemPurpleColor]
@@ -3320,7 +3320,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.speedProgress = [UILabel new];
     self.speedProgress.text = @"";
     self.speedProgress.font = [UIFont systemFontOfSize:12];
-    self.speedProgress.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.speedProgress.textColor = UIColor.systemGrayColor;
     self.speedProgress.textAlignment = NSTextAlignmentCenter;
     self.speedProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [speedCard addSubview:self.speedProgress];
@@ -3347,7 +3347,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d3 = [UILabel new];
     d3.text = @"所有设备连接/断开时横幅+声音提醒";
     d3.font = [UIFont systemFontOfSize:12];
-    d3.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    d3.textColor = UIColor.systemGrayColor;
     d3.frame = CGRectMake(14, 12, w - 100, 18);
     [card3 addSubview:d3];
     UISwitch *sw = [UISwitch new];
@@ -3359,7 +3359,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *note3 = [UILabel new];
     note3.text = @"需保持 App 前台运行才能接收";
     note3.font = [UIFont systemFontOfSize:10];
-    note3.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    note3.textColor = UIColor.systemGrayColor;
     note3.frame = CGRectMake(14, 60, w - 28, 14);
     [card3 addSubview:note3];
     y += 96 + 16;
@@ -3368,7 +3368,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = UIColor.systemGrayColor;
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 30;
@@ -3389,7 +3389,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         [[NSUserDefaults standardUserDefaults] synchronize];
         HapticTap();
         weakSelf.statusLabel.text = toOn ? @"✅ 设备通知已开启" : @"设备通知已关闭";
-        weakSelf.statusLabel.textColor = toOn ? [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1] : [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        weakSelf.statusLabel.textColor = toOn ? [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1] : UIColor.systemGrayColor;
     };
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [self presentViewController:vc animated:NO completion:nil];
@@ -3467,7 +3467,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         else if (inPING && ln.length > 0) pingRes = ln;
         else if (inSPEED && ln.length > 0) {
             double spd = [ln doubleValue];
-            speedRes = [NSString stringWithFormat:@"%@/s", [self fmtSpeed:spd]
+            speedRes = [NSString stringWithFormat:@"%@/s", [self fmtSpeed:spd]];
         }
     }
     [result appendFormat:@"✅ 外网连通：%@\n✅ DNS 解析：%@\n✅ 丢包/延迟：%@\n🚀 测速：%@",
@@ -3482,7 +3482,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     PlayConfirmSound();
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"🔍 体检完成"
         message:result preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:nil]
+    [alert addAction:[UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
     [self layoutResults];
 }
@@ -3634,19 +3634,19 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UINavigationController *nav1 = [[UINavigationController alloc] initWithRootViewController:self.dashboard];
     nav1.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"ESXi"
                                                     image:[UIImage systemImageNamed:@"server.rack"]
-                                            selectedImage:[UIImage systemImageNamed:@"server.rack.fill"]
+                                            selectedImage:[UIImage systemImageNamed:@"server.rack.fill"]];
 
     self.openwrtVC = [OpenWrtVC new];
     UINavigationController *nav2 = [[UINavigationController alloc] initWithRootViewController:self.openwrtVC];
     nav2.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"OpenWrt"
                                                     image:[UIImage systemImageNamed:@"wifi"]
-                                            selectedImage:[UIImage systemImageNamed:@"wifi.fill"]
+                                            selectedImage:[UIImage systemImageNamed:@"wifi.fill"]];
 
     self.toolboxVC = [ToolboxVC new];
     UINavigationController *nav3 = [[UINavigationController alloc] initWithRootViewController:self.toolboxVC];
     nav3.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"工具箱"
                                                     image:[UIImage systemImageNamed:@"wrench.and.screwdriver"]
-                                            selectedImage:[UIImage systemImageNamed:@"wrench.and.screwdriver.fill"]
+                                            selectedImage:[UIImage systemImageNamed:@"wrench.and.screwdriver.fill"]];
 
     self.viewControllers = @[nav1, nav2, nav3];
     [self.dashboard setupBackgroundKeepAlive];
