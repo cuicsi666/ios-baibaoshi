@@ -854,7 +854,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_subLabel];
         _rightLabel = [UILabel new];
         _rightLabel.font = [UIFont systemFontOfSize:10];
-        _rightLabel.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        _rightLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         _rightLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_rightLabel];
     }
@@ -980,8 +980,8 @@ static void PlayConfirmSound(void) {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
         _autoBtn.layer.borderWidth = 0.6;
         _autoBtn.layer.cornerRadius = 6;
-        _autoBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1].CGColor;
-        [_autoBtn setTitleColor:[UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1].CGColor;
+        [_autoBtn setTitleColor:[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1] forState:UIControlStateNormal];
         [_autoBtn addTarget:self action:@selector(autoTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_autoBtn];
         _rebootBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -1033,8 +1033,8 @@ static void PlayConfirmSound(void) {
         [_autoBtn setTitleColor:[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1] forState:UIControlStateNormal];
     } else {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
-        _autoBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1].CGColor;
-        [_autoBtn setTitleColor:[UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1].CGColor;
+        [_autoBtn setTitleColor:[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1] forState:UIControlStateNormal];
     }
 }
 @end
@@ -1106,7 +1106,7 @@ static void PlayConfirmSound(void) {
     [super viewDidLoad];
 
     // 主流简洁背景：iOS 系统分组灰白
-    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
+    self.view.backgroundColor = [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
 
     // 标题（纯文字，状态圆点移到右上角）
     self.title = @"ESXi 监控";
@@ -2099,7 +2099,7 @@ static void PlayConfirmSound(void) {
     UILabel *secTitle = [UILabel new];
     secTitle.text = @"ESXi 连接信息";
     secTitle.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    secTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    secTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     secTitle.frame = CGRectMake(x + 4, y, w, 18);
     [scroll addSubview:secTitle];
     y += 26;
@@ -2131,7 +2131,7 @@ static void PlayConfirmSound(void) {
         UILabel *lb = [UILabel new];
         lb.text = labels[i];
         lb.font = [UIFont systemFontOfSize:11];
-        lb.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        lb.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         lb.frame = CGRectMake(14, ry + 6, w - 28, 14);
         [card addSubview:lb];
         // 输入框（等宽，圆角边框）
@@ -2171,7 +2171,7 @@ static void PlayConfirmSound(void) {
     UILabel *tip = [UILabel new];
     tip.text = @"App 直接连接 ESXi，不经过任何中转服务。\n保存后回到首页自动生效。";
     tip.font = [UIFont systemFontOfSize:12];
-    tip.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    tip.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     tip.numberOfLines = 0;
     tip.frame = CGRectMake(12, 8, w - 24, 42);
     [tipCard addSubview:tip];
@@ -2181,7 +2181,7 @@ static void PlayConfirmSound(void) {
     UILabel *verTitle = [UILabel new];
     verTitle.text = @"📜 版本构建历史";
     verTitle.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    verTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    verTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     verTitle.frame = CGRectMake(x + 4, y, w, 18);
     [scroll addSubview:verTitle];
     y += 26;
@@ -2263,7 +2263,7 @@ static void PlayConfirmSound(void) {
         UILabel *dateLb = [UILabel new];
         dateLb.text = v[@"date"];
         dateLb.font = [UIFont systemFontOfSize:11];
-        dateLb.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        dateLb.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         dateLb.textAlignment = NSTextAlignmentRight;
         dateLb.frame = CGRectMake(w - 90, 8, 76, 18);
         [vCard addSubview:dateLb];
@@ -2446,7 +2446,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         _dlTitle = [UILabel new];
         _dlTitle.text = @"↓ 下载";
         _dlTitle.font = [UIFont systemFontOfSize:11];
-        _dlTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        _dlTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         _dlTitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_dlTitle];
 
@@ -2460,7 +2460,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         _ulTitle = [UILabel new];
         _ulTitle.text = @"↑ 上传";
         _ulTitle.font = [UIFont systemFontOfSize:11];
-        _ulTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        _ulTitle.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         _ulTitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_ulTitle];
 
@@ -2578,7 +2578,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
+    self.view.backgroundColor = [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
     self.title = @"OpenWrt";
 
     // 左上角状态
@@ -2702,7 +2702,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *devSub = [UILabel new];
     devSub.text = @"当前在线设备";
     devSub.font = [UIFont systemFontOfSize:12];
-    devSub.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    devSub.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     devSub.textAlignment = NSTextAlignmentCenter;
     devSub.frame = CGRectMake(12, 46, w - 24, 18);
     [self.deviceBox addSubview:devSub];
@@ -3255,7 +3255,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
+    self.view.backgroundColor = [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
     self.title = @"工具箱";
 
     self.scrollView = [UIScrollView new];
