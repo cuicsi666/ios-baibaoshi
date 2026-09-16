@@ -1,5 +1,6 @@
 // main.m - ESXi Monitor Standalone v3.0.0
 // 零中转：内置 libssh2 直连 ESXi
+#import "BBNeonColors.h"
 // 功能：温度/CPU/内存/存储/网络监控 + VM开关/快照管理/自启 + 温度曲线 + 磁盘预警 + 连接状态 + 操作日志
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
@@ -960,7 +961,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_nameLabel];
         _infoLabel = [UILabel new];
         _infoLabel.font = [UIFont systemFontOfSize:10];
-        _infoLabel.textColor = UIColor.systemGrayColor;
+        _infoLabel.textColor = UIColor.BB_DARK_GRAY;
         [self addSubview:_infoLabel];
         _powerSwitch = [UISwitch new];
         _powerSwitch.transform = CGAffineTransformMakeScale(0.62, 0.62);
@@ -970,9 +971,9 @@ static void PlayConfirmSound(void) {
         _snapBtn.titleLabel.font = [UIFont systemFontOfSize:10];
         [_snapBtn setTitle:@"📸 快照" forState:UIControlStateNormal];
         _snapBtn.layer.borderWidth = 0.6;
-        _snapBtn.layer.borderColor = [UIColor systemBlueColor].CGColor;
+        _snapBtn.layer.borderColor = BB_NEON_BLUE.CGColor;
         _snapBtn.layer.cornerRadius = 6;
-        [_snapBtn setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+        [_snapBtn setTitleColor:BB_NEON_BLUE forState:UIControlStateNormal];
         [_snapBtn addTarget:self action:@selector(snapTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_snapBtn];
         _autoBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -980,8 +981,8 @@ static void PlayConfirmSound(void) {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
         _autoBtn.layer.borderWidth = 0.6;
         _autoBtn.layer.cornerRadius = 6;
-        _autoBtn.layer.borderColor = [UIColor systemGrayColor].CGColor;
-        [_autoBtn setTitleColor:[UIColor systemGrayColor] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [UIColor BB_DARK_GRAY].CGColor;
+        [_autoBtn setTitleColor:[UIColor BB_DARK_GRAY] forState:UIControlStateNormal];
         [_autoBtn addTarget:self action:@selector(autoTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_autoBtn];
         _rebootBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -989,8 +990,8 @@ static void PlayConfirmSound(void) {
         [_rebootBtn setTitle:@"🔄 重启" forState:UIControlStateNormal];
         _rebootBtn.layer.borderWidth = 0.6;
         _rebootBtn.layer.cornerRadius = 6;
-        _rebootBtn.layer.borderColor = [UIColor systemOrangeColor].CGColor;
-        [_rebootBtn setTitleColor:[UIColor systemOrangeColor] forState:UIControlStateNormal];
+        _rebootBtn.layer.borderColor = BB_NEON_ORANGE.CGColor;
+        [_rebootBtn setTitleColor:BB_NEON_ORANGE forState:UIControlStateNormal];
         [_rebootBtn addTarget:self action:@selector(rebootTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_rebootBtn];
     }
@@ -1029,12 +1030,12 @@ static void PlayConfirmSound(void) {
 - (void)setAutoUI:(BOOL)on {
     if (on) {
         [_autoBtn setTitle:@"⚡自启:开" forState:UIControlStateNormal];
-        _autoBtn.layer.borderColor = [UIColor systemGreenColor].CGColor;
-        [_autoBtn setTitleColor:[UIColor systemGreenColor] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = BB_NEON_GREEN.CGColor;
+        [_autoBtn setTitleColor:BB_NEON_GREEN forState:UIControlStateNormal];
     } else {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
-        _autoBtn.layer.borderColor = [UIColor systemGrayColor].CGColor;
-        [_autoBtn setTitleColor:[UIColor systemGrayColor] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [UIColor BB_DARK_GRAY].CGColor;
+        [_autoBtn setTitleColor:[UIColor BB_DARK_GRAY] forState:UIControlStateNormal];
     }
 }
 @end
@@ -1097,9 +1098,9 @@ static void PlayConfirmSound(void) {
 
 - (void)updateStatusDot:(BOOL)online {
     self.connected = online;
-    self.statusDot.backgroundColor = online ? [UIColor systemGreenColor] : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+    self.statusDot.backgroundColor = online ? BB_NEON_GREEN : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
     self.statusDotLabel.text = online ? @"已连接" : @"未连接";
-    self.statusDotLabel.textColor = online ? [UIColor systemGreenColor] : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+    self.statusDotLabel.textColor = online ? BB_NEON_GREEN : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
 }
 
 - (void)viewDidLoad {
@@ -1192,7 +1193,7 @@ static void PlayConfirmSound(void) {
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, 0, w - 32, 44);
     self.statusLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
-    self.statusLabel.textColor = UIColor.systemGrayColor;
+    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
     self.statusLabel.text = @"";
     [statusCard addSubview:self.statusLabel];
     y += 44 + 12;
@@ -1215,20 +1216,20 @@ static void PlayConfirmSound(void) {
     UIButton *shutdownHostBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     shutdownHostBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
     [shutdownHostBtn setTitle:@"⏻ 关机" forState:UIControlStateNormal];
-    [shutdownHostBtn setTitleColor:[UIColor systemRedColor] forState:UIControlStateNormal];
+    [shutdownHostBtn setTitleColor:BB_NEON_RED forState:UIControlStateNormal];
     shutdownHostBtn.layer.cornerRadius = 10;
     shutdownHostBtn.layer.borderWidth = 1;
-    shutdownHostBtn.layer.borderColor = [UIColor systemRedColor].CGColor;
+    shutdownHostBtn.layer.borderColor = BB_NEON_RED.CGColor;
     shutdownHostBtn.frame = CGRectMake(12, 30, (w - 36) / 2, 40);
     [shutdownHostBtn addTarget:self action:@selector(confirmShutdownHost) forControlEvents:UIControlEventTouchUpInside];
     [hostCard addSubview:shutdownHostBtn];
     UIButton *rebootHostBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     rebootHostBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
     [rebootHostBtn setTitle:@"🔄 重启" forState:UIControlStateNormal];
-    [rebootHostBtn setTitleColor:[UIColor systemOrangeColor] forState:UIControlStateNormal];
+    [rebootHostBtn setTitleColor:BB_NEON_ORANGE forState:UIControlStateNormal];
     rebootHostBtn.layer.cornerRadius = 10;
     rebootHostBtn.layer.borderWidth = 1;
-    rebootHostBtn.layer.borderColor = [UIColor systemOrangeColor].CGColor;
+    rebootHostBtn.layer.borderColor = BB_NEON_ORANGE.CGColor;
     rebootHostBtn.frame = CGRectMake(12 + (w - 36) / 2 + 12, 30, (w - 36) / 2, 40);
     [rebootHostBtn addTarget:self action:@selector(confirmRebootHost) forControlEvents:UIControlEventTouchUpInside];
     [hostCard addSubview:rebootHostBtn];
@@ -2494,7 +2495,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     CGContextAddArc(ctx, cx, cy, r, M_PI, 2*M_PI, 0);
     CGContextStrokePath(ctx);
     // 进度
-    CGContextSetStrokeColorWithColor(ctx, [UIColor systemBlueColor].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, BB_NEON_BLUE.CGColor);
     CGContextAddArc(ctx, cx, cy, r, M_PI, M_PI + self.dlRatio * M_PI, 0);
     CGContextStrokePath(ctx);
     // 上传弧线（右半圆，绿色）
@@ -2502,7 +2503,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.92 green:0.94 blue:0.96 alpha:1].CGColor);
     CGContextAddArc(ctx, cx, cy, r, 0, M_PI, 0);
     CGContextStrokePath(ctx);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor systemGreenColor].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, BB_NEON_GREEN.CGColor);
     CGContextAddArc(ctx, cx, cy, r, 0, self.ulRatio * M_PI, 0);
     CGContextStrokePath(ctx);
 }
@@ -2556,15 +2557,15 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)updateStatusDot:(BOOL)online {
     self.connected = online;
-    self.statusDot.backgroundColor = online ? [UIColor systemGreenColor] : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+    self.statusDot.backgroundColor = online ? BB_NEON_GREEN : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
     self.statusDotLabel.text = online ? @"已连接" : @"未连接";
-    self.statusDotLabel.textColor = online ? [UIColor systemGreenColor] : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+    self.statusDotLabel.textColor = online ? BB_NEON_GREEN : [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
 }
 
 - (void)addLog:(NSString *)msg {
     // 操作日志已移除，仅在状态栏显示
     self.statusLabel.text = msg;
-    self.statusLabel.textColor = UIColor.systemGrayColor;
+    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
 }
 
 - (UILabel *)sectionLabelWithTitle:(NSString *)t {
@@ -2676,10 +2677,10 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UIButton *rebootBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     rebootBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
     [rebootBtn setTitle:@"🔄 重启路由器" forState:UIControlStateNormal];
-    [rebootBtn setTitleColor:[UIColor systemOrangeColor] forState:UIControlStateNormal];
+    [rebootBtn setTitleColor:BB_NEON_ORANGE forState:UIControlStateNormal];
     rebootBtn.layer.cornerRadius = 10;
     rebootBtn.layer.borderWidth = 1;
-    rebootBtn.layer.borderColor = [UIColor systemOrangeColor].CGColor;
+    rebootBtn.layer.borderColor = BB_NEON_ORANGE.CGColor;
     rebootBtn.frame = CGRectMake(12, 8, w - 24, 40);
     [rebootBtn addTarget:self action:@selector(confirmRebootWrt) forControlEvents:UIControlEventTouchUpInside];
     [self.hostCard addSubview:rebootBtn];
@@ -2710,10 +2711,10 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UIButton *smartNameBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     smartNameBtn.titleLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
     [smartNameBtn setTitle:@"🔤 智能命名" forState:UIControlStateNormal];
-    [smartNameBtn setTitleColor:[UIColor systemBlueColor] forState:UIControlStateNormal];
+    [smartNameBtn setTitleColor:BB_NEON_BLUE forState:UIControlStateNormal];
     smartNameBtn.layer.cornerRadius = 8;
     smartNameBtn.layer.borderWidth = 1;
-    smartNameBtn.layer.borderColor = [UIColor systemBlueColor].CGColor;
+    smartNameBtn.layer.borderColor = BB_NEON_BLUE.CGColor;
     smartNameBtn.frame = CGRectMake(16, y + 86, w, 36);
     [smartNameBtn addTarget:self action:@selector(smartNameTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:smartNameBtn];
@@ -2724,7 +2725,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = UIColor.systemGrayColor;
+    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 26;
@@ -3274,10 +3275,10 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d1 = [UILabel new];
     d1.text = @"检测外网连通、DNS、丢包、延迟、网速";
     d1.font = [UIFont systemFontOfSize:12];
-    d1.textColor = UIColor.systemGrayColor;
+    d1.textColor = UIColor.BB_DARK_GRAY;
     d1.frame = CGRectMake(14, 10, w - 28, 18);
     [card1 addSubview:d1];
-    UIButton *b1 = [self makeBtn:@"开始体检" color:[UIColor systemBlueColor]
+    UIButton *b1 = [self makeBtn:@"开始体检" color:BB_NEON_BLUE
         frame:CGRectMake(14, 38, w - 28, 40) action:@selector(confirmHealthCheck)];
     [card1 addSubview:b1];
     self.healthResultBox = [[GlassCard alloc] initWithFrame:CGRectMake(16, y + 88, w, 0)];
@@ -3292,7 +3293,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.healthProgress = [UILabel new];
     self.healthProgress.text = @"";
     self.healthProgress.font = [UIFont systemFontOfSize:12];
-    self.healthProgress.textColor = UIColor.systemGrayColor;
+    self.healthProgress.textColor = UIColor.BB_DARK_GRAY;
     self.healthProgress.textAlignment = NSTextAlignmentCenter;
     self.healthProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [card1 addSubview:self.healthProgress];
@@ -3311,7 +3312,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *dSpeed = [UILabel new];
     dSpeed.text = @"一键测试宽带下载/上传速率（约 20 秒）";
     dSpeed.font = [UIFont systemFontOfSize:12];
-    dSpeed.textColor = UIColor.systemGrayColor;
+    dSpeed.textColor = UIColor.BB_DARK_GRAY;
     dSpeed.frame = CGRectMake(14, 10, w - 28, 18);
     [speedCard addSubview:dSpeed];
     UIButton *bSpeed = [self makeBtn:@"开始测速" color:[UIColor systemPurpleColor]
@@ -3320,7 +3321,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.speedProgress = [UILabel new];
     self.speedProgress.text = @"";
     self.speedProgress.font = [UIFont systemFontOfSize:12];
-    self.speedProgress.textColor = UIColor.systemGrayColor;
+    self.speedProgress.textColor = UIColor.BB_DARK_GRAY;
     self.speedProgress.textAlignment = NSTextAlignmentCenter;
     self.speedProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [speedCard addSubview:self.speedProgress];
@@ -3347,7 +3348,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d3 = [UILabel new];
     d3.text = @"所有设备连接/断开时横幅+声音提醒";
     d3.font = [UIFont systemFontOfSize:12];
-    d3.textColor = UIColor.systemGrayColor;
+    d3.textColor = UIColor.BB_DARK_GRAY;
     d3.frame = CGRectMake(14, 12, w - 100, 18);
     [card3 addSubview:d3];
     UISwitch *sw = [UISwitch new];
@@ -3359,7 +3360,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *note3 = [UILabel new];
     note3.text = @"需保持 App 前台运行才能接收";
     note3.font = [UIFont systemFontOfSize:10];
-    note3.textColor = UIColor.systemGrayColor;
+    note3.textColor = UIColor.BB_DARK_GRAY;
     note3.frame = CGRectMake(14, 60, w - 28, 14);
     [card3 addSubview:note3];
     y += 96 + 16;
@@ -3368,7 +3369,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = UIColor.systemGrayColor;
+    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 30;
@@ -3389,7 +3390,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         [[NSUserDefaults standardUserDefaults] synchronize];
         HapticTap();
         weakSelf.statusLabel.text = toOn ? @"✅ 设备通知已开启" : @"设备通知已关闭";
-        weakSelf.statusLabel.textColor = toOn ? [UIColor systemGreenColor] : UIColor.systemGrayColor;
+        weakSelf.statusLabel.textColor = toOn ? BB_NEON_GREEN : UIColor.BB_DARK_GRAY;
     };
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [self presentViewController:vc animated:NO completion:nil];
