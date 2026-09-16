@@ -655,7 +655,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_thumbView];
         // 箭头
         _arrowIcon = [[UIImageView alloc] initWithImage:[UIImage systemImageNamed:@"arrow.right"]];
-        _arrowIcon.tintColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
+        _arrowIcon.tintColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
         _arrowIcon.frame = CGRectMake(0, 0, 20, 20);
         _arrowIcon.center = CGPointMake(_thumbView.bounds.size.width / 2, _thumbView.bounds.size.height / 2);
         [_thumbView addSubview:_arrowIcon];
@@ -691,7 +691,7 @@ static void PlayConfirmSound(void) {
         _tipLabel.alpha = 1.0 - progress;
         // 箭头变色
         if (progress > 0.7) _arrowIcon.tintColor = UIColor.whiteColor;
-        else _arrowIcon.tintColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
+        else _arrowIcon.tintColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
     } else if (g.state == UIGestureRecognizerStateEnded ||
                g.state == UIGestureRecognizerStateCancelled ||
                g.state == UIGestureRecognizerStateFailed) {
@@ -702,7 +702,7 @@ static void PlayConfirmSound(void) {
             _confirmed = YES;
             [UIView animateWithDuration:0.25 animations:^{
                 _thumbView.frame = CGRectMake(maxX, 4, thumbW, thumbW);
-                _trackView.backgroundColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+                _trackView.backgroundColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
                 _tipLabel.alpha = 0;
             } completion:^(BOOL finished) {
                 if (self.onConfirm) self.onConfirm();
@@ -854,7 +854,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_subLabel];
         _rightLabel = [UILabel new];
         _rightLabel.font = [UIFont systemFontOfSize:10];
-        _rightLabel.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+        _rightLabel.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
         _rightLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_rightLabel];
     }
@@ -893,11 +893,11 @@ static void PlayConfirmSound(void) {
         [self addSubview:_valueLabel];
         _pctLabel = [UILabel new];
         _pctLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-        _pctLabel.textColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+        _pctLabel.textColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
         _pctLabel.textAlignment = NSTextAlignmentRight;
         [self addSubview:_pctLabel];
         _bar = [UIProgressView new];
-        _bar.progressTintColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+        _bar.progressTintColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
         _bar.trackTintColor = [UIColor colorWithWhite:0.9 alpha:0.5];
         _bar.layer.cornerRadius = 3;
         _bar.clipsToBounds = YES;
@@ -917,14 +917,14 @@ static void PlayConfirmSound(void) {
     _bar.progress = p / 100.0;
     _pctLabel.text = [NSString stringWithFormat:@"%.0f%%", p];
     if (p >= 90) {
-        _bar.progressTintColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
-        _pctLabel.textColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+        _bar.progressTintColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+        _pctLabel.textColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
     } else if (p >= 75) {
-        _bar.progressTintColor = [UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
-        _pctLabel.textColor = [UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
+        _bar.progressTintColor = [[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
+        _pctLabel.textColor = [[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
     } else {
-        _bar.progressTintColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
-        _pctLabel.textColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+        _bar.progressTintColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+        _pctLabel.textColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
     }
 }
 @end
@@ -960,7 +960,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_nameLabel];
         _infoLabel = [UILabel new];
         _infoLabel.font = [UIFont systemFontOfSize:10];
-        _infoLabel.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        _infoLabel.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
         [self addSubview:_infoLabel];
         _powerSwitch = [UISwitch new];
         _powerSwitch.transform = CGAffineTransformMakeScale(0.62, 0.62);
@@ -970,9 +970,9 @@ static void PlayConfirmSound(void) {
         _snapBtn.titleLabel.font = [UIFont systemFontOfSize:10];
         [_snapBtn setTitle:@"📸 快照" forState:UIControlStateNormal];
         _snapBtn.layer.borderWidth = 0.6;
-        _snapBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]].CGColor;
+        _snapBtn.layer.borderColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]].CGColor;
         _snapBtn.layer.cornerRadius = 6;
-        [_snapBtn setTitleColor:[UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]] forState:UIControlStateNormal];
+        [_snapBtn setTitleColor:[[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]] forState:UIControlStateNormal];
         [_snapBtn addTarget:self action:@selector(snapTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_snapBtn];
         _autoBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -980,8 +980,8 @@ static void PlayConfirmSound(void) {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
         _autoBtn.layer.borderWidth = 0.6;
         _autoBtn.layer.cornerRadius = 6;
-        _autoBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]].CGColor;
-        [_autoBtn setTitleColor:[UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]].CGColor;
+        [_autoBtn setTitleColor:[[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]] forState:UIControlStateNormal];
         [_autoBtn addTarget:self action:@selector(autoTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_autoBtn];
         _rebootBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -989,8 +989,8 @@ static void PlayConfirmSound(void) {
         [_rebootBtn setTitle:@"🔄 重启" forState:UIControlStateNormal];
         _rebootBtn.layer.borderWidth = 0.6;
         _rebootBtn.layer.cornerRadius = 6;
-        _rebootBtn.layer.borderColor = [UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]].CGColor;
-        [_rebootBtn setTitleColor:[UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]] forState:UIControlStateNormal];
+        _rebootBtn.layer.borderColor = [[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]].CGColor;
+        [_rebootBtn setTitleColor:[[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]] forState:UIControlStateNormal];
         [_rebootBtn addTarget:self action:@selector(rebootTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_rebootBtn];
     }
@@ -1029,12 +1029,12 @@ static void PlayConfirmSound(void) {
 - (void)setAutoUI:(BOOL)on {
     if (on) {
         [_autoBtn setTitle:@"⚡自启:开" forState:UIControlStateNormal];
-        _autoBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]].CGColor;
-        [_autoBtn setTitleColor:[UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]].CGColor;
+        [_autoBtn setTitleColor:[[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] forState:UIControlStateNormal];
     } else {
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
-        _autoBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]].CGColor;
-        [_autoBtn setTitleColor:[UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]] forState:UIControlStateNormal];
+        _autoBtn.layer.borderColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]].CGColor;
+        [_autoBtn setTitleColor:[[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]] forState:UIControlStateNormal];
     }
 }
 @end
@@ -1090,23 +1090,23 @@ static void PlayConfirmSound(void) {
 
 - (UIColor *)tempColor:(NSNumber *)temp {
     double t = temp ? temp.doubleValue : 0;
-    if (t > 60) return [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
-    if (t >= 55) return [UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
-    return [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+    if (t > 60) return [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    if (t >= 55) return [[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
+    return [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
 }
 
 - (void)updateStatusDot:(BOOL)online {
     self.connected = online;
-    self.statusDot.backgroundColor = online ? [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDot.backgroundColor = online ? [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
     self.statusDotLabel.text = online ? @"已连接" : @"未连接";
-    self.statusDotLabel.textColor = online ? [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDotLabel.textColor = online ? [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     // 主流简洁背景：iOS 系统分组灰白
-    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
+    self.view.backgroundColor = [[colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
 
     // 标题（纯文字，状态圆点移到右上角）
     self.title = @"ESXi 监控";
@@ -1115,13 +1115,13 @@ static void PlayConfirmSound(void) {
     UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 40)];
     self.statusDot = [[UIView alloc] initWithFrame:CGRectMake(0, 13, 14, 14)];
     self.statusDot.layer.cornerRadius = 7;
-    self.statusDot.backgroundColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDot.backgroundColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
     [dotView addSubview:self.statusDot];
     self.statusDotLabel = [UILabel new];
     self.statusDotLabel.frame = CGRectMake(18, 9, 58, 22);
     self.statusDotLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
     self.statusDotLabel.text = @"未连接";
-    self.statusDotLabel.textColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDotLabel.textColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
     [dotView addSubview:self.statusDotLabel];
     UIBarButtonItem *statusItem = [[UIBarButtonItem alloc] initWithCustomView:dotView];
     self.navigationItem.leftBarButtonItem = statusItem;
@@ -1192,7 +1192,7 @@ static void PlayConfirmSound(void) {
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, 0, w - 32, 44);
     self.statusLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     self.statusLabel.text = @"";
     [statusCard addSubview:self.statusLabel];
     y += 44 + 12;
@@ -1215,20 +1215,20 @@ static void PlayConfirmSound(void) {
     UIButton *shutdownHostBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     shutdownHostBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
     [shutdownHostBtn setTitle:@"⏻ 关机" forState:UIControlStateNormal];
-    [shutdownHostBtn setTitleColor:[UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]] forState:UIControlStateNormal];
+    [shutdownHostBtn setTitleColor:[[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]] forState:UIControlStateNormal];
     shutdownHostBtn.layer.cornerRadius = 10;
     shutdownHostBtn.layer.borderWidth = 1;
-    shutdownHostBtn.layer.borderColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]].CGColor;
+    shutdownHostBtn.layer.borderColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]].CGColor;
     shutdownHostBtn.frame = CGRectMake(12, 30, (w - 36) / 2, 40);
     [shutdownHostBtn addTarget:self action:@selector(confirmShutdownHost) forControlEvents:UIControlEventTouchUpInside];
     [hostCard addSubview:shutdownHostBtn];
     UIButton *rebootHostBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     rebootHostBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
     [rebootHostBtn setTitle:@"🔄 重启" forState:UIControlStateNormal];
-    [rebootHostBtn setTitleColor:[UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]] forState:UIControlStateNormal];
+    [rebootHostBtn setTitleColor:[[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]] forState:UIControlStateNormal];
     rebootHostBtn.layer.cornerRadius = 10;
     rebootHostBtn.layer.borderWidth = 1;
-    rebootHostBtn.layer.borderColor = [UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]].CGColor;
+    rebootHostBtn.layer.borderColor = [[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]].CGColor;
     rebootHostBtn.frame = CGRectMake(12 + (w - 36) / 2 + 12, 30, (w - 36) / 2, 40);
     [rebootHostBtn addTarget:self action:@selector(confirmRebootHost) forControlEvents:UIControlEventTouchUpInside];
     [hostCard addSubview:rebootHostBtn];
@@ -1306,9 +1306,9 @@ static void PlayConfirmSound(void) {
     if (self.lastUpdateTime > 0 && (nowT2 - self.lastUpdateTime) > 3.0) {
         [self updateStatusDot:NO];
         self.statusLabel.text = @"⚠️ 连接断开，无法获取数据";
-        self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+        self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
         self.upCard.rightLabel.text = @"连接已断开";
-        self.upCard.rightLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+        self.upCard.rightLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
     }
     [self doRefresh:NO];
 }
@@ -1379,7 +1379,7 @@ static void PlayConfirmSound(void) {
                 weakSelf.lastUpdateTime = nowT;
                 [weakSelf updateStatusDot:YES];
                 [weakSelf render:d];
-                weakSelf.upCard.rightLabel.textColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+                weakSelf.upCard.rightLabel.textColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
                 // 恢复连接：清掉断连提示（statusLabel 交由 render 正常逻辑处理）
                 if ([weakSelf.statusLabel.text containsString:@"连接断开"]) {
                     weakSelf.statusLabel.text = @"";
@@ -1388,9 +1388,9 @@ static void PlayConfirmSound(void) {
                 [weakSelf updateStatusDot:NO];
                 // 断连反馈：状态文字 + 运行时间卡片右侧红字提示
                 weakSelf.statusLabel.text = @"⚠️ 连接断开，无法获取数据";
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 weakSelf.upCard.rightLabel.text = @"连接已断开";
-                weakSelf.upCard.rightLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.upCard.rightLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
             }
         });
     });
@@ -1514,7 +1514,7 @@ static void PlayConfirmSound(void) {
     }
     if (ds1pct >= 90 || ds2pct >= 90) {
         self.statusLabel.text = @"⚠️ 磁盘空间超过 90%，请及时清理！";
-        self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+        self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
     }
 
     // VM 列表
@@ -1627,7 +1627,7 @@ static void PlayConfirmSound(void) {
 - (void)doHostOp:(BOOL)shutdown {
     NSString *opName = shutdown ? @"关机" : @"重启";
     self.statusLabel.text = [NSString stringWithFormat:@"主机%@中…", opName];
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     [self addLog:[NSString stringWithFormat:@"主机%@中…", opName]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -1644,11 +1644,11 @@ static void PlayConfirmSound(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"主机%@失败：%@", opName, opErr];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"❌ 主机%@失败：%@", opName, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"主机%@指令已发送", opName];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"✅ 主机%@指令已发送", opName]];
             }
             [weakSelf refreshNow];
@@ -1696,7 +1696,7 @@ static void PlayConfirmSound(void) {
 
 - (void)doRebootVM:(NSString *)vmId name:(NSString *)name {
     self.statusLabel.text = @"重启中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     [self addLog:[NSString stringWithFormat:@"重启虚拟机 %@…", name]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -1712,11 +1712,11 @@ static void PlayConfirmSound(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"重启失败：%@", opErr];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 重启失败：%@", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ 重启成功", name];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 重启成功", name]];
             }
             [weakSelf refreshNow];
@@ -1739,7 +1739,7 @@ static void PlayConfirmSound(void) {
 
 - (void)doShutdownVM:(NSString *)vmId name:(NSString *)name {
     self.statusLabel.text = @"关机中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     [self addLog:[NSString stringWithFormat:@"关闭虚拟机 %@…", name]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -1755,11 +1755,11 @@ static void PlayConfirmSound(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"关机失败：%@", opErr];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 关机失败：%@", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ 已关机", name];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 已关机", name]];
             }
             [weakSelf refreshNow];
@@ -1776,7 +1776,7 @@ static void PlayConfirmSound(void) {
 
 - (void)doToggleVM:(NSString *)vmId on:(BOOL)on name:(NSString *)name {
     self.statusLabel.text = on ? @"开机中…" : @"关机中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     [self addLog:[NSString stringWithFormat:@"%@ 虚拟机 %@…", on ? @"开机" : @"关机", name]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -1794,11 +1794,11 @@ static void PlayConfirmSound(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@失败：%@", on ? @"开机" : @"关机", opErr];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ %@ 失败：%@", on ? @"开机" : @"关机", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ %@ 成功", on ? @"开机" : @"关机", name];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ %@ 成功", on ? @"开机" : @"关机", name]];
             }
             [weakSelf refreshNow];
@@ -1877,7 +1877,7 @@ static void PlayConfirmSound(void) {
 
 - (void)doSnapshot:(NSString *)vmId name:(NSString *)name snapName:(NSString *)snapName {
     self.statusLabel.text = @"快照创建中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     [self addLog:[NSString stringWithFormat:@"快照 %@ 创建中…", snapName]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -1894,11 +1894,11 @@ static void PlayConfirmSound(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"快照失败：%@", opErr];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 快照失败：%@", name, opErr]];
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"快照 %@ 创建成功", snapName];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 快照创建成功（%@）", name, snapName]];
             }
             [weakSelf refreshNow];
@@ -1944,7 +1944,7 @@ static void PlayConfirmSound(void) {
 
 - (void)runSOAPOp:(NSString *)xml success:(NSString *)succ fail:(NSString *)fl {
     self.statusLabel.text = @"操作中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         NSString *host = SGet(@"esxi_host", @"6.6.6.149");
@@ -1956,11 +1956,11 @@ static void PlayConfirmSound(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (opErr) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@：%@", fl, opErr];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"%@：%@", fl, opErr]];
             } else {
                 weakSelf.statusLabel.text = succ;
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
                 [weakSelf addLog:succ];
             }
             [weakSelf refreshNow];
@@ -1985,7 +1985,7 @@ static void PlayConfirmSound(void) {
 - (void)setAutoStart:(NSString *)vmId on:(BOOL)on {
     NSString *vmName = [self vmName:vmId];
     self.statusLabel.text = on ? @"开启自启中…" : @"关闭自启中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     [self addLog:[NSString stringWithFormat:@"%@ %@ 开机自启…", on ? @"开启" : @"关闭", vmName]];
     __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
@@ -2004,14 +2004,14 @@ static void PlayConfirmSound(void) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (err && err.length > 0) {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"自启设置失败：%@", err];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"❌ %@ 自启设置失败：%@", vmName, err]];
                 for (VMRowView *row in weakSelf.vmRows) {
                     if ([row.vmId isEqualToString:vmId]) { [row setAutoUI:!on]; break; }
                 }
             } else {
                 weakSelf.statusLabel.text = [NSString stringWithFormat:@"%@ %@ 开机自启%@", on ? @"已开启" : @"已关闭", vmName, on ? @"" : @""];
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
                 [weakSelf addLog:[NSString stringWithFormat:@"✅ %@ 开机自启已%@", vmName, on ? @"开启" : @"关闭"]];
                 for (VMRowView *row in weakSelf.vmRows) {
                     if ([row.vmId isEqualToString:vmId]) { [row setAutoUI:on]; break; }
@@ -2099,7 +2099,7 @@ static void PlayConfirmSound(void) {
     UILabel *secTitle = [UILabel new];
     secTitle.text = @"ESXi 连接信息";
     secTitle.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    secTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+    secTitle.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
     secTitle.frame = CGRectMake(x + 4, y, w, 18);
     [scroll addSubview:secTitle];
     y += 26;
@@ -2131,7 +2131,7 @@ static void PlayConfirmSound(void) {
         UILabel *lb = [UILabel new];
         lb.text = labels[i];
         lb.font = [UIFont systemFontOfSize:11];
-        lb.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+        lb.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
         lb.frame = CGRectMake(14, ry + 6, w - 28, 14);
         [card addSubview:lb];
         // 输入框（等宽，圆角边框）
@@ -2171,7 +2171,7 @@ static void PlayConfirmSound(void) {
     UILabel *tip = [UILabel new];
     tip.text = @"App 直接连接 ESXi，不经过任何中转服务。\n保存后回到首页自动生效。";
     tip.font = [UIFont systemFontOfSize:12];
-    tip.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+    tip.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
     tip.numberOfLines = 0;
     tip.frame = CGRectMake(12, 8, w - 24, 42);
     [tipCard addSubview:tip];
@@ -2181,7 +2181,7 @@ static void PlayConfirmSound(void) {
     UILabel *verTitle = [UILabel new];
     verTitle.text = @"📜 版本构建历史";
     verTitle.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    verTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+    verTitle.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
     verTitle.frame = CGRectMake(x + 4, y, w, 18);
     [scroll addSubview:verTitle];
     y += 26;
@@ -2257,13 +2257,13 @@ static void PlayConfirmSound(void) {
         UILabel *verLb = [UILabel new];
         verLb.text = v[@"ver"];
         verLb.font = [UIFont systemFontOfSize:14 weight:UIFontWeightBold];
-        verLb.textColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
+        verLb.textColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
         verLb.frame = CGRectMake(14, 8, 80, 20);
         [vCard addSubview:verLb];
         UILabel *dateLb = [UILabel new];
         dateLb.text = v[@"date"];
         dateLb.font = [UIFont systemFontOfSize:11];
-        dateLb.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+        dateLb.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
         dateLb.textAlignment = NSTextAlignmentRight;
         dateLb.frame = CGRectMake(w - 90, 8, 76, 18);
         [vCard addSubview:dateLb];
@@ -2446,28 +2446,28 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         _dlTitle = [UILabel new];
         _dlTitle.text = @"↓ 下载";
         _dlTitle.font = [UIFont systemFontOfSize:11];
-        _dlTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+        _dlTitle.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
         _dlTitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_dlTitle];
 
         _dlLabel = [UILabel new];
         _dlLabel.text = @"--";
         _dlLabel.font = [UIFont systemFontOfSize:22 weight:UIFontWeightBold];
-        _dlLabel.textColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
+        _dlLabel.textColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
         _dlLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_dlLabel];
 
         _ulTitle = [UILabel new];
         _ulTitle.text = @"↑ 上传";
         _ulTitle.font = [UIFont systemFontOfSize:11];
-        _ulTitle.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+        _ulTitle.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
         _ulTitle.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_ulTitle];
 
         _ulLabel = [UILabel new];
         _ulLabel.text = @"--";
         _ulLabel.font = [UIFont systemFontOfSize:22 weight:UIFontWeightBold];
-        _ulLabel.textColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+        _ulLabel.textColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
         _ulLabel.textAlignment = NSTextAlignmentCenter;
         [self addSubview:_ulLabel];
     }
@@ -2494,7 +2494,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     CGContextAddArc(ctx, cx, cy, r, M_PI, 2*M_PI, 0);
     CGContextStrokePath(ctx);
     // 进度
-    CGContextSetStrokeColorWithColor(ctx, [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]].CGColor);
     CGContextAddArc(ctx, cx, cy, r, M_PI, M_PI + self.dlRatio * M_PI, 0);
     CGContextStrokePath(ctx);
     // 上传弧线（右半圆，绿色）
@@ -2502,7 +2502,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.92 green:0.94 blue:0.96 alpha:1].CGColor);
     CGContextAddArc(ctx, cx, cy, r, 0, M_PI, 0);
     CGContextStrokePath(ctx);
-    CGContextSetStrokeColorWithColor(ctx, [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]].CGColor);
     CGContextAddArc(ctx, cx, cy, r, 0, self.ulRatio * M_PI, 0);
     CGContextStrokePath(ctx);
 }
@@ -2549,22 +2549,22 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (UIColor *)tempColor:(NSNumber *)temp {
     double t = temp ? temp.doubleValue : 0;
-    if (t > 75) return [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
-    if (t >= 65) return [UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
-    return [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+    if (t > 75) return [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    if (t >= 65) return [[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]];
+    return [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
 }
 
 - (void)updateStatusDot:(BOOL)online {
     self.connected = online;
-    self.statusDot.backgroundColor = online ? [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDot.backgroundColor = online ? [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
     self.statusDotLabel.text = online ? @"已连接" : @"未连接";
-    self.statusDotLabel.textColor = online ? [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDotLabel.textColor = online ? [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
 }
 
 - (void)addLog:(NSString *)msg {
     // 操作日志已移除，仅在状态栏显示
     self.statusLabel.text = msg;
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
 }
 
 - (UILabel *)sectionLabelWithTitle:(NSString *)t {
@@ -2578,20 +2578,20 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
+    self.view.backgroundColor = [[colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
     self.title = @"OpenWrt";
 
     // 左上角状态
     UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 40)];
     self.statusDot = [[UIView alloc] initWithFrame:CGRectMake(0, 13, 14, 14)];
     self.statusDot.layer.cornerRadius = 7;
-    self.statusDot.backgroundColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDot.backgroundColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
     [dotView addSubview:self.statusDot];
     self.statusDotLabel = [UILabel new];
     self.statusDotLabel.frame = CGRectMake(18, 9, 58, 22);
     self.statusDotLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
     self.statusDotLabel.text = @"未连接";
-    self.statusDotLabel.textColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+    self.statusDotLabel.textColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
     [dotView addSubview:self.statusDotLabel];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:dotView];
 
@@ -2676,10 +2676,10 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UIButton *rebootBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     rebootBtn.titleLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
     [rebootBtn setTitle:@"🔄 重启路由器" forState:UIControlStateNormal];
-    [rebootBtn setTitleColor:[UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]] forState:UIControlStateNormal];
+    [rebootBtn setTitleColor:[[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]] forState:UIControlStateNormal];
     rebootBtn.layer.cornerRadius = 10;
     rebootBtn.layer.borderWidth = 1;
-    rebootBtn.layer.borderColor = [UIColor [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]].CGColor;
+    rebootBtn.layer.borderColor = [[colorWithRed:1.00 green:0.60 blue:0.10 alpha:1]].CGColor;
     rebootBtn.frame = CGRectMake(12, 8, w - 24, 40);
     [rebootBtn addTarget:self action:@selector(confirmRebootWrt) forControlEvents:UIControlEventTouchUpInside];
     [self.hostCard addSubview:rebootBtn];
@@ -2695,14 +2695,14 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.devCountLabel = [UILabel new];
     self.devCountLabel.text = @"--";
     self.devCountLabel.font = [UIFont systemFontOfSize:28 weight:UIFontWeightBold];
-    self.devCountLabel.textColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
+    self.devCountLabel.textColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
     self.devCountLabel.textAlignment = NSTextAlignmentCenter;
     self.devCountLabel.frame = CGRectMake(12, 8, w - 24, 34);
     [self.deviceBox addSubview:self.devCountLabel];
     UILabel *devSub = [UILabel new];
     devSub.text = @"当前在线设备";
     devSub.font = [UIFont systemFontOfSize:12];
-    devSub.textColor = [UIColor [UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
+    devSub.textColor = [[colorWithRed:0.55 green:0.65 blue:0.75 alpha:1]];
     devSub.textAlignment = NSTextAlignmentCenter;
     devSub.frame = CGRectMake(12, 46, w - 24, 18);
     [self.deviceBox addSubview:devSub];
@@ -2710,10 +2710,10 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UIButton *smartNameBtn = [UIButton buttonWithType:UIButtonTypeSystem];
     smartNameBtn.titleLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
     [smartNameBtn setTitle:@"🔤 智能命名" forState:UIControlStateNormal];
-    [smartNameBtn setTitleColor:[UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]] forState:UIControlStateNormal];
+    [smartNameBtn setTitleColor:[[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]] forState:UIControlStateNormal];
     smartNameBtn.layer.cornerRadius = 8;
     smartNameBtn.layer.borderWidth = 1;
-    smartNameBtn.layer.borderColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]].CGColor;
+    smartNameBtn.layer.borderColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]].CGColor;
     smartNameBtn.frame = CGRectMake(16, y + 86, w, 36);
     [smartNameBtn addTarget:self action:@selector(smartNameTapped) forControlEvents:UIControlEventTouchUpInside];
     [self.scrollView addSubview:smartNameBtn];
@@ -2724,7 +2724,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 26;
@@ -2780,11 +2780,11 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
                 weakSelf.lastUpdateTime = nowT;
                 [weakSelf updateStatusDot:YES];
                 [weakSelf parseAndRender:out];
-                weakSelf.upCard.rightLabel.textColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+                weakSelf.upCard.rightLabel.textColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
             } else {
                 [weakSelf updateStatusDot:NO];
                 weakSelf.upCard.rightLabel.text = @"连接已断开";
-                weakSelf.upCard.rightLabel.textColor = [UIColor [UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
+                weakSelf.upCard.rightLabel.textColor = [[colorWithRed:1.00 green:0.25 blue:0.30 alpha:1]];
             }
         });
     });
@@ -3110,7 +3110,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!out) {
                 weakSelf.statusLabel.text = @"扫描失败";
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 return;
             }
             // 解析设备，按 MAC 前缀识别厂商
@@ -3132,7 +3132,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
             [alert addAction:[UIAlertAction actionWithTitle:@"好" style:UIAlertActionStyleDefault handler:nil]];
             [weakSelf presentViewController:alert animated:YES completion:nil];
             weakSelf.statusLabel.text = @"扫描完成";
-            weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
+            weakSelf.statusLabel.textColor = [UIColor [colorWithRed:0.25 green:0.90 blue:0.50 alpha:1];
         });
     });
 }
@@ -3255,7 +3255,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
+    self.view.backgroundColor = [[colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]];
     self.title = @"工具箱";
 
     self.scrollView = [UIScrollView new];
@@ -3274,10 +3274,10 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d1 = [UILabel new];
     d1.text = @"检测外网连通、DNS、丢包、延迟、网速";
     d1.font = [UIFont systemFontOfSize:12];
-    d1.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    d1.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     d1.frame = CGRectMake(14, 10, w - 28, 18);
     [card1 addSubview:d1];
-    UIButton *b1 = [self makeBtn:@"开始体检" color:[UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]]
+    UIButton *b1 = [self makeBtn:@"开始体检" color:[[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]]
         frame:CGRectMake(14, 38, w - 28, 40) action:@selector(confirmHealthCheck)];
     [card1 addSubview:b1];
     self.healthResultBox = [[GlassCard alloc] initWithFrame:CGRectMake(16, y + 88, w, 0)];
@@ -3292,13 +3292,13 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.healthProgress = [UILabel new];
     self.healthProgress.text = @"";
     self.healthProgress.font = [UIFont systemFontOfSize:12];
-    self.healthProgress.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.healthProgress.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     self.healthProgress.textAlignment = NSTextAlignmentCenter;
     self.healthProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [card1 addSubview:self.healthProgress];
     self.healthBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
     self.healthBar.frame = CGRectMake(14, 98, w - 28, 4);
-    self.healthBar.progressTintColor = [UIColor [UIColor colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
+    self.healthBar.progressTintColor = [[colorWithRed:0.40 green:0.75 blue:1.00 alpha:1]];
     self.healthBar.trackTintColor = [UIColor colorWithRed:0.92 green:0.94 blue:0.96 alpha:1];
     self.healthBar.progress = 0;
     [card1 addSubview:self.healthBar];
@@ -3311,7 +3311,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *dSpeed = [UILabel new];
     dSpeed.text = @"一键测试宽带下载/上传速率（约 20 秒）";
     dSpeed.font = [UIFont systemFontOfSize:12];
-    dSpeed.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    dSpeed.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     dSpeed.frame = CGRectMake(14, 10, w - 28, 18);
     [speedCard addSubview:dSpeed];
     UIButton *bSpeed = [self makeBtn:@"开始测速" color:[UIColor systemPurpleColor]
@@ -3320,7 +3320,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.speedProgress = [UILabel new];
     self.speedProgress.text = @"";
     self.speedProgress.font = [UIFont systemFontOfSize:12];
-    self.speedProgress.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.speedProgress.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     self.speedProgress.textAlignment = NSTextAlignmentCenter;
     self.speedProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [speedCard addSubview:self.speedProgress];
@@ -3347,7 +3347,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d3 = [UILabel new];
     d3.text = @"所有设备连接/断开时横幅+声音提醒";
     d3.font = [UIFont systemFontOfSize:12];
-    d3.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    d3.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     d3.frame = CGRectMake(14, 12, w - 100, 18);
     [card3 addSubview:d3];
     UISwitch *sw = [UISwitch new];
@@ -3359,7 +3359,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *note3 = [UILabel new];
     note3.text = @"需保持 App 前台运行才能接收";
     note3.font = [UIFont systemFontOfSize:10];
-    note3.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    note3.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     note3.frame = CGRectMake(14, 60, w - 28, 14);
     [card3 addSubview:note3];
     y += 96 + 16;
@@ -3368,7 +3368,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 30;
@@ -3389,7 +3389,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         [[NSUserDefaults standardUserDefaults] synchronize];
         HapticTap();
         weakSelf.statusLabel.text = toOn ? @"✅ 设备通知已开启" : @"设备通知已关闭";
-        weakSelf.statusLabel.textColor = toOn ? [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : UIColor.[UIColor colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
+        weakSelf.statusLabel.textColor = toOn ? [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]] : [UIColor [colorWithRed:0.55 green:0.65 blue:0.75 alpha:1];
     };
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [self presentViewController:vc animated:NO completion:nil];
@@ -3414,7 +3414,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     if (self.running) return;
     self.running = YES;
     self.statusLabel.text = @"体检中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     self.healthProgress.text = @"准备中…（剩余 25 秒）";
     self.healthBar.progress = 0;
     self.healthElapsed = 0;
@@ -3432,7 +3432,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
             weakSelf.healthBar.progress = 1.0;
             if (!out) {
                 weakSelf.statusLabel.text = @"体检失败：无法连接路由器";
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 weakSelf.healthProgress.text = @"";
                 return;
             }
@@ -3477,7 +3477,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.healthResultBox.frame = CGRectMake(16, self.healthResultBox.frame.origin.y, self.view.bounds.size.width - 32, 110);
     self.healthResultBox.hidden = NO;
     self.statusLabel.text = @"体检完成";
-    self.statusLabel.textColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+    self.statusLabel.textColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
     self.healthProgress.text = @"";
     PlayConfirmSound();
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"🔍 体检完成"
@@ -3510,7 +3510,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     if (self.running) return;
     self.running = YES;
     self.statusLabel.text = @"测速中…";
-    self.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
+    self.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.60 blue:0.10 alpha:1];
     self.speedProgress.text = @"准备中…（剩余 22 秒）";
     self.speedBar.progress = 0;
     self.speedBar.hidden = NO;
@@ -3531,7 +3531,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
             weakSelf.speedBar.progress = 1.0;
             if (!out) {
                 weakSelf.statusLabel.text = @"测速失败";
-                weakSelf.statusLabel.textColor = UIColor.[UIColor colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
+                weakSelf.statusLabel.textColor = [UIColor [colorWithRed:1.00 green:0.25 blue:0.30 alpha:1];
                 return;
             }
             [weakSelf renderSpeed:out];
@@ -3580,7 +3580,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.speedBox.frame = CGRectMake(16, self.speedBox.frame.origin.y, self.view.bounds.size.width - 32, 120);
     self.speedBox.hidden = NO;
     self.statusLabel.text = @"测速完成";
-    self.statusLabel.textColor = [UIColor [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
+    self.statusLabel.textColor = [[colorWithRed:0.25 green:0.90 blue:0.50 alpha:1]];
     PlayConfirmSound();
     [self layoutResults];
 }
