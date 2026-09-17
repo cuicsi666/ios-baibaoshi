@@ -1107,7 +1107,7 @@ static void PlayConfirmSound(void) {
     [super viewDidLoad];
 
     // 主流简洁背景：iOS 系统分组灰白
-    self.view.backgroundColor = [UIColor BB_BG_COLOR;
+    self.view.backgroundColor = BB_BG_COLOR;
 
     // 标题（纯文字，状态圆点移到右上角）
     self.title = @"ESXi 监控";
@@ -2579,7 +2579,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor BB_BG_COLOR;
+    self.view.backgroundColor = BB_BG_COLOR;
     self.title = @"OpenWrt";
 
     // 左上角状态
@@ -3256,7 +3256,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor BB_BG_COLOR;
+    self.view.backgroundColor = BB_BG_COLOR;
     self.title = @"工具箱";
 
     self.scrollView = [UIScrollView new];
