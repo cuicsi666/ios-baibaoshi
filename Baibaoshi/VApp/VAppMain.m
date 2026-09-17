@@ -12,6 +12,7 @@
 #import <math.h>
 #import <libssh2.h>
 #import <AudioToolbox/AudioToolbox.h>
+#import "BBNeonColors.h"
 
 // ══════════════════════════════════════════════════════════════
 // C 层：SSH 持久连接 + 执行
