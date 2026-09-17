@@ -115,10 +115,10 @@ struct RootView: View {
                            subtitle: "内置前端 · 时间密码",
                            icon: "play.rectangle.fill", colors: [Color(hex: 0x654EA3), Color(hex: 0xEAAFC8)])
             }
-            NavigationLink(destination: ESXiMonitorView()) {
+            NavigationLink(destination: VAppPlayerView()) {
                 ModuleCard(title: "V监控",
-                           subtitle: "ESXi 主机监控",
-                           icon: "server.rack", colors: Theme.xui, lines: 2)
+                           subtitle: "ESXi + OpenWrt 直连监控",
+                           icon: "server.rack", colors: [Color(hex: 0x2C3E50), Color(hex: 0x4CA1AF)], lines: 2)
             }
             NavigationLink(destination: NESHomeView()) {
                 ModuleCard(title: "游戏机",
