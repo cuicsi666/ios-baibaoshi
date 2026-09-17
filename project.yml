@@ -37,8 +37,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.cuicsi.baibaoshi
-        MARKETING_VERSION: "7.4"
-        CURRENT_PROJECT_VERSION: "11"
+        MARKETING_VERSION: "7.5"
+        CURRENT_PROJECT_VERSION: "12"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         CODE_SIGN_ENTITLEMENTS: Baibaoshi/Support/Baibaoshi.entitlements
         SWIFT_OBJC_BRIDGING_HEADER: Baibaoshi/Support/Baibaoshi-Bridging-Header.h
@@ -50,8 +50,8 @@ targets:
       properties:
         CFBundleDisplayName: 百宝箱
         CFBundleName: Baibaoshi
-        CFBundleShortVersionString: "7.4"
-        CFBundleVersion: "11"
+        CFBundleShortVersionString: "7.5"
+        CFBundleVersion: "12"
         UILaunchScreen: {}
         UIBackgroundModes:
           - audio
