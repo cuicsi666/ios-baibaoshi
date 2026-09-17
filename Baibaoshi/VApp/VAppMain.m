@@ -744,7 +744,7 @@ static void PlayConfirmSound(void) {
     UILabel *titleLb = [UILabel new];
     titleLb.text = self.confirmTitle ?: @"确认操作";
     titleLb.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
-    titleLb.textColor = UIColor.BB_WHITE_TEXT;
+    titleLb.textColor = BB_WHITE_TEXT;
     titleLb.textAlignment = NSTextAlignmentCenter;
     titleLb.frame = CGRectMake(16, 20, cardW - 32, 24);
     [card addSubview:titleLb];
@@ -846,7 +846,7 @@ static void PlayConfirmSound(void) {
         _titleLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.80 alpha:1];
         _valueLabel = [UILabel new];
         _valueLabel.font = [UIFont systemFontOfSize:32 weight:UIFontWeightBold];
-        _valueLabel.textColor = UIColor.BB_WHITE_TEXT;
+        _valueLabel.textColor = BB_WHITE_TEXT;
         _subLabel = [UILabel new];
         _subLabel.font = [UIFont systemFontOfSize:12];
         _subLabel.textColor = [UIColor colorWithRed:0.45 green:0.55 blue:0.70 alpha:1];
@@ -890,7 +890,7 @@ static void PlayConfirmSound(void) {
         [self addSubview:_titleLabel];
         _valueLabel = [UILabel new];
         _valueLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightBold];
-        _valueLabel.textColor = UIColor.BB_WHITE_TEXT;
+        _valueLabel.textColor = BB_WHITE_TEXT;
         [self addSubview:_valueLabel];
         _pctLabel = [UILabel new];
         _pctLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
@@ -957,11 +957,11 @@ static void PlayConfirmSound(void) {
         [self addSubview:_iconLabel];
         _nameLabel = [UILabel new];
         _nameLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
-        _nameLabel.textColor = UIColor.BB_WHITE_TEXT;
+        _nameLabel.textColor = BB_WHITE_TEXT;
         [self addSubview:_nameLabel];
         _infoLabel = [UILabel new];
         _infoLabel.font = [UIFont systemFontOfSize:10];
-        _infoLabel.textColor = UIColor.BB_DARK_GRAY;
+        _infoLabel.textColor = BB_DARK_GRAY;
         [self addSubview:_infoLabel];
         _powerSwitch = [UISwitch new];
         _powerSwitch.transform = CGAffineTransformMakeScale(0.62, 0.62);
@@ -1193,7 +1193,7 @@ static void PlayConfirmSound(void) {
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, 0, w - 32, 44);
     self.statusLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightMedium];
-    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
+    self.statusLabel.textColor = BB_DARK_GRAY;
     self.statusLabel.text = @"";
     [statusCard addSubview:self.statusLabel];
     y += 44 + 12;
@@ -1209,7 +1209,7 @@ static void PlayConfirmSound(void) {
     hostNameLb.tag = 9997;
     hostNameLb.text = @"--";
     hostNameLb.font = [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold];
-    hostNameLb.textColor = UIColor.BB_WHITE_TEXT;
+    hostNameLb.textColor = BB_WHITE_TEXT;
     hostNameLb.textAlignment = NSTextAlignmentCenter;
     hostNameLb.frame = CGRectMake(12, 6, w - 24, 20);
     [hostCard addSubview:hostNameLb];
@@ -2565,7 +2565,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 - (void)addLog:(NSString *)msg {
     // 操作日志已移除，仅在状态栏显示
     self.statusLabel.text = msg;
-    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
+    self.statusLabel.textColor = BB_DARK_GRAY;
 }
 
 - (UILabel *)sectionLabelWithTitle:(NSString *)t {
@@ -2725,7 +2725,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
+    self.statusLabel.textColor = BB_DARK_GRAY;
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 26;
@@ -3275,7 +3275,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d1 = [UILabel new];
     d1.text = @"检测外网连通、DNS、丢包、延迟、网速";
     d1.font = [UIFont systemFontOfSize:12];
-    d1.textColor = UIColor.BB_DARK_GRAY;
+    d1.textColor = BB_DARK_GRAY;
     d1.frame = CGRectMake(14, 10, w - 28, 18);
     [card1 addSubview:d1];
     UIButton *b1 = [self makeBtn:@"开始体检" color:BB_NEON_BLUE
@@ -3286,14 +3286,14 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     [self.scrollView addSubview:self.healthResultBox];
     self.healthResultLabel = [UILabel new];
     self.healthResultLabel.font = [UIFont systemFontOfSize:12];
-    self.healthResultLabel.textColor = UIColor.BB_WHITE_TEXT;
+    self.healthResultLabel.textColor = BB_WHITE_TEXT;
     self.healthResultLabel.numberOfLines = 0;
     [self.healthResultBox addSubview:self.healthResultLabel];
     // 体检进度条（卡片内）
     self.healthProgress = [UILabel new];
     self.healthProgress.text = @"";
     self.healthProgress.font = [UIFont systemFontOfSize:12];
-    self.healthProgress.textColor = UIColor.BB_DARK_GRAY;
+    self.healthProgress.textColor = BB_DARK_GRAY;
     self.healthProgress.textAlignment = NSTextAlignmentCenter;
     self.healthProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [card1 addSubview:self.healthProgress];
@@ -3312,7 +3312,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *dSpeed = [UILabel new];
     dSpeed.text = @"一键测试宽带下载/上传速率（约 20 秒）";
     dSpeed.font = [UIFont systemFontOfSize:12];
-    dSpeed.textColor = UIColor.BB_DARK_GRAY;
+    dSpeed.textColor = BB_DARK_GRAY;
     dSpeed.frame = CGRectMake(14, 10, w - 28, 18);
     [speedCard addSubview:dSpeed];
     UIButton *bSpeed = [self makeBtn:@"开始测速" color:[UIColor systemPurpleColor]
@@ -3321,7 +3321,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.speedProgress = [UILabel new];
     self.speedProgress.text = @"";
     self.speedProgress.font = [UIFont systemFontOfSize:12];
-    self.speedProgress.textColor = UIColor.BB_DARK_GRAY;
+    self.speedProgress.textColor = BB_DARK_GRAY;
     self.speedProgress.textAlignment = NSTextAlignmentCenter;
     self.speedProgress.frame = CGRectMake(14, 78, w - 28, 18);
     [speedCard addSubview:self.speedProgress];
@@ -3336,7 +3336,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     [self.scrollView addSubview:self.speedBox];
     self.speedLabel = [UILabel new];
     self.speedLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightSemibold];
-    self.speedLabel.textColor = UIColor.BB_WHITE_TEXT;
+    self.speedLabel.textColor = BB_WHITE_TEXT;
     self.speedLabel.numberOfLines = 0;
     [self.speedBox addSubview:self.speedLabel];
     y += 120 + 16;
@@ -3348,7 +3348,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *d3 = [UILabel new];
     d3.text = @"所有设备连接/断开时横幅+声音提醒";
     d3.font = [UIFont systemFontOfSize:12];
-    d3.textColor = UIColor.BB_DARK_GRAY;
+    d3.textColor = BB_DARK_GRAY;
     d3.frame = CGRectMake(14, 12, w - 100, 18);
     [card3 addSubview:d3];
     UISwitch *sw = [UISwitch new];
@@ -3360,7 +3360,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     UILabel *note3 = [UILabel new];
     note3.text = @"需保持 App 前台运行才能接收";
     note3.font = [UIFont systemFontOfSize:10];
-    note3.textColor = UIColor.BB_DARK_GRAY;
+    note3.textColor = BB_DARK_GRAY;
     note3.frame = CGRectMake(14, 60, w - 28, 14);
     [card3 addSubview:note3];
     y += 96 + 16;
@@ -3369,7 +3369,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.statusLabel = [UILabel new];
     self.statusLabel.frame = CGRectMake(16, y, w, 20);
     self.statusLabel.font = [UIFont systemFontOfSize:13];
-    self.statusLabel.textColor = UIColor.BB_DARK_GRAY;
+    self.statusLabel.textColor = BB_DARK_GRAY;
     self.statusLabel.text = @"";
     [self.scrollView addSubview:self.statusLabel];
     y += 30;
@@ -3390,7 +3390,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
         [[NSUserDefaults standardUserDefaults] synchronize];
         HapticTap();
         weakSelf.statusLabel.text = toOn ? @"✅ 设备通知已开启" : @"设备通知已关闭";
-        weakSelf.statusLabel.textColor = toOn ? [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1] : UIColor.BB_DARK_GRAY;
+        weakSelf.statusLabel.textColor = toOn ? [UIColor colorWithRed:0.25 green:0.90 blue:0.50 alpha:1] : BB_DARK_GRAY;
     };
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     [self presentViewController:vc animated:NO completion:nil];
