@@ -814,11 +814,11 @@ static void PlayConfirmSound(void) {
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        // 纯白卡片底（与虚拟机卡片统一：白底 + 浅灰细边框 + 大圆角）
-        self.backgroundColor = UIColor.whiteColor;
+        // 浅灰磨砂卡片底（白背景适配）
+        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.85];
         self.layer.cornerRadius = 14;
         self.layer.borderWidth = 0.5;
-        self.layer.borderColor = [UIColor colorWithRed:0.89 green:0.91 blue:0.94 alpha:1].CGColor;
+        self.layer.borderColor = [UIColor colorWithRed:0.85 green:0.88 blue:0.93 alpha:1].CGColor;
         self.layer.shadowColor = [UIColor blackColor].CGColor;
         self.layer.shadowOpacity = 0.05;
         self.layer.shadowOffset = CGSizeMake(0, 2);
