@@ -4,7 +4,7 @@
 #import <UIKit/UIKit.h>
 
 // Background  
-#define BB_BG_COLOR [UIColor colorWithRed:0.08 green:0.12 blue:0.20 alpha:1]
+#define BB_BG_COLOR [UIColor colorWithRed:0.04 green:0.06 blue:0.10 alpha:1]
 
 // Text colors
 #define BB_WHITE_TEXT [UIColor whiteColor]
