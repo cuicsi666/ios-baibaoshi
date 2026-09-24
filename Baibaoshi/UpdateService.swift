@@ -85,14 +85,14 @@ final class UpdateService: ObservableObject {
         }.resume()
     }
 
-    /// 一键安装：打开自动安装页（Safari）→ 页面自动唤起 itms-services 安装
+    /// 一键安装：打开内网自动安装页（Safari）→ 页面唤起 itms-services 秒装
     func installUpdate() {
         guard hasUpdate else { return }
-        let installPage = "https://cdn.jsdelivr.net/gh/cuicsi666/baibaoshi-ota@main/install.html"
+        // 内网分发（老板已信任自签 CA，秒下）
+        let installPage = "https://6.6.6.130:8443/baibaoshi/install.html"
         // 兜底：同时复制 itms-services 链接到剪贴板
-        let itmsURL = "itms-services://?action=download-manifest&url=https://cdn.jsdelivr.net/gh/cuicsi666/baibaoshi-ota@main/manifest.plist"
+        let itmsURL = "itms-services://?action=download-manifest&url=https://6.6.6.130:8443/baibaoshi/manifest.plist"
         UIPasteboard.general.string = itmsURL
-        // 打开自动安装页
         if let url = URL(string: installPage) {
             message = "正在打开安装页面…"
             UIApplication.shared.open(url)
