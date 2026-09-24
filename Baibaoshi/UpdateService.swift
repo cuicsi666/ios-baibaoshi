@@ -85,17 +85,18 @@ final class UpdateService: ObservableObject {
         }.resume()
     }
 
-    /// 一键安装：复制 itms-services 链接到剪贴板，提示用户去 Safari 打开
+    /// 一键安装：打开自动安装页（Safari）→ 页面自动唤起 itms-services 安装
     func installUpdate() {
         guard hasUpdate else { return }
-        let manifestURL = "https://cdn.jsdelivr.net/gh/cuicsi666/baibaoshi-ota@main/manifest.plist"
-        let itmsURL = "itms-services://?action=download-manifest&url=\(manifestURL)"
-        
-        // 复制到剪贴板
+        let installPage = "https://cdn.jsdelivr.net/gh/cuicsi666/baibaoshi-ota@main/install.html"
+        // 兜底：同时复制 itms-services 链接到剪贴板
+        let itmsURL = "itms-services://?action=download-manifest&url=https://cdn.jsdelivr.net/gh/cuicsi666/baibaoshi-ota@main/manifest.plist"
         UIPasteboard.general.string = itmsURL
-        
-        // 提示用户
-        message = "安装链接已复制！\n请打开 Safari → 粘贴到地址栏 → 前往"
+        // 打开自动安装页
+        if let url = URL(string: installPage) {
+            message = "正在打开安装页面…"
+            UIApplication.shared.open(url)
+        }
     }
 
     /// 下载新版本 IPA
