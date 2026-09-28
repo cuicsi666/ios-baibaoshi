@@ -37,7 +37,6 @@ struct RootView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     header
                     appSection
-                    toolSection
                     footer
                 }
                 .padding(.horizontal, 14)
@@ -95,20 +94,15 @@ struct RootView: View {
         .padding(.top, 10)
     }
 
-    // MARK: 应用区
+    // MARK: 全部应用区
 
     @ViewBuilder private var appSection: some View {
-        sectionTitle("应用", systemImage: "square.grid.2x2.fill")
+        sectionTitle("全部应用", systemImage: "square.grid.2x2.fill")
         LazyVGrid(columns: cols, spacing: 10) {
             NavigationLink(destination: CBHomeView()) {
                 ModuleCard(title: "电管家",
                            subtitle: chargeSubtitle,
                            icon: "bolt.fill", colors: Theme.charge)
-            }
-            NavigationLink(destination: FlowTextView()) {
-                ModuleCard(title: "流文",
-                           subtitle: ble.connected ? "已连接 · 文字流动中" : "板子说话 → 键盘流入",
-                           icon: "text.cursor.rainbow", colors: Theme.flowtext, lines: 2)
             }
             NavigationLink(destination: XVPPlayerView()) {
                 ModuleCard(title: "XVP 播放器",
@@ -120,19 +114,6 @@ struct RootView: View {
                            subtitle: "ESXi + OpenWrt 直连监控",
                            icon: "server.rack", colors: [Color(hex: 0x2C3E50), Color(hex: 0x4CA1AF)], lines: 2)
             }
-            NavigationLink(destination: NESHomeView()) {
-                ModuleCard(title: "游戏机",
-                           subtitle: "71 款经典 · 摇杆 + 震动音效",
-                           icon: "gamecontroller.fill", colors: [Color(hex: 0x7F00FF), Color(hex: 0xE100FF)], lines: 2)
-            }
-        }
-    }
-
-    // MARK: 工具区
-
-    @ViewBuilder private var toolSection: some View {
-        sectionTitle("工具", systemImage: "wrench.and.screwdriver.fill")
-        LazyVGrid(columns: cols, spacing: 10) {
             NavigationLink(destination: IdiomView()) {
                 ModuleCard(title: "励志成语", subtitle: idioms.current.text, icon: "text.book.closed.fill", colors: Theme.idiom, lines: 2)
             }
