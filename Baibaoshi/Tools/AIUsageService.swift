@@ -10,6 +10,7 @@ struct AIUsage: Codable {
     var promptTokens: Int = 0
     var completionTokens: Int = 0
     var cost: Double { credit / 30000 * 100 }   // 30000电 = 100元
+    var costDisplay: String { String(format: "¥%.2f", cost) }
     var date = ""
 }
 
