@@ -139,6 +139,9 @@ struct RootView: View {
             NavigationLink(destination: RouterMonitorView()) {
                 ModuleCard(title: "路由器监控", subtitle: routerSub, icon: "wifi.router.fill", colors: Theme.router, lines: 2)
             }
+            NavigationLink(destination: AIUsageView()) {
+                ModuleCard(title: "AI 用量", subtitle: "今日花销 · 历史记录", icon: "brain.head.profile", colors: Theme.nav)
+            }
             NavigationLink(destination: SettingsView()) {
                 ModuleCard(title: "设置", subtitle: updater.hasUpdate ? "有新版本 V\(updater.newVersion) 🆕" : "主题 · 保活 · 更新",
                            icon: "gearshape.fill", colors: [Color(hex: 0x8E9AAF), Color(hex: 0x5C6672)])
