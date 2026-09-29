@@ -55,13 +55,36 @@ final class BilibiliSponsorService: ObservableObject {
 
     func fetch() {
         let text = input.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard let bvid = parseBvid(from: text) else {
-            message = "无法识别视频，请输入 BV 号或 B站视频链接"
-            return
+        if let bvid = parseBvid(from: text) {
+            performFetch(bvid: bvid)
+        } else if text.hasPrefix("http"), let url = URL(string: text) {
+            // 可能是 b23.tv 等短链 → 先解析跳转拿最终 URL
+            loading = true
+            message = "正在解析短链接…"
+            var req = URLRequest(url: url)
+            req.setValue("Mozilla/5.0", forHTTPHeaderField: "User-Agent")
+            req.timeoutInterval = 12
+            URLSession.shared.dataTask(with: req) { [weak self] data, resp, _ in
+                DispatchQueue.main.async {
+                    guard let self = self else { return }
+                    let finalURL = (resp as? HTTPURLResponse)?.url?.absoluteString ?? url.absoluteString
+                    if let bv = self.parseBvid(from: finalURL) {
+                        self.performFetch(bvid: bv, fromShortLink: true)
+                    } else {
+                        self.loading = false
+                        self.message = "短链接无法识别视频：\(finalURL)"
+                    }
+                }
+            }.resume()
+        } else {
+            message = "无法识别视频，请输入 BV 号 / 完整链接 / b23.tv 短链接"
         }
+    }
+
+    private func performFetch(bvid: String, fromShortLink: Bool = false) {
         resolvedBvid = bvid
         loading = true
-        message = ""
+        message = fromShortLink ? "已解析 \(bvid)，查询中…" : "查询中…"
 
         // hashPrefix = hex(SHA256(bvid)) 前 4 位
         let digest = SHA256.hash(data: Data(bvid.utf8))
