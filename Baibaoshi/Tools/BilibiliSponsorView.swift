@@ -77,7 +77,8 @@ struct BilibiliSponsorView: View {
                         Text(svc.resolvedBvid).font(.caption2.monospaced()).foregroundColor(.secondary)
                     }
                 }
-                ForEach(svc.groups.flatMap { $0.segments }) { seg in
+                let segs = svc.groups.flatMap { $0.segments }
+                ForEach(Array(segs.enumerated()), id: \.offset) { _, seg in
                     segmentRow(seg)
                 }
                 openButton
@@ -88,7 +89,7 @@ struct BilibiliSponsorView: View {
     }
 
     private func segmentRow(_ seg: BSBSegment) -> some View {
-        HStack(spacing: 12) {
+        return HStack(spacing: 12) {
             Text(categoryText(seg.category))
                 .font(.caption.weight(.bold))
                 .padding(.horizontal, 8)
