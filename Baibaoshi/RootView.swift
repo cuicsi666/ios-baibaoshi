@@ -77,7 +77,7 @@ struct RootView: View {
                     } label: {
                         Image(systemName: theme.isDark ? "sun.max.fill" : "moon.fill")
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(theme.isDark ? .orange : theme.accent)
+                            .foregroundColor(theme.isDark ? .orange : Theme.accent)
                     }
                 }
             }
@@ -159,7 +159,7 @@ struct RootView: View {
             Button { showAll = true } label: {
                 Image(systemName: "square.grid.2x2")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(theme.accent)
+                    .foregroundColor(Theme.accent)
             }
             .buttonStyle(.plain)
         }

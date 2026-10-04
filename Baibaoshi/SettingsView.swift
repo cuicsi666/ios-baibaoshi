@@ -106,7 +106,7 @@ struct SettingsView: View {
                         Text("首页一屏展示更多功能").font(.system(size: 11)).foregroundColor(.secondary)
                     }
                 }
-                .tint(theme.accent)
+                .tint(Theme.accent)
             }
         }
     }
@@ -165,7 +165,7 @@ struct SettingsView: View {
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                 }
-                .tint(theme.accent)
+                .tint(Theme.accent)
                 .onChange(of: keepAliveOn) { _ in KeepAliveService.shared.applySettings() }
 
                 HStack {

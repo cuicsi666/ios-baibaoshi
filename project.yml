@@ -67,6 +67,8 @@ targets:
         NSBluetoothAlwaysUsageDescription: 连接 XUI 板子（遥控/手柄/流文文字流）与蓝牙中继上网
         NSBluetoothPeripheralUsageDescription: 连接 XUI 板子
         NSFaceIDUsageDescription: 验证面部后直接解锁 XVP 播放器，无需输入时间密码
+        NSMotionUsageDescription: 用于「水平仪」工具读取设备姿态，仅在工具页面内使用，不上传
+        NSPhotoLibraryAddUsageDescription: 用于把「二维码/条码生成器」生成的图片保存到相册
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
   KeyboardExt:
