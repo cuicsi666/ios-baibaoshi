@@ -117,29 +117,36 @@ struct LevelBubbleView: View {
     @Environment(\.colorScheme) private var scheme
     var body: some View {
         GeometryReader { geo in
-            let side: CGFloat = min(geo.size.width, geo.size.height)
-            let radius: CGFloat = side / 2 - 8
-            let maxShift: CGFloat = radius * 0.70
-            let k: CGFloat = maxShift / 18.0                       // 18° 达到最大偏移
-            let ox: CGFloat = max(-maxShift, min(maxShift, -CGFloat(tiltX) * k))
-            let oy: CGFloat = max(-maxShift, min(maxShift, CGFloat(tiltY) * k))
-            ZStack {
-                Circle().fill(Theme.panel(scheme == .dark))
+            bubble(side: min(geo.size.width, geo.size.height))
+        }
+    }
+
+    @ViewBuilder
+    private func bubble(side: CGFloat) -> some View {
+        let radius: CGFloat = side / 2 - 8
+        let maxShift: CGFloat = radius * 0.70
+        let k: CGFloat = maxShift / 18.0
+        let ox: CGFloat = max(-maxShift, min(maxShift, -CGFloat(tiltX) * k))
+        let oy: CGFloat = max(-maxShift, min(maxShift, CGFloat(tiltY) * k))
+        let inner: CGFloat = side - 16
+        let line: Color = Theme.hairline(scheme == .dark)
+        let ringColor: Color = isLevel ? Theme.success : Color.secondary
+        ZStack {
+            Circle().fill(Theme.panel(scheme == .dark))
+            Circle()
+                .strokeBorder(line, lineWidth: 1)
+                .frame(width: inner, height: inner)
+            ForEach(1...2, id: \.self) { i in
                 Circle()
-                    .strokeBorder(Theme.hairline(scheme == .dark), lineWidth: 1)
-                    .frame(width: side - 16, height: side - 16)
-                ForEach(1...2) { i in
-                    Circle()
-                        .strokeBorder(Theme.hairline(scheme == .dark), lineWidth: 1)
-                        .frame(width: (side - 16) * CGFloat(i) / 3, height: (side - 16) * CGFloat(i) / 3)
-                }
-                // 中心十字与 1° 容差圈
-                Rectangle().fill(Theme.hairline(scheme == .dark)).frame(width: side - 16, height: 1)
-                Rectangle().fill(Theme.hairline(scheme == .dark)).frame(width: 1, height: side - 16)
-                Circle()
-                    .strokeBorder((isLevel ? Theme.success : Color.secondary).opacity(0.45),
-                                  style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
-                    .frame(width: radius * 0.22, height: radius * 0.22)
+                    .strokeBorder(line, lineWidth: 1)
+                    .frame(width: inner * CGFloat(i) / 3, height: inner * CGFloat(i) / 3)
+            }
+            Rectangle().fill(line).frame(width: inner, height: 1)
+            Rectangle().fill(line).frame(width: 1, height: inner)
+            Circle()
+                .strokeBorder(ringColor.opacity(0.45),
+                              style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+                .frame(width: radius * 0.22, height: radius * 0.22)
                 Circle()
                     .fill(isLevel ? AnyShapeStyle(Theme.success) : AnyShapeStyle(Theme.gradient(colors)))
                     .frame(width: 54, height: 54)
@@ -156,7 +163,6 @@ struct LevelBubbleView: View {
             }
             .frame(width: side, height: side)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
     }
 }
 struct FunRulerView: View {

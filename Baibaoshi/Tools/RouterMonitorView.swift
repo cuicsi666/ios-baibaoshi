@@ -139,7 +139,7 @@ struct RouterMonitorView: View {
                         }
                         RuleMark(y: .value("平均", avg))
                             .foregroundStyle(Theme.router[0].opacity(0.35))
-                            .lineStyle(StrokeStyle(lineWidth: 1, lineDash: [3, 3]))
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
                     }
                     .chartYScale(domain: 0...100)
                     .chartXAxis(.hidden)

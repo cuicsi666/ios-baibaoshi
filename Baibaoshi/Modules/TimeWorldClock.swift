@@ -120,7 +120,8 @@ struct ClockDial: View {
                 let a: CGFloat = CGFloat(tick) / 12 * 2 * CGFloat.pi - CGFloat.pi / 2
                 let ca: CGFloat = CGFloat(Foundation.cos(Double(a)))
                 let sa: CGFloat = CGFloat(Foundation.sin(Double(a)))
-                var m = Path(CGPoint(x: center.x + ca * (radius - 5.5), y: center.y + sa * (radius - 5.5)))
+                var m = Path()
+                m.move(to: CGPoint(x: center.x + ca * (radius - 5.5), y: center.y + sa * (radius - 5.5)))
                 m.addLine(to: CGPoint(x: center.x + ca * (radius - 2), y: center.y + sa * (radius - 2)))
                 ctx.stroke(m, with: .color(Theme.accent.opacity(0.4)), lineWidth: 1)
             }
