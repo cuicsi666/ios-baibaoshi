@@ -4,13 +4,35 @@ import SwiftUI
 
 final class ThemeManager: ObservableObject {
     static let shared = ThemeManager()
+
     @Published var isDark: Bool {
         didSet { UserDefaults.standard.set(isDark, forKey: "bb.dark") }
     }
+    /// 跟随系统外观（开启后忽略 isDark）
+    @Published var followSystem: Bool {
+        didSet { UserDefaults.standard.set(followSystem, forKey: "bb.followSystem") }
+    }
+    /// 强调色预设
+    @Published var accent: BBAccent {
+        didSet { UserDefaults.standard.set(accent.rawValue, forKey: "bb.accent") }
+    }
+    /// 卡片紧凑模式（缩小首页卡片）
+    @Published var compact: Bool {
+        didSet { UserDefaults.standard.set(compact, forKey: "bb.compact") }
+    }
+
     private init() {
         isDark = UserDefaults.standard.object(forKey: "bb.dark") as? Bool ?? false
+        followSystem = UserDefaults.standard.object(forKey: "bb.followSystem") as? Bool ?? false
+        let raw = UserDefaults.standard.string(forKey: "bb.accent") ?? BBAccent.ocean.rawValue
+        accent = BBAccent(rawValue: raw) ?? .ocean
+        compact = UserDefaults.standard.object(forKey: "bb.compact") as? Bool ?? false
     }
+
+    /// 当前生效配色
     var scheme: ColorScheme { isDark ? .dark : .light }
+    /// 传给 preferredColorScheme（nil = 跟随系统）
+    var preferredScheme: ColorScheme? { followSystem ? nil : scheme }
 }
 
 // MARK: - 模块渐变色

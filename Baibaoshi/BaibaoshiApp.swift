@@ -19,7 +19,7 @@ struct BaibaoshiApp: App {
                 .environmentObject(ble)
                 .environmentObject(monitor)
                 .environmentObject(chargeHistory)
-                .preferredColorScheme(theme.scheme)
+                .preferredColorScheme(theme.preferredScheme)
         }
     }
 }
