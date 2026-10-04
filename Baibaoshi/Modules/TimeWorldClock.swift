@@ -107,32 +107,38 @@ struct ClockDial: View {
     @Environment(\.colorScheme) private var scheme
     var body: some View {
         let c = ClockMath.components(date, zone)
-        let hour = Double(c.h), minute = Double(c.m), second = Double(c.s)
+        let hour: CGFloat = CGFloat(c.h)
+        let minute: CGFloat = CGFloat(c.m)
+        let second: CGFloat = CGFloat(c.s)
         return Canvas { ctx, canvas in
-            let center = CGPoint(x: canvas.width / 2, y: canvas.height / 2)
-            let radius = min(canvas.width, canvas.height) / 2 - 1.5
+            let center: CGPoint = CGPoint(x: canvas.width / 2, y: canvas.height / 2)
+            let radius: CGFloat = min(canvas.width, canvas.height) / 2 - 1.5
             let face = Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
             ctx.fill(face, with: .color(Theme.panel(scheme == .dark)))
             ctx.stroke(face, with: .color(Theme.accent.opacity(0.22)), lineWidth: 1)
             for tick in 0..<12 {
-                let a = Double(tick) / 12 * 2 * .pi - .pi / 2
-                var m = Path(CGPoint(x: center.x + cos(a) * (radius - 5.5), y: center.y + sin(a) * (radius - 5.5)))
-                m.addLine(to: CGPoint(x: center.x + cos(a) * (radius - 2), y: center.y + sin(a) * (radius - 2)))
+                let a: CGFloat = CGFloat(tick) / 12 * 2 * CGFloat.pi - CGFloat.pi / 2
+                let ca: CGFloat = CGFloat(Foundation.cos(Double(a)))
+                let sa: CGFloat = CGFloat(Foundation.sin(Double(a)))
+                var m = Path(CGPoint(x: center.x + ca * (radius - 5.5), y: center.y + sa * (radius - 5.5)))
+                m.addLine(to: CGPoint(x: center.x + ca * (radius - 2), y: center.y + sa * (radius - 2)))
                 ctx.stroke(m, with: .color(Theme.accent.opacity(0.4)), lineWidth: 1)
             }
-            hand(&ctx, center: center, degrees: (hour.truncatingRemainder(dividingBy: 12) + minute / 60) * 30, length: radius * 0.46, width: 2.6, color: Color.primary)
-            hand(&ctx, center: center, degrees: (minute + second / 60) * 6, length: radius * 0.68, width: 2, color: Color.primary.opacity(0.85))
-            hand(&ctx, center: center, degrees: second * 6, length: radius * 0.82, width: 1.2, color: Theme.accent)
+            hand(&ctx, center: center, degrees: Double((hour.truncatingRemainder(dividingBy: 12) + minute / 60) * 30), length: radius * 0.46, width: 2.6, color: Color.primary)
+            hand(&ctx, center: center, degrees: Double((minute + second / 60) * 6), length: radius * 0.68, width: 2, color: Color.primary.opacity(0.85))
+            hand(&ctx, center: center, degrees: Double(second * 6), length: radius * 0.82, width: 1.2, color: Theme.accent)
             let hub = CGRect(x: center.x - 2.2, y: center.y - 2.2, width: 4.4, height: 4.4)
             ctx.fill(Path(ellipseIn: hub), with: .color(Theme.accent))
         }
         .frame(width: size, height: size)
     }
     private func hand(_ ctx: inout GraphicsContext, center: CGPoint, degrees: Double, length: CGFloat, width: CGFloat, color: Color) {
-        let radians = (degrees - 90) * .pi / 180
+        let radians: Double = (degrees - 90) * Double.pi / 180
+        let cr: CGFloat = CGFloat(Foundation.cos(radians))
+        let sr: CGFloat = CGFloat(Foundation.sin(radians))
         var path = Path()
         path.move(to: center)
-        path.addLine(to: CGPoint(x: center.x + cos(radians) * length, y: center.y + sin(radians) * length))
+        path.addLine(to: CGPoint(x: center.x + cr * length, y: center.y + sr * length))
         ctx.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: width, lineCap: .round))
     }
 }

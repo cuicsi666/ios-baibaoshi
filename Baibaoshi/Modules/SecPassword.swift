@@ -374,7 +374,7 @@ struct SecPasswordView: View {
             return
         }
         BBHaptic.tap()
-        let items = (0..<5).compactMap {
+        let items = (0..<5).compactMap { _ in
             SecPasswordEngine.generate(length: Int(length), pools: pools)
         }
         withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {

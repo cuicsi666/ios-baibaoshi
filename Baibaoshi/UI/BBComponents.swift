@@ -28,6 +28,14 @@ extension BBSectionHeader where Accessory == EmptyView {
     }
 }
 
+extension BBSectionHeader {
+    /// 无标签标题 + 右侧内容的写法：`BBSectionHeader("标题", icon: "x") { 内容 }`
+    init(_ title: String, icon: String, colors: [Color] = Theme.accentColors(),
+         @ViewBuilder accessory: @escaping () -> Accessory) {
+        self.init(title: title, icon: icon, colors: colors, accessory: accessory)
+    }
+}
+
 /// 通用卡片容器
 struct BBCard<Content: View>: View {
     var padding: CGFloat = BBSpacing.l

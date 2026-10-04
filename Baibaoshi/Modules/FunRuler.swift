@@ -117,12 +117,12 @@ struct LevelBubbleView: View {
     @Environment(\.colorScheme) private var scheme
     var body: some View {
         GeometryReader { geo in
-            let side = min(geo.size.width, geo.size.height)
-            let radius = side / 2 - 8
-            let maxShift = radius * 0.70
-            let k = maxShift / 18.0                       // 18° 达到最大偏移
-            let ox = max(-maxShift, min(maxShift, CGFloat(-tiltX) * k))
-            let oy = max(-maxShift, min(maxShift, CGFloat(tiltY) * k))
+            let side: CGFloat = min(geo.size.width, geo.size.height)
+            let radius: CGFloat = side / 2 - 8
+            let maxShift: CGFloat = radius * 0.70
+            let k: CGFloat = maxShift / 18.0                       // 18° 达到最大偏移
+            let ox: CGFloat = max(-maxShift, min(maxShift, -CGFloat(tiltX) * k))
+            let oy: CGFloat = max(-maxShift, min(maxShift, CGFloat(tiltY) * k))
             ZStack {
                 Circle().fill(Theme.panel(scheme == .dark))
                 Circle()

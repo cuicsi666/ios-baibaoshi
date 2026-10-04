@@ -176,8 +176,8 @@ enum DevCollector {
         let store = storage()
         let used = max(0, store.total - store.free)
         let usedRatio = store.total > 0 ? Double(used) / Double(store.total) : 0
-        let uptime = process.systemUptime
-        let bootDate = Date().addingTimeInterval(-uptime)
+        let upSeconds = process.systemUptime
+        let bootDate = Date().addingTimeInterval(-upSeconds)
         let locale = Locale.current
         let tz = TimeZone.current
         let offsetHours = Double(tz.secondsFromGMT()) / 3600.0
@@ -230,7 +230,7 @@ enum DevCollector {
         let uptimeSection = DevSection(
             title: "系统运行", icon: "clock.arrow.circlepath", colors: [Color(hex: 0x43CBAF), Color(hex: 0x2E9CCA)],
             rows: [
-                DevItem(key: "已运行", value: uptime(uptime), icon: "hourglass"),
+                DevItem(key: "已运行", value: uptime(upSeconds), icon: "hourglass"),
                 DevItem(key: "上次开机", value: dateTime(bootDate), icon: "power"),
                 DevItem(key: "当前时间", value: dateTime(Date()), icon: "clock.fill")
             ])

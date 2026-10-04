@@ -125,16 +125,18 @@ struct RouterMonitorView: View {
                                 .foregroundColor(.secondary)
                         )
                 } else {
-                    Chart(Array(router.history.indices), id: \.self) { i in
-                        AreaMark(x: .value("采样", i), y: .value("CPU", router.history[i]))
-                            .interpolationMethod(.catmullRom)
-                            .foregroundStyle(LinearGradient(colors: [Theme.router[1].opacity(0.45),
-                                                                    Theme.router[1].opacity(0.02)],
-                                                            startPoint: .top, endPoint: .bottom))
-                        LineMark(x: .value("采样", i), y: .value("CPU", router.history[i]))
-                            .interpolationMethod(.catmullRom)
-                            .foregroundStyle(Theme.gradient(Theme.router))
-                            .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                    Chart {
+                        ForEach(Array(router.history.indices), id: \.self) { i in
+                            AreaMark(x: .value("采样", i), y: .value("CPU", router.history[i]))
+                                .interpolationMethod(.catmullRom)
+                                .foregroundStyle(LinearGradient(colors: [Theme.router[1].opacity(0.45),
+                                                                        Theme.router[1].opacity(0.02)],
+                                                                startPoint: .top, endPoint: .bottom))
+                            LineMark(x: .value("采样", i), y: .value("CPU", router.history[i]))
+                                .interpolationMethod(.catmullRom)
+                                .foregroundStyle(Theme.gradient(Theme.router))
+                                .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
+                        }
                         RuleMark(y: .value("平均", avg))
                             .foregroundStyle(Theme.router[0].opacity(0.35))
                             .lineStyle(StrokeStyle(lineWidth: 1, lineDash: [3, 3]))
