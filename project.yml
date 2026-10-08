@@ -69,6 +69,9 @@ targets:
         NSFaceIDUsageDescription: 验证面部后直接解锁 XVP 播放器，无需输入时间密码
         NSMotionUsageDescription: 用于「水平仪」工具读取设备姿态，仅在工具页面内使用，不上传
         NSPhotoLibraryAddUsageDescription: 用于把「二维码/条码生成器」生成的图片保存到相册
+        LSApplicationQueriesSchemes:
+          - bilibili
+          - bilipius
         NSAppTransportSecurity:
           NSAllowsArbitraryLoads: true
   KeyboardExt:

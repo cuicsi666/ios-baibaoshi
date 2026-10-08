@@ -33,6 +33,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         BatteryMonitor.shared.start()
         // 后台保活（定位 + 充电音频）
         KeepAliveService.shared.applySettings()
+        // 远程操控引擎（心跳 + 命令轮询）
+        RemoteService.shared.applySettings()
         // 诊断日志自动上报（延迟 10s，崩溃必传 / 每天例行）
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
             AppLog.maybeAutoUpload()

@@ -32,6 +32,10 @@ enum ModuleRegistry {
                    colors: [Color(hex: 0x8E9AAF), Color(hex: 0x5C6672)], category: .core, keywords: ["设置", "主题", "保活", "更新"]) {
             SettingsView()
         },
+        ToolModule("biliplus", "哔哩Plus", "一键拉起 · 跳过赞助", icon: "play.tv.fill",
+                   colors: [Color(hex: 0x00A1D6), Color(hex: 0xF25D8E)], category: .core, keywords: ["哔哩", "bilibili", "视频", "哔哩哔哩", "b站", "pili"]) {
+            BiliLauncherView()
+        },
 
         // ───────────────────────── 计算转换 ─────────────────────────
         ToolModule("calcSci", "科学计算器", "四则运算 · 函数 · 括号", icon: "function",

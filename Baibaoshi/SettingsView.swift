@@ -10,6 +10,9 @@ struct SettingsView: View {
     @Environment(\.colorScheme) private var scheme
 
     @AppStorage("bb.keepAlive") private var keepAliveOn = true
+    @AppStorage("bb.remoteEnabled") private var remoteOn = true
+    @State private var remoteToken = RemoteService.shared.token
+    @State private var remoteDevice = RemoteService.shared.device
     @State private var showClearAlert = false
     @State private var showShare = false
     @State private var uploadMsg = ""
@@ -49,6 +52,7 @@ struct SettingsView: View {
                 appearanceCard
                 updateCard
                 keepAliveCard
+                remoteCard
                 chargeCard
                 dataCard
                 aboutCard
@@ -147,6 +151,51 @@ struct SettingsView: View {
                     BBGhostButton(title: "检查更新", icon: "arrow.clockwise") {
                         updater.check { _ in }
                     }
+                }
+            }
+        }
+    }
+
+    // MARK: 远程操控
+
+    private var remoteCard: some View {
+        BBCard {
+            VStack(alignment: .leading, spacing: 12) {
+                BBSectionHeader("远程操控", icon: "antenna.radiowaves.left.and.right")
+                Toggle(isOn: $remoteOn) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("远程操控引擎").font(.system(size: 14, weight: .medium))
+                        Text("定时上报心跳并轮询命令，收到指令自动拉起哔哩Plus播放")
+                            .font(.system(size: 11)).foregroundColor(.secondary)
+                    }
+                }
+                .tint(Theme.accent)
+                .onChange(of: remoteOn) { v in
+                    UserDefaults.standard.set(v, forKey: "bb.remoteEnabled")
+                    RemoteService.shared.applySettings()
+                }
+
+                TextField("设备标识（如 iPhone16e）", text: $remoteDevice)
+                    .font(.system(size: 13))
+                    .padding(10)
+                    .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(.secondarySystemBackground)))
+                    .onChange(of: remoteDevice) { v in
+                        RemoteService.shared.device = v
+                    }
+
+                SecureField("访问令牌（Token）", text: $remoteToken)
+                    .font(.system(size: 13))
+                    .padding(10)
+                    .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(.secondarySystemBackground)))
+                    .onChange(of: remoteToken) { v in
+                        RemoteService.shared.token = v
+                        RemoteService.shared.applySettings()
+                    }
+
+                HStack {
+                    Label("服务器", systemImage: "network").font(.system(size: 12))
+                    Spacer()
+                    Text("cuicsi.cn/remote").foregroundColor(.secondary).font(.system(size: 12))
                 }
             }
         }
