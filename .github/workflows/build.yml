@@ -9,69 +9,30 @@ jobs:
   build:
     runs-on: macos-15
     steps:
-      - name: Checkout 百宝箱
+      - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Checkout 哔哩 module (main-module)
-        uses: actions/checkout@v4
-        with:
-          repository: cuicsi666/pilipius-bili
-          ref: main-module
-          token: ${{ secrets.BIBAO_PAT }}
-          path: bili_module
-
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 3.47.5
-          cache: false
-
-      - name: Apply 哔哩 patches
-        shell: pwsh
-        run: |
-          cd bili_module
-          # patch.ps1 内部用 $env:GITHUB_WORKSPACE 拼patch路径, 嵌套目录需临时改指 module
-          $env:GITHUB_WORKSPACE = (Get-Location).Path
-          lib/scripts/patch.ps1 iOS
-
-      - name: Convert 哔哩 to Flutter module (.ios/)
-        run: |
-          # 在全新空目录创建 module(可靠生成 .ios/), 再拷入哔哩代码
-          mkdir -p bili_mod
-          cd bili_mod
-          flutter create --template=module --project-name biliplus --org com.cuicsi .
-          echo "=== .ios 骨架 ==="; ls .ios/Flutter/podhelper.rb
-          # 拷入哔哩业务代码与资源
-          cp -R ../bili_module/lib ./lib
-          cp ../bili_module/pubspec.yaml ./pubspec.yaml
-          cp ../bili_module/pubspec.lock ./pubspec.lock || true
-          [ -d ../bili_module/assets ] && cp -R ../bili_module/assets ./assets || true
-          [ -d ../bili_module/tool ] && cp -R ../bili_module/tool ./tool || true
-          ls lib | head -3
-          # 打点/补丁已在 bili_module 里应用, 拷贝即含
-          flutter pub get
-          echo "=== podhelper ok ==="; ls .ios/Flutter/podhelper.rb
-          # 把 module 目录放回预期路径
-          cd ..
-          rm -rf bili_module
-          mv bili_mod bili_module
-          ls bili_module/.ios/Flutter/podhelper.rb
-          echo "=== pub get done ==="
 
       - name: Install XcodeGen
         run: brew install xcodegen
 
+      - name: Download BiliPlus embedded framework (assets API)
+        run: |
+          # 私有repo asset 下载必须走 assets API(浏览器URL会404)
+          FW_ASSET_ID="623810808"
+          FW_URL="https://api.github.com/repos/cuicsi666/pilipius-bili/releases/assets/${FW_ASSET_ID}"
+          echo "下载框架: $FW_URL"
+          curl -sL -H "Authorization: token ${{ secrets.BIBAO_PAT }}" -H "Accept: application/octet-stream" "$FW_URL" -o /tmp/biliplus-internal-fw.tar.gz
+          ls -lh /tmp/biliplus-internal-fw.tar.gz
+          mkdir -p modules/Release
+          tar xzf /tmp/biliplus-internal-fw.tar.gz -C modules/Release --strip-components=1
+          echo "=== 解出的 xcframework ==="
+          ls modules/Release/*.xcframework | wc -l
+
+      - name: Inject framework deps into project.yml
+        run: python3 scripts/inject_embed_deps.py .
+
       - name: Generate Xcode project
         run: xcodegen generate
-
-      - name: Pod install (Flutter pods)
-        run: |
-          echo "=== pbxproj 里的 FLUTTER_APPLICATION_PATH ==="
-          grep -n "FLUTTER_APPLICATION_PATH" Baibaoshi.xcodeproj/project.pbxproj | head -5 || echo "pbxproj里没有!"
-          echo "=== 生成的 podspec script phase ==="
-          grep -rn "xcode_backend\|script_phases\|Run Flutter Build" bili_module/.ios/Flutter/*.podspec | head -10 || true
-          pod install --repo-update 2>&1 | tail -20
-          echo "=== workspace ==="; ls -la Baibaoshi.xcworkspace
 
       - name: Build libssh2 + mbedtls (iOS arm64)
         run: |
@@ -97,11 +58,11 @@ jobs:
           cmake --build libssh2-build -j
           ls -la libssh2-build/src/*.a prefix/lib/*.a
 
-      - name: Build iOS app (workspace, no archive)
+      - name: Build iOS app (no archive, avoid bitcode_strip)
         run: |
           set -o pipefail
           xcodebuild build \
-            -workspace Baibaoshi.xcworkspace \
+            -project Baibaoshi.xcodeproj \
             -scheme Baibaoshi \
             -configuration Release \
             -sdk iphoneos \
@@ -109,7 +70,7 @@ jobs:
             -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" ENABLE_BITCODE=NO | tee build.log | tail -40
           APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
-          ls -d "$APP" && echo "APP 构建成功"
+          ls -d "$APP" && echo "APP 构建成功: $APP"
 
       - name: Show errors on failure
         if: failure()
@@ -120,6 +81,9 @@ jobs:
           APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
           mkdir -p build/Payload
           cp -R "$APP" build/Payload/
+          # ✅ 白屏根因修复: 引擎从主bundle根读 ICU 数据, 必须拷到 .app 根
+          cp "$APP/Frameworks/Flutter.framework/icudtl.dat" "$APP/icudtl.dat" 2>/dev/null || echo "icudtl 拷贝失败!"
+          ls -la "$APP/icudtl.dat"
           cd build && zip -qry Baibaoshi.ipa Payload && ls -la Baibaoshi.ipa
 
       - name: Upload artifact
