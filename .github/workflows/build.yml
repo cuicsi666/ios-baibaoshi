@@ -15,17 +15,47 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
+      - name: Download BiliPlus embedded framework (from bili GitHub Release)
+        run: |
+          # 从哔哩public repo Release 下载最新内嵌框架
+          FW_TAG="framework-v2-internal"
+          REL_URL="https://api.github.com/repos/cuicsi666/pilipius-bili/releases/tags/${FW_TAG}"
+          DL_URL=$(curl -s "$REL_URL" | python3 -c "import sys,json;d=json.load(sys.stdin);as=[a for a in d.get('assets',[]) if a['name']=='biliplus-internal-fw.tar.gz'];print(as[0]['browser_download_url'] if as else '')")
+          echo "框架下载地址: $DL_URL"
+          curl -sL "$DL_URL" -o /tmp/biliplus-internal-fw.tar.gz
+          ls -lh /tmp/biliplus-internal-fw.tar.gz
+          mkdir -p modules/Release
+          tar xzf /tmp/biliplus-internal-fw.tar.gz -C modules/Release --strip-components=1
+          echo "=== 解出的 xcframework ==="
+          ls modules/Release/*.xcframework | wc -l
+          ls modules/Release/ | head
+
+      - name: Inject framework deps into project.yml
+        run: |
+          python3 - <<'EOF'
+          import os
+          mod_dir = "modules/Release"
+          fws = sorted([d for d in os.listdir(mod_dir) if d.endswith(".xcframework")])
+          block = "\n".join(f"      - framework: {mod_dir}/{f}\n        embed: true" for f in fws)
+          yml = open("project.yml", encoding="utf-8").read()
+          anchor = """    dependencies:
+      - target: KeyboardExt
+        embed: true"""
+          assert anchor in yml, "锚点未找到"
+          injected = "    dependencies:\n" + block + "\n      - target: KeyboardExt\n        embed: true"
+          open("project.yml", "w", encoding="utf-8").write(yml.replace(anchor, injected))
+          print(f"注入 {len(fws)} 个 framework 依赖")
+          EOF
+
       - name: Generate Xcode project
         run: xcodegen generate
 
       - name: Debug project
         run: |
+          echo "=== framework deps in pbxproj ==="
+          grep -c "modules/Release" Baibaoshi.xcodeproj/project.pbxproj || echo "0"
           echo "=== plist files ==="
-          find . -name "*.plist" -not -path "./.git/*"
-          echo "=== pbxproj INFOPLIST settings ==="
-          grep -n "INFOPLIST\|GENERATE_INFO" Baibaoshi.xcodeproj/project.pbxproj | head -10 || echo "NOT FOUND"
-          echo "=== Sources/Info.plist head ==="
-          head -8 Sources/Info.plist 2>/dev/null || echo "NO PLIST FILE"
+          find . -name "*.plist" -not -path "./.git/*" | head -5
 
       - name: Build libssh2 + mbedtls (iOS arm64)
         run: |

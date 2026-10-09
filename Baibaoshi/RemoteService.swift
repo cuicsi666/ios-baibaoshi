@@ -103,7 +103,7 @@ final class RemoteService: ObservableObject {
         }.resume()
     }
 
-    /// 执行远程命令: 深链拉起目标应用
+    /// 执行远程命令: 在内嵌引擎里打开目标应用
     private func handle(_ cmd: [String: Any]) {
         guard let app = cmd["app"] as? String else { return }
         let action = cmd["action"] as? String ?? "open"
@@ -121,26 +121,14 @@ final class RemoteService: ObservableObject {
         }
     }
 
+    /// 唤起内嵌哔哩Plus（Flutter 引擎内）
     private func openBili(action: String, keyword: String) {
-        var urlStr = "bilibili://"
-        if action == "play" && !keyword.isEmpty {
-            // 搜索 + 自动播放
-            let kw = keyword.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-            urlStr = "bilibili://search?keyword=\(kw)&autoplay=1"
-        } else {
-            urlStr = "bilibili://"
-        }
-        guard let url = URL(string: urlStr),
-              UIApplication.shared.canOpenURL(url) else {
-            // 未安装哔哩Plus, 提示
-            NotificationManager.shared.send(title: "哔哩Plus", body: "未检测到哔哩Plus，请先安装", id: "remote-bili")
-            return
-        }
-        UIApplication.shared.open(url) { ok in
-            if !ok {
-                NotificationManager.shared.send(title: "哔哩Plus", body: "打开失败", id: "remote-bili")
-            }
-        }
+        let dict: [String: String] = [
+            "action": action,
+            "keyword": keyword,
+        ]
+        // 主线程广播，RootView 监听后打开内嵌容器并转发给 Flutter
+        NotificationCenter.default.post(name: .bbOpenBiliEmbedded, object: nil, userInfo: dict)
     }
 
     private func ack(id: Int, status: String) {
@@ -150,4 +138,9 @@ final class RemoteService: ObservableObject {
         req.httpBody = try? JSONSerialization.data(withJSONObject: ["token": token, "status": status])
         URLSession.shared.dataTask(with: req).resume()
     }
+}
+
+extension Notification.Name {
+    /// 远程命令：打开内嵌哔哩（userInfo: action / keyword）
+    static let bbOpenBiliEmbedded = Notification.Name("bb.openBiliEmbedded")
 }

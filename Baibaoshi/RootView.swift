@@ -16,6 +16,10 @@ struct RootView: View {
     @Environment(\.colorScheme) private var scheme
     @State private var query = ""
     @State private var showAll = false
+    // 远程命令唤起的内嵌哔哩
+    @State private var remoteBiliOpen = false
+    @State private var remoteBiliAction = ""
+    @State private var remoteBiliKeyword = ""
 
     private var cols: [GridItem] {
         [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
@@ -82,6 +86,23 @@ struct RootView: View {
                 }
             }
             .sheet(isPresented: $showAll) { AllModulesView() }
+        }
+        .fullScreenCover(isPresented: $remoteBiliOpen) {
+            EmbeddedAppView(app: EmbeddedApp(id: "biliplus", title: "哔哩Plus",
+                                             icon: "play.tv.fill",
+                                             colors: [Color(hex: 0x00A1D6), Color(hex: 0xF25D8E)],
+                                             engineRoute: "biliplus"))
+                .onAppear {
+                    // 引擎就绪后把远程关键词转发给 Flutter 哔哩
+                    ShellEmbed.sendBiliKeyword(action: remoteBiliAction,
+                                               keyword: remoteBiliKeyword)
+                }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .bbOpenBiliEmbedded)) { note in
+            let info = note.userInfo as? [String: String] ?? [:]
+            remoteBiliAction = info["action"] ?? "play"
+            remoteBiliKeyword = info["keyword"] ?? ""
+            withAnimation(.easeIn(duration: 0.2)) { remoteBiliOpen = true }
         }
         .onAppear {
             router.start(); idioms.start()
