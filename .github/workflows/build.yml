@@ -37,12 +37,15 @@ jobs:
       - name: Convert 哔哩 to Flutter module (.ios/)
         run: |
           cd bili_module
+          # module 模式不能有 ios/ (Runner), 否则 flutter create 不生成 .ios/
+          rm -rf ios
           # .metadata project_type: app -> module (行首无缩进)
           sed -i '' 's/^project_type: app$/project_type: module/' .metadata || sed -i 's/^project_type: app$/project_type: module/' .metadata
           grep "project_type" .metadata
           flutter create --template=module --project-name biliplus --org com.cuicsi --no-pub .
           echo "=== .ios 生成 ==="; ls -la .ios/Flutter/ | head -5
           flutter pub get
+          echo "=== podhelper ==="; ls .ios/Flutter/podhelper.rb
           echo "=== pub get done ==="
 
       - name: Install XcodeGen
