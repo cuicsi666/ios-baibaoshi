@@ -103,6 +103,7 @@ jobs:
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -derivedDataPath build/DerivedData \
+            FLUTTER_APPLICATION_PATH=bili_module \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" ENABLE_BITCODE=NO | tee build.log | tail -40
           APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
           ls -d "$APP" && echo "APP 构建成功"
