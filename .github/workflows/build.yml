@@ -36,16 +36,26 @@ jobs:
 
       - name: Convert 哔哩 to Flutter module (.ios/)
         run: |
-          cd bili_module
-          # module 模板用隐藏 .ios/.android, 必须删掉所有明面平台目录否则 create 不生成
-          rm -rf ios android windows linux macos web
-          # .metadata project_type: app -> module (行首无缩进)
-          sed -i '' 's/^project_type: app$/project_type: module/' .metadata || sed -i 's/^project_type: app$/project_type: module/' .metadata
-          grep "project_type" .metadata
-          flutter create --template=module --project-name biliplus --org com.cuicsi --no-pub .
-          echo "=== .ios 生成 ==="; ls -la .ios/Flutter/ | head -5
+          # 在全新空目录创建 module(可靠生成 .ios/), 再拷入哔哩代码
+          mkdir -p bili_mod
+          cd bili_mod
+          flutter create --template=module --project-name biliplus --org com.cuicsi .
+          echo "=== .ios 骨架 ==="; ls .ios/Flutter/podhelper.rb
+          # 拷入哔哩业务代码与资源
+          cp -R ../bili_module/lib ./lib
+          cp ../bili_module/pubspec.yaml ./pubspec.yaml
+          cp ../bili_module/pubspec.lock ./pubspec.lock || true
+          [ -d ../bili_module/assets ] && cp -R ../bili_module/assets ./assets || true
+          [ -d ../bili_module/tool ] && cp -R ../bili_module/tool ./tool || true
+          ls lib | head -3
+          # 打点/补丁已在 bili_module 里应用, 拷贝即含
           flutter pub get
-          echo "=== podhelper ==="; ls .ios/Flutter/podhelper.rb
+          echo "=== podhelper ok ==="; ls .ios/Flutter/podhelper.rb
+          # 把 module 目录放回预期路径
+          cd ..
+          rm -rf bili_module
+          mv bili_mod bili_module
+          ls bili_module/.ios/Flutter/podhelper.rb
           echo "=== pub get done ==="
 
       - name: Install XcodeGen
