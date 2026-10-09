@@ -40,7 +40,7 @@ jobs:
           # .metadata project_type: app -> module (行首无缩进)
           sed -i '' 's/^project_type: app$/project_type: module/' .metadata || sed -i 's/^project_type: app$/project_type: module/' .metadata
           grep "project_type" .metadata
-          flutter create --template=module --project-name biliplus --no-pub .
+          flutter create --template=module --project-name biliplus --org com.cuicsi --no-pub .
           echo "=== .ios 生成 ==="; ls -la .ios/Flutter/ | head -5
           flutter pub get
           echo "=== pub get done ==="
