@@ -37,6 +37,9 @@ jobs:
       - name: Convert 哔哩 to Flutter module (.ios/)
         run: |
           cd bili_module
+          # .metadata 标记 app→module, flutter create 才会生成 .ios/
+          sed -i '' 's/^  project_type: app$/  project_type: module/' .metadata || sed -i 's/^  project_type: app$/  project_type: module/' .metadata
+          grep -A1 "project:" .metadata | head -3
           flutter create --template=module --project-name biliplus --no-pub --platforms=ios .
           echo "=== .ios 生成 ==="; ls -la .ios/Flutter/ | head -5
           flutter pub get
