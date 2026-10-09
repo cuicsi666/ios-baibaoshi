@@ -67,7 +67,11 @@ struct ShellEmbedView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> FlutterViewController {
         let engine = ShellEmbed.engine(for: route)
         let vc = FlutterViewController(engine: engine, nibName: nil, bundle: nil)
-        vc.view.backgroundColor = .white
+        vc.view.backgroundColor = .systemBackground
+        // add-to-app 白屏关键修复：确保控制器在窗口层级 + 触发首次布局
+        vc.loadViewIfNeeded()
+        vc.view.setNeedsLayout()
+        vc.view.layoutIfNeeded()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             ShellEmbed.markEntered()
         }
@@ -75,6 +79,10 @@ struct ShellEmbedView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: FlutterViewController, context: Context) {}
+
+    static func dismantleUIViewController(_ uiViewController: FlutterViewController, coordinator: ()) {
+        // 保留引擎（常驻），仅释放控制器视图
+    }
 }
 
 /// 内嵌页面（导航容器 + 顶栏返回）
