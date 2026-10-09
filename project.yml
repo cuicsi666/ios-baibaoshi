@@ -12,7 +12,6 @@ settings:
     TARGETED_DEVICE_FAMILY: "1"
     ENABLE_BITCODE: "NO"
     STRIP_BITCODE_FROM_COPIED_FILES: "NO"
-    FLUTTER_APPLICATION_PATH: "$(SRCROOT)/bili_module"
 targets:
   Baibaoshi:
     type: application
