@@ -17,12 +17,11 @@ jobs:
 
       - name: Download BiliPlus embedded framework (from bili GitHub Release)
         run: |
-          # 从哔哩public repo Release 下载最新内嵌框架
-          FW_TAG="framework-v2-internal"
-          REL_URL="https://api.github.com/repos/cuicsi666/pilipius-bili/releases/tags/${FW_TAG}"
-          DL_URL=$(curl -s "$REL_URL" | python3 -c "import sys,json;d=json.load(sys.stdin);as=[a for a in d.get('assets',[]) if a['name']=='biliplus-internal-fw.tar.gz'];print(as[0]['browser_download_url'] if as else '')")
-          echo "框架下载地址: $DL_URL"
-          curl -sL "$DL_URL" -o /tmp/biliplus-internal-fw.tar.gz
+          # 私有repo asset 下载必须走 assets API(浏览器URL会404)
+          FW_ASSET_ID="623810808"
+          FW_URL="https://api.github.com/repos/cuicsi666/pilipius-bili/releases/assets/${FW_ASSET_ID}"
+          echo "下载框架: $FW_URL"
+          curl -sL -H "Authorization: token ${{ secrets.BIBAO_PAT }}" -H "Accept: application/octet-stream" "$FW_URL" -o /tmp/biliplus-internal-fw.tar.gz
           ls -lh /tmp/biliplus-internal-fw.tar.gz
           mkdir -p modules/Release
           tar xzf /tmp/biliplus-internal-fw.tar.gz -C modules/Release --strip-components=1
@@ -31,21 +30,7 @@ jobs:
           ls modules/Release/ | head
 
       - name: Inject framework deps into project.yml
-        run: |
-          python3 - <<'EOF'
-          import os
-          mod_dir = "modules/Release"
-          fws = sorted([d for d in os.listdir(mod_dir) if d.endswith(".xcframework")])
-          block = "\n".join(f"      - framework: {mod_dir}/{f}\n        embed: true" for f in fws)
-          yml = open("project.yml", encoding="utf-8").read()
-          anchor = """    dependencies:
-      - target: KeyboardExt
-        embed: true"""
-          assert anchor in yml, "锚点未找到"
-          injected = "    dependencies:\n" + block + "\n      - target: KeyboardExt\n        embed: true"
-          open("project.yml", "w", encoding="utf-8").write(yml.replace(anchor, injected))
-          print(f"注入 {len(fws)} 个 framework 依赖")
-          EOF
+        run: python3 scripts/inject_embed_deps.py .
 
       - name: Generate Xcode project
         run: xcodegen generate
@@ -81,16 +66,19 @@ jobs:
           cmake --build libssh2-build -j
           ls -la libssh2-build/src/*.a prefix/lib/*.a
 
-      - name: Archive (unsigned)
+      - name: Build iOS app (no archive, avoid bitcode_strip)
         run: |
           set -o pipefail
-          xcodebuild archive \
+          xcodebuild build \
             -project Baibaoshi.xcodeproj \
             -scheme Baibaoshi \
             -configuration Release \
+            -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -archivePath build/Baibaoshi.xcarchive \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" | tee build.log | tail -40
+            -derivedDataPath build/DerivedData \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" ENABLE_BITCODE=NO | tee build.log | tail -40
+          APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
+          ls -d "$APP" && echo "APP 构建成功: $APP"
 
       - name: Show errors on failure
         if: failure()
@@ -98,8 +86,9 @@ jobs:
 
       - name: Export IPA
         run: |
+          APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
           mkdir -p build/Payload
-          cp -R "build/Baibaoshi.xcarchive/Products/Applications/Baibaoshi.app" build/Payload/
+          cp -R "$APP" build/Payload/
           cd build && zip -qry Baibaoshi.ipa Payload && ls -la Baibaoshi.ipa
 
       - name: Upload artifact
