@@ -21,4 +21,5 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
   end
+  flutter_post_install(installer) if defined?(flutter_post_install)
 end
