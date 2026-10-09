@@ -22,4 +22,12 @@ post_install do |installer|
     flutter_additional_ios_build_settings(target)
   end
   flutter_post_install(installer) if defined?(flutter_post_install)
+  # 宿主 target 显式注入 module 路径(target级优先级最高, 否则 xcode_backend 回退到 $SOURCE_ROOT/.. 不存在)
+  installer.user_project.targets.each do |t|
+    next unless t.name == 'Baibaoshi'
+    t.build_configurations.each do |config|
+      config.build_settings['FLUTTER_APPLICATION_PATH'] = '$(SRCROOT)/bili_module'
+    end
+  end
+  installer.user_project.save
 end
