@@ -66,6 +66,10 @@ jobs:
 
       - name: Pod install (Flutter pods)
         run: |
+          echo "=== pbxproj 里的 FLUTTER_APPLICATION_PATH ==="
+          grep -n "FLUTTER_APPLICATION_PATH" Baibaoshi.xcodeproj/project.pbxproj | head -5 || echo "pbxproj里没有!"
+          echo "=== 生成的 podspec script phase ==="
+          grep -rn "xcode_backend\|script_phases\|Run Flutter Build" bili_module/.ios/Flutter/*.podspec | head -10 || true
           pod install --repo-update 2>&1 | tail -20
           echo "=== workspace ==="; ls -la Baibaoshi.xcworkspace
 
