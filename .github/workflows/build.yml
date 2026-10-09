@@ -18,7 +18,7 @@ jobs:
       - name: Download BiliPlus embedded framework (from bili GitHub Release)
         run: |
           # 私有repo asset 下载必须走 assets API(浏览器URL会404)
-          FW_ASSET_ID="623810808"
+          FW_ASSET_ID="624676515"
           FW_URL="https://api.github.com/repos/cuicsi666/pilipius-bili/releases/assets/${FW_ASSET_ID}"
           echo "下载框架: $FW_URL"
           curl -sL -H "Authorization: token ${{ secrets.BIBAO_PAT }}" -H "Accept: application/octet-stream" "$FW_URL" -o /tmp/biliplus-internal-fw.tar.gz
