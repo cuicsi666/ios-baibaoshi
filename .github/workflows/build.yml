@@ -80,10 +80,11 @@ jobs:
         run: |
           APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
           mkdir -p build/Payload
-          cp -R "$APP" build/Payload/
-          # ✅ 白屏根因修复: 引擎从主bundle根读 ICU 数据, 必须拷到 .app 根
-          cp "$APP/Frameworks/Flutter.framework/icudtl.dat" "$APP/icudtl.dat" 2>/dev/null || echo "icudtl 拷贝失败!"
+          # ✅ 先拷 icudtl 到 app 根(引擎文本渲染数据), 再进 Payload
+          cp "$APP/Frameworks/Flutter.framework/icudtl.dat" "$APP/icudtl.dat"
           ls -la "$APP/icudtl.dat"
+          cp -R "$APP" build/Payload/
+          ls -la build/Payload/Baibaoshi.app/icudtl.dat
           cd build && zip -qry Baibaoshi.ipa Payload && ls -la Baibaoshi.ipa
 
       - name: Upload artifact
