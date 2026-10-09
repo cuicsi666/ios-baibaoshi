@@ -37,7 +37,7 @@ enum ModuleRegistry {
             EmbeddedAppView(app: EmbeddedApp(id: "biliplus", title: "哔哩Plus",
                                              icon: "play.tv.fill",
                                              colors: [Color(hex: 0x00A1D6), Color(hex: 0xF25D8E)],
-                                             engineRoute: "biliplus"))
+                                             engineRoute: "/"))
         },
 
         // ───────────────────────── 计算转换 ─────────────────────────

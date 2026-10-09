@@ -9,38 +9,47 @@ jobs:
   build:
     runs-on: macos-15
     steps:
-      - name: Checkout
+      - name: Checkout 百宝箱
         uses: actions/checkout@v4
+
+      - name: Checkout 哔哩 module (main-module)
+        uses: actions/checkout@v4
+        with:
+          repository: cuicsi666/pilipius-bili
+          ref: main-module
+          token: ${{ secrets.BIBAO_PAT }}
+          path: bili_module
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.5
+          cache: false
+
+      - name: Apply 哔哩 patches
+        shell: pwsh
+        run: |
+          cd bili_module
+          lib/scripts/patch.ps1 iOS
+
+      - name: Convert 哔哩 to Flutter module (.ios/)
+        run: |
+          cd bili_module
+          flutter create --template=module --project-name biliplus --no-pub --platforms=ios .
+          echo "=== .ios 生成 ==="; ls -la .ios/Flutter/ | head -5
+          flutter pub get
+          echo "=== pub get done ==="
 
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Download BiliPlus embedded framework (from bili GitHub Release)
-        run: |
-          # 私有repo asset 下载必须走 assets API(浏览器URL会404)
-          FW_ASSET_ID="624676515"
-          FW_URL="https://api.github.com/repos/cuicsi666/pilipius-bili/releases/assets/${FW_ASSET_ID}"
-          echo "下载框架: $FW_URL"
-          curl -sL -H "Authorization: token ${{ secrets.BIBAO_PAT }}" -H "Accept: application/octet-stream" "$FW_URL" -o /tmp/biliplus-internal-fw.tar.gz
-          ls -lh /tmp/biliplus-internal-fw.tar.gz
-          mkdir -p modules/Release
-          tar xzf /tmp/biliplus-internal-fw.tar.gz -C modules/Release --strip-components=1
-          echo "=== 解出的 xcframework ==="
-          ls modules/Release/*.xcframework | wc -l
-          ls modules/Release/ | head
-
-      - name: Inject framework deps into project.yml
-        run: python3 scripts/inject_embed_deps.py .
-
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Debug project
+      - name: Pod install (Flutter pods)
         run: |
-          echo "=== framework deps in pbxproj ==="
-          grep -c "modules/Release" Baibaoshi.xcodeproj/project.pbxproj || echo "0"
-          echo "=== plist files ==="
-          find . -name "*.plist" -not -path "./.git/*" | head -5
+          pod install --repo-update 2>&1 | tail -20
+          echo "=== workspace ==="; ls -la Baibaoshi.xcworkspace
 
       - name: Build libssh2 + mbedtls (iOS arm64)
         run: |
@@ -66,11 +75,11 @@ jobs:
           cmake --build libssh2-build -j
           ls -la libssh2-build/src/*.a prefix/lib/*.a
 
-      - name: Build iOS app (no archive, avoid bitcode_strip)
+      - name: Build iOS app (workspace, no archive)
         run: |
           set -o pipefail
           xcodebuild build \
-            -project Baibaoshi.xcodeproj \
+            -workspace Baibaoshi.xcworkspace \
             -scheme Baibaoshi \
             -configuration Release \
             -sdk iphoneos \
@@ -78,7 +87,7 @@ jobs:
             -derivedDataPath build/DerivedData \
             CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" ENABLE_BITCODE=NO | tee build.log | tail -40
           APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
-          ls -d "$APP" && echo "APP 构建成功: $APP"
+          ls -d "$APP" && echo "APP 构建成功"
 
       - name: Show errors on failure
         if: failure()

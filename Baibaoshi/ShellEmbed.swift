@@ -28,6 +28,13 @@ enum ShellEmbed {
         let appRoute: String = route.isEmpty ? "/" : route
         let runOK = e.run(withEntrypoint: nil, initialRoute: appRoute)
         AppLog.log("Embed", "引擎 run: \(runOK)  route=\(appRoute)")
+        // 注册 Flutter 插件(GeneratedPluginRegistrant, runtime 调用避免 import 依赖)
+        if let cls = NSClassFromString("GeneratedPluginRegistrant") as? NSObject.Type {
+            cls.perform(NSSelectorFromString("registerWithRegistry:"), with: e)
+            AppLog.log("Embed", "插件注册完成")
+        } else {
+            AppLog.log("Embed", "未找到 GeneratedPluginRegistrant")
+        }
         registerDiagnosticHandler(engine: e)
         engine = e
         ready = runOK
