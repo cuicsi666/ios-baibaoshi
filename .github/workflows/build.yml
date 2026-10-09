@@ -30,6 +30,8 @@ jobs:
         shell: pwsh
         run: |
           cd bili_module
+          # patch.ps1 内部用 $env:GITHUB_WORKSPACE 拼patch路径, 嵌套目录需临时改指 module
+          $env:GITHUB_WORKSPACE = (Get-Location).Path
           lib/scripts/patch.ps1 iOS
 
       - name: Convert 哔哩 to Flutter module (.ios/)
