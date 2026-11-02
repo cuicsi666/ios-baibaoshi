@@ -1,6 +1,6 @@
 import SwiftUI
 
-// V17 启动探针：逐项初始化，屏幕实时显示走到哪一步
+// V18 分层渲染探针：逐层测试 SwiftUI 组件，定位首页白屏
 @main
 struct BaibaoshiApp: App {
     var body: some Scene {
@@ -18,65 +18,112 @@ struct BootProbe: View {
     @State private var history: ChargeHistory?
     @State private var theme: ThemeManager?
 
-    private let names = ["ThemeManager", "RouterPoller", "IdiomStore",
-                         "BLEManager(蓝牙)", "BatteryMonitor", "ChargeHistory", "ModuleRegistry(36模块)"]
-
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
+        Group {
             if done, let r = router, let i = idioms, let b = ble,
                let m = monitor, let c = history, let t = theme {
-                RootView()
-                    .environmentObject(r)
-                    .environmentObject(i)
-                    .environmentObject(b)
-                    .environmentObject(m)
-                    .environmentObject(c)
-                    .preferredColorScheme(t.preferredScheme)
+                SectionProbe(router: r, idioms: i, ble: b, monitor: m, history: c, theme: t)
             } else {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("V17 启动探针 17.0")
-                            .font(.system(size: 16, weight: .bold, design: .monospaced))
-                            .foregroundColor(.yellow)
-                            .padding(.bottom, 8)
-                        ForEach(Array(lines.enumerated()), id: \.offset) { _, s in
-                            Text(s)
-                                .font(.system(size: 15, weight: .semibold, design: .monospaced))
-                                .foregroundColor(s.hasPrefix("✅") ? .green : (s.hasPrefix("▶︎") ? .white : .red))
+                ZStack {
+                    Color.black.ignoresSafeArea()
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("V18 启动探针").font(.system(size: 16, weight: .bold, design: .monospaced)).foregroundColor(.yellow)
+                            ForEach(Array(lines.enumerated()), id: \.offset) { _, s in
+                                Text(s).font(.system(size: 15, design: .monospaced)).foregroundColor(.green)
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading).padding(20)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(20)
                 }
             }
         }
-        .onAppear { next(0) }
+        .onAppear { boot() }
     }
 
-    private func perform(_ i: Int) {
-        switch i {
-        case 0: theme = ThemeManager.shared
-        case 1: router = RouterPoller()
-        case 2: idioms = IdiomStore()
-        case 3: ble = BLEManager.shared
-        case 4: monitor = BatteryMonitor.shared
-        case 5: history = ChargeHistory.shared
-        default: _ = ModuleRegistry.all.count
+    private func boot() {
+        theme = ThemeManager.shared
+        router = RouterPoller()
+        idioms = IdiomStore()
+        ble = BLEManager.shared
+        monitor = BatteryMonitor.shared
+        history = ChargeHistory.shared
+        _ = ModuleRegistry.all.count
+        lines.append("✅ 全部初始化完成")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { done = true }
+    }
+}
+
+struct SectionProbe: View {
+    let router: RouterPoller
+    let idioms: IdiomStore
+    let ble: BLEManager
+    let monitor: BatteryMonitor
+    let history: ChargeHistory
+    let theme: ThemeManager
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                title("1 · 基础 Text")
+                ProbeBox { Text("基础渲染 OK").foregroundColor(.white) }
+
+                title("2 · ScrollView")
+                ProbeBox { ScrollView { Text("滚动 OK").foregroundColor(.white) } .frame(height: 44) }
+
+                title("3 · NavigationStack")
+                ProbeBox { NavigationStack { Text("导航容器 OK").foregroundColor(.white) } .frame(height: 60) }
+
+                title("4 · Nav + principal toolbar")
+                Section {
+                    NavigationStack {
+                        Text("principal OK").foregroundColor(.white)
+                            .toolbar { ToolbarItem(placement: .principal) { Text("标题").foregroundColor(.white) } }
+                    }
+                    .frame(height: 80)
+                }
+
+                title("5 · Nav + topBarTrailing")
+                Section {
+                    NavigationStack {
+                        Text("trailing OK").foregroundColor(.white)
+                            .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("B") {} } }
+                    }
+                    .frame(height: 80)
+                }
+
+                title("6 · BBAuroraBackground")
+                ProbeBox { BBAuroraBackground(scheme: .light).frame(height: 60) }
+
+                title("7 · 完整 RootView")
+                Section {
+                    RootView()
+                        .environmentObject(router)
+                        .environmentObject(idioms)
+                        .environmentObject(ble)
+                        .environmentObject(monitor)
+                        .environmentObject(history)
+                        .preferredColorScheme(theme.preferredScheme)
+                        .frame(height: 420)
+                }
+            }
+            .padding(14)
         }
+        .background(Color.black)
     }
 
-    private func next(_ i: Int) {
-        guard i < names.count else {
-            lines.append("✅ 全部通过，加载首页")
-            done = true
-            return
-        }
-        lines.append("▶︎ \(names[i]) …")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-            perform(i)
-            lines.append("✅ \(names[i]) 完成")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { next(i + 1) }
+    private func title(_ s: String) -> some View {
+        Text(s).font(.system(size: 13, weight: .bold, design: .monospaced)).foregroundColor(.yellow)
+    }
+
+    private struct ProbeBox<C: View>: View {
+        let content: C
+        init(@ViewBuilder content: () -> C) { self.content = content() }
+        var body: some View {
+            content
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(6)
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.25), lineWidth: 1))
         }
     }
 }
