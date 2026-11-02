@@ -127,13 +127,18 @@ final class LocalSiteServer {
                 .appendingPathComponent(site.folder) else {
             completion(404, "text/plain", Data("no bundle".utf8)); return
         }
-        let fileURL = resDir.appendingPathComponent(rel)
+        var fileURL = resDir.appendingPathComponent(rel)
+        if !FileManager.default.fileExists(atPath: fileURL.path),
+           (rel as NSString).pathExtension.isEmpty {
+            // SPA 路由回退到 index.html
+            fileURL = resDir.appendingPathComponent("index.html")
+        }
         guard fileURL.path.hasPrefix(resDir.path),
               let data = try? Data(contentsOf: fileURL) else {
             completion(404, "text/plain", Data("missing \(rel)".utf8))
             return
         }
-        completion(200, Self.mime(rel), data)
+        completion(200, Self.mime(fileURL.lastPathComponent), data)
     }
 
     private func proxy(method: String, url: String, body: Data,

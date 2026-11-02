@@ -10,6 +10,15 @@ struct WebCardView: View {
     @State private var reloadToken = UUID()
     @Environment(\.colorScheme) private var scheme
 
+    private func resolve(_ attempt: Int) {
+        if let u = LocalSiteServer.shared.url(for: siteID) {
+            url = u
+            return
+        }
+        guard attempt < 20 else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { resolve(attempt + 1) }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
@@ -61,7 +70,7 @@ struct WebCardView: View {
             }
         }
         .background(Theme.cardBg(scheme == .dark))
-        .onAppear { url = LocalSiteServer.shared.url(for: siteID) }
+        .onAppear { resolve(0) }
     }
 }
 
