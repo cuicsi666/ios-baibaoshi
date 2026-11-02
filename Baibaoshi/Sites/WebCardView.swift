@@ -21,7 +21,8 @@ struct WebCardView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        ZStack(alignment: .leading) {
+            VStack(spacing: 0) {
             HStack(spacing: 12) {
                 Button {
                     BBHaptic.tap()
@@ -69,8 +70,22 @@ struct WebCardView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Theme.cardBg(scheme == .dark))
             }
+            }
+            .background(Theme.cardBg(scheme == .dark))
+
+            // 左边缘右滑返回（替代被隐藏的系统侧滑手势）
+            Rectangle()
+                .fill(Color.black.opacity(0.001))
+                .frame(width: 26)
+                .frame(maxHeight: .infinity)
+                .contentShape(Rectangle())
+                .highPriorityGesture(
+                    DragGesture(minimumDistance: 10)
+                        .onEnded { v in
+                            if v.translation.width > 55 { dismiss() }
+                        }
+                )
         }
-        .background(Theme.cardBg(scheme == .dark))
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .onAppear { resolve(0) }
@@ -88,39 +103,6 @@ struct SiteWebView: UIViewRepresentable {
         cfg.allowsInlineMediaPlayback = true
         cfg.defaultWebpagePreferences.allowsContentJavaScript = true
 
-        // 站点页面用的是绝对路径 /api/...，本地加载时要补上站点前缀，交给内置服务器反代
-        let js = """
-        (function(){
-          var P = '/\(siteID)';
-          function fix(u){
-            if (typeof u !== 'string') return u;
-            if (u.indexOf('http') === 0 || u.indexOf('//') === 0 || u.indexOf('data:') === 0 || u.indexOf('blob:') === 0) return u;
-            if (u.charAt(0) !== '/') u = '/' + u;
-            if (u.indexOf(P + '/') === 0) return u;
-            return P + u;
-          }
-          var of = window.fetch;
-          if (of) {
-            window.fetch = function(input, init){
-              try {
-                if (typeof input === 'string') { input = fix(input); }
-                else if (input && input.url && input.url.indexOf('http://127.0.0.1') === 0) {
-                  var pu = new URL(input.url);
-                  if (pu.pathname.indexOf(P + '/') !== 0) { input = new Request(P + pu.pathname + pu.search, input); }
-                }
-              } catch(e) {}
-              return of.call(this, input, init);
-            };
-          }
-          var ox = XMLHttpRequest.prototype.open;
-          XMLHttpRequest.prototype.open = function(m, u){
-            try { arguments[1] = fix(u); } catch(e) {}
-            return ox.apply(this, arguments);
-          };
-        })();
-        """
-        cfg.userContentController.addUserScript(
-            WKUserScript(source: js, injectionTime: .atDocumentStart, forMainFrameOnly: false))
         let wv = WKWebView(frame: .zero, configuration: cfg)
         wv.isOpaque = false
         wv.backgroundColor = .clear
@@ -131,7 +113,7 @@ struct SiteWebView: UIViewRepresentable {
         wv.navigationDelegate = co
         if let r = remote {
             var req = URLRequest(url: r)
-            req.timeoutInterval = 10
+            req.timeoutInterval = 30
             wv.load(req)
         } else {
             wv.load(URLRequest(url: url))
