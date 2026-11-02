@@ -15,22 +15,6 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Download BiliPlus embedded framework (assets API)
-        run: |
-          # 私有repo asset 下载必须走 assets API(浏览器URL会404)
-          FW_ASSET_ID="623810808"
-          FW_URL="https://api.github.com/repos/cuicsi666/pilipius-bili/releases/assets/${FW_ASSET_ID}"
-          echo "下载框架: $FW_URL"
-          curl -sL -H "Authorization: token ${{ secrets.BIBAO_PAT }}" -H "Accept: application/octet-stream" "$FW_URL" -o /tmp/biliplus-internal-fw.tar.gz
-          ls -lh /tmp/biliplus-internal-fw.tar.gz
-          mkdir -p modules/Release
-          tar xzf /tmp/biliplus-internal-fw.tar.gz -C modules/Release --strip-components=1
-          echo "=== 解出的 xcframework ==="
-          ls modules/Release/*.xcframework | wc -l
-
-      - name: Inject framework deps into project.yml
-        run: python3 scripts/inject_embed_deps.py .
-
       - name: Generate Xcode project
         run: xcodegen generate
 
@@ -80,11 +64,7 @@ jobs:
         run: |
           APP=build/DerivedData/Build/Products/Release-iphoneos/Baibaoshi.app
           mkdir -p build/Payload
-          # ✅ 先拷 icudtl 到 app 根(引擎文本渲染数据), 再进 Payload
-          cp "$APP/Frameworks/Flutter.framework/icudtl.dat" "$APP/icudtl.dat"
-          ls -la "$APP/icudtl.dat"
           cp -R "$APP" build/Payload/
-          ls -la build/Payload/Baibaoshi.app/icudtl.dat
           cd build && zip -qry Baibaoshi.ipa Payload && ls -la Baibaoshi.ipa
 
       - name: Upload artifact

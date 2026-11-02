@@ -12,9 +12,9 @@ enum ModuleRegistry {
                    colors: Theme.charge, category: .core, keywords: ["充电", "电量", "电池", "预估"]) {
             CBHomeView()
         },
-        ToolModule("xvp", "XVP 播放器", "内置前端 · Face ID 解锁", icon: "play.rectangle.fill",
-                   colors: [Color(hex: 0x654EA3), Color(hex: 0xEAAFC8)], category: .core, keywords: ["播放器", "视频", "影片"]) {
-            XVPPlayerView()
+        ToolModule("remote", "远程控制", "小米 11 Pro · 屏幕/文件/短信", icon: "dot.radiowaves.left.and.right",
+                   colors: [Color(hex: 0x3B82F6), Color(hex: 0x22D3EE)], category: .core, keywords: ["远程", "控制", "手机", "安卓", "短信", "小米"]) {
+            RCFeatureView()
         },
         ToolModule("vmon", "V监控", "ESXi + OpenWrt 直连", icon: "server.rack",
                    colors: [Color(hex: 0x2C3E50), Color(hex: 0x4CA1AF)], category: .core, keywords: ["esxi", "服务器", "虚拟机", "ssh"]) {
@@ -28,18 +28,10 @@ enum ModuleRegistry {
                    colors: Theme.nav, category: .core, keywords: ["ai", "token", "花销", "api"]) {
             AIUsageView()
         },
-        ToolModule("settings", "设置", "主题 · 保活 · 更新", icon: "gearshape.fill",
-                   colors: [Color(hex: 0x8E9AAF), Color(hex: 0x5C6672)], category: .core, keywords: ["设置", "主题", "保活", "更新"]) {
+        ToolModule("settings", "设置", "主题 · 图标 · 保活", icon: "gearshape.fill",
+                   colors: [Color(hex: 0x8E9AAF), Color(hex: 0x5C6672)], category: .core, keywords: ["设置", "主题", "图标", "保活"]) {
             SettingsView()
         },
-        ToolModule("biliplus", "哔哩Plus", "内嵌 · 跳过赞助", icon: "play.tv.fill",
-                   colors: [Color(hex: 0x00A1D6), Color(hex: 0xF25D8E)], category: .core, keywords: ["哔哩", "bilibili", "视频", "哔哩哔哩", "b站", "pili"]) {
-            EmbeddedAppView(app: EmbeddedApp(id: "biliplus", title: "哔哩Plus",
-                                             icon: "play.tv.fill",
-                                             colors: [Color(hex: 0x00A1D6), Color(hex: 0xF25D8E)],
-                                             engineRoute: "/"))
-        },
-
         // ───────────────────────── 计算转换 ─────────────────────────
         ToolModule("calcSci", "科学计算器", "四则运算 · 函数 · 括号", icon: "function",
                    colors: [Color(hex: 0x34E0A1), Color(hex: 0x18B26B)], category: .calc, keywords: ["计算器", "sin", "对数", "开方"]) {

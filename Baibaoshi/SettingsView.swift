@@ -5,16 +5,11 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var theme = ThemeManager.shared
     @ObservedObject var keepAlive = KeepAliveService.shared
-    @ObservedObject var updater = UpdateService.shared
     @EnvironmentObject var chargeHistory: ChargeHistory
     @Environment(\.colorScheme) private var scheme
 
     @AppStorage("bb.keepAlive") private var keepAliveOn = true
-    @AppStorage("bb.remoteEnabled") private var remoteOn = true
-    @State private var remoteToken = RemoteService.shared.token
-    @State private var remoteDevice = RemoteService.shared.device
     @State private var showClearAlert = false
-    @State private var showShare = false
     @State private var uploadMsg = ""
 
     private var appVersion: String {
@@ -50,9 +45,8 @@ struct SettingsView: View {
         ScrollView {
             VStack(spacing: 14) {
                 appearanceCard
-                updateCard
+                iconCard
                 keepAliveCard
-                remoteCard
                 chargeCard
                 dataCard
                 aboutCard
@@ -115,88 +109,60 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: 软件更新
+    // MARK: 应用图标
 
-    @ViewBuilder private var updateCard: some View {
+    @ObservedObject private var iconMgr = AppIconManager.shared
+
+    private var iconCard: some View {
         BBCard {
-            VStack(alignment: .leading, spacing: 12) {
-                BBSectionHeader("软件更新", icon: "arrow.triangle.2.circlepath")
-                if updater.checking {
-                    HStack(spacing: 10) {
-                        ProgressView(); Text("正在检查更新…").foregroundColor(.secondary).font(.system(size: 14))
-                    }
-                } else if updater.hasUpdate {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Image(systemName: "arrow.down.circle.fill").foregroundColor(Theme.success)
-                            Text("发现新版本 V\(updater.newVersion)").font(.system(size: 15, weight: .semibold))
-                            Spacer()
-                            Text("当前 V\(appVersion)").font(.system(size: 11)).foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 14) {
+                BBSectionHeader("应用图标", icon: "app.badge.fill")
+                Text("换一套桌面图标，看看哪个顺眼 🦞")
+                    .font(.system(size: 11)).foregroundColor(.secondary)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 14) {
+                        ForEach(iconMgr.styles) { st in
+                            Button {
+                                BBHaptic.select()
+                                iconMgr.set(st.id)
+                            } label: {
+                                VStack(spacing: 7) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                                            .fill(LinearGradient(colors: st.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+                                            .frame(width: 62, height: 62)
+                                            .overlay(
+                                                Image(systemName: "shippingbox.fill")
+                                                    .font(.system(size: 26, weight: .semibold))
+                                                    .foregroundColor(.white)
+                                            )
+                                            .shadow(color: st.colors[0].opacity(0.35), radius: 7, y: 4)
+                                        if iconMgr.current == st.id {
+                                            RoundedRectangle(cornerRadius: 21, style: .continuous)
+                                                .strokeBorder(Theme.accent, lineWidth: 2.5)
+                                                .frame(width: 70, height: 70)
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .font(.system(size: 17))
+                                                .foregroundColor(Theme.accent)
+                                                .background(Circle().fill(Color(.systemBackground)).frame(width: 15, height: 15))
+                                                .offset(x: 26, y: 26)
+                                        }
+                                    }
+                                    .frame(width: 72, height: 72)
+                                    Text(st.name)
+                                        .font(.system(size: 10, weight: iconMgr.current == st.id ? .semibold : .regular))
+                                        .foregroundColor(iconMgr.current == st.id ? .primary : .secondary)
+                                }
+                            }
+                            .buttonStyle(.plain)
                         }
-                        if !updater.releaseNotes.isEmpty {
-                            Text(updater.releaseNotes).font(.system(size: 12)).foregroundColor(.secondary).lineLimit(6)
-                        }
-                        BBPrimaryButton(title: "立即安装（OTA 直装）", icon: "bolt.fill",
-                                        colors: [Theme.success, Color(hex: 0x0FA968)]) {
-                            updater.installUpdate()
-                        }
-                        Text("点击后自动跳转 Safari 安装，无需全能签")
-                            .font(.system(size: 10)).foregroundColor(.secondary)
                     }
-                } else {
-                    BBRow(title: "当前版本", icon: "app.badge.fill", value: "V\(appVersion)", showsChevron: false)
-                    if !updater.message.isEmpty {
-                        Text(updater.message).font(.system(size: 11)).foregroundColor(.secondary)
-                    }
-                    BBGhostButton(title: "检查更新", icon: "arrow.clockwise") {
-                        updater.check { _ in }
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: 远程操控
-
-    private var remoteCard: some View {
-        BBCard {
-            VStack(alignment: .leading, spacing: 12) {
-                BBSectionHeader("远程操控", icon: "antenna.radiowaves.left.and.right")
-                Toggle(isOn: $remoteOn) {
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text("远程操控引擎").font(.system(size: 14, weight: .medium))
-                        Text("定时上报心跳并轮询命令，收到指令自动拉起哔哩Plus播放")
-                            .font(.system(size: 11)).foregroundColor(.secondary)
-                    }
-                }
-                .tint(Theme.accent)
-                .onChange(of: remoteOn) { v in
-                    UserDefaults.standard.set(v, forKey: "bb.remoteEnabled")
-                    RemoteService.shared.applySettings()
+                    .padding(.vertical, 4)
                 }
 
-                TextField("设备标识（如 iPhone16e）", text: $remoteDevice)
-                    .font(.system(size: 13))
-                    .padding(10)
-                    .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(.secondarySystemBackground)))
-                    .onChange(of: remoteDevice) { v in
-                        RemoteService.shared.device = v
-                    }
-
-                SecureField("访问令牌（Token）", text: $remoteToken)
-                    .font(.system(size: 13))
-                    .padding(10)
-                    .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Color(.secondarySystemBackground)))
-                    .onChange(of: remoteToken) { v in
-                        RemoteService.shared.token = v
-                        RemoteService.shared.applySettings()
-                    }
-
-                HStack {
-                    Label("服务器", systemImage: "network").font(.system(size: 12))
-                    Spacer()
-                    Text("cuicsi.cn/remote").foregroundColor(.secondary).font(.system(size: 12))
-                }
+                Text("切换后系统会弹一次确认，点「更改图标」即可")
+                    .font(.system(size: 10)).foregroundColor(.secondary)
             }
         }
     }
@@ -293,7 +259,7 @@ struct SettingsView: View {
                 }
                 Divider()
                 BBRow(title: "功能模块", icon: "square.grid.2x2.fill", value: "\(ModuleRegistry.all.count) 个")
-                BBRow(title: "全部应用", icon: "app.badge", value: "电管家 · XVP · V监控 · 工具集")
+                BBRow(title: "全部应用", icon: "app.badge", value: "电管家 · 远程控制 · V监控 · 工具集")
                 BBRow(title: "构建", icon: "hammer.fill", value: "GitHub Actions + zsign")
                 Text("🦞 由小龙虾持续维护 · 有问题直接喊我")
                     .font(.system(size: 11)).foregroundColor(.secondary)
@@ -321,4 +287,44 @@ struct ShareSheet: UIViewControllerRepresentable {
     let vc: UIViewController
     func makeUIViewController(context: Context) -> UIViewController { vc }
     func updateUIViewController(_ vc: UIViewController, context: Context) {}
+}
+
+
+// MARK: - 应用图标管理（iOS 备用图标）
+
+final class AppIconManager: ObservableObject {
+    static let shared = AppIconManager()
+
+    struct Style: Identifiable {
+        let id: String
+        let name: String
+        let colors: [Color]
+    }
+
+    /// 第一个为默认图标，其余为 Assets 里的备用图标（AppIcon1...5）
+    let styles: [Style] = [
+        .init(id: "AppIcon",  name: "经典",   colors: [Color(hex: 0x7C8BA1), Color(hex: 0x3D4756)]),
+        .init(id: "AppIcon1", name: "极光青", colors: [Color(hex: 0x0EA5E9), Color(hex: 0x0F766E)]),
+        .init(id: "AppIcon2", name: "晨曦橙", colors: [Color(hex: 0xFBB03B), Color(hex: 0xF43F5E)]),
+        .init(id: "AppIcon3", name: "薄荷绿", colors: [Color(hex: 0x34D399), Color(hex: 0x0D9488)]),
+        .init(id: "AppIcon4", name: "霓虹紫", colors: [Color(hex: 0x8B5CF6), Color(hex: 0xEC4899)]),
+        .init(id: "AppIcon5", name: "珊瑚蓝", colors: [Color(hex: 0x38BDF8), Color(hex: 0x6366F1)]),
+    ]
+
+    @Published var current: String = UIApplication.shared.alternateIconName ?? "AppIcon"
+
+    func set(_ id: String) {
+        guard UIApplication.shared.supportsAlternateIcons else { return }
+        let target: String? = (id == "AppIcon") ? nil : id
+        UIApplication.shared.setAlternateIconName(target) { [weak self] err in
+            DispatchQueue.main.async {
+                if err == nil {
+                    self?.current = id
+                    BBHaptic.success()
+                } else {
+                    BBHaptic.warn()
+                }
+            }
+        }
+    }
 }

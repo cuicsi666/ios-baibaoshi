@@ -1,0 +1,534 @@
+import SwiftUI
+
+struct RCFeatureView: View {
+    @StateObject private var state = AppState()
+
+    init() {
+        Diag.mark("app-init")
+        Diag.startReporter()
+        // 捕获 Objective-C 异常，留存到下次启动查看
+        NSSetUncaughtExceptionHandler { ex in
+            let text = "\(ex.name.rawValue) \(ex.reason ?? "")\n" + ex.callStackSymbols.joined(separator: "\n")
+            UserDefaults.standard.set(text, forKey: "rc.lastCrash")
+        }
+    }
+
+    var body: some View {
+            Group {
+                if state.token.isEmpty {
+                    ConnectView()
+                } else {
+                    RCRootView()
+                }
+            }
+            .environmentObject(state)
+            .preferredColorScheme(.light)
+            .onOpenURL { url in
+                handleURL(url)
+            }
+    }
+}
+
+extension RCFeatureView {
+    /// 给「快捷指令」用：rccontrol://wake / screenshot / open?pkg=xxx / exec?cmd=xxx / lock
+    func handleURL(_ url: URL) {
+        guard url.scheme == "rccontrol" else { return }
+        Task {
+            do {
+                switch url.host {
+                case "wake": try await Agent.shared.key("wake")
+                case "lock": try await Agent.shared.power("screen_off")
+                case "screenshot":
+                    let img = try await Agent.shared.screenshot(max: 0, quality: 92)
+                    UIImageWriteToSavedPhotosAlbum(img, nil, nil, nil)
+                case "open":
+                    if let pkg = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                        .queryItems?.first(where: { $0.name == "pkg" })?.value {
+                        try await Agent.shared.launch(pkg)
+                    }
+                case "exec":
+                    if let cmd = URLComponents(url: url, resolvingAgainstBaseURL: false)?
+                        .queryItems?.first(where: { $0.name == "cmd" })?.value {
+                        _ = try await Agent.shared.exec(cmd)
+                    }
+                default: break
+                }
+            } catch { Diag.err("url: \(error.localizedDescription)") }
+        }
+    }
+}
+
+struct RCRootView: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var backgroundedAt: Date?
+    @EnvironmentObject var app: AppState
+    @StateObject private var sms = SMSStore()
+    @StateObject private var deviceStore = DeviceStore()
+    @State private var tab = 0
+    @State private var showSettings = false
+    @State private var stats: LiveStats?
+    @State private var chargeBusy = false
+    @State private var chargeToast: String?
+    @State private var latency = 0
+    @State private var statFails = 0
+
+    var body: some View {
+        VStack(spacing: 0) {
+            header
+            if let err = app.lastError, !app.connected {
+                errorBar(err)
+            }
+            AutoBar()
+
+            TabView(selection: $tab) {
+                ScreenView()
+                    .tabItem { Label("屏幕", systemImage: "iphone.gen3") }
+                    .tag(0)
+                    
+                NotificationsView()
+                    .tabItem { Label("通知", systemImage: "bell") }
+                    .tag(1)
+                ToolsView(active: tab == 2)
+                    .tabItem { Label("工具", systemImage: "square.grid.2x2") }
+                    .tag(2)
+                    
+                SMSView()
+                    .tabItem { Label("短信", systemImage: "message") }
+                    .badge(sms.unread > 0 ? sms.unread : 0)
+                    .tag(3)
+            }
+            .accentColor(RCTheme.accent)
+            .environmentObject(sms)
+        }
+        .background(RCTheme.bg.ignoresSafeArea())
+        .preferredColorScheme(.light)
+        .overlay(alignment: .top) {
+            if let t = chargeToast {
+                Text(t)
+                    .font(.system(size: 12, weight: .semibold))
+                    .padding(.horizontal, 14).padding(.vertical, 8)
+                    .background(Color.black.opacity(0.82))
+                    .foregroundColor(.white)
+                    .clipShape(Capsule())
+                    .padding(.top, 96)
+            }
+        }
+        .sheet(isPresented: $showSettings) { RCSettingsView() }
+        .onChange(of: scenePhase) { phase in
+            if phase == .background {
+                backgroundedAt = Date()
+                BackgroundKeeper.shared.start()
+            } else if phase == .active {
+                let away = Date().timeIntervalSince(backgroundedAt ?? Date())
+                backgroundedAt = nil
+                BackgroundKeeper.shared.stop()
+                if away > 10 {
+                    Diag.mark("foreground-\(Int(away))s")
+                    Task {
+                        // 从后台回来：唤醒屏幕 + 刷新状态 + 重建推流
+                        try? await Agent.shared.key("wake")
+                        await app.refreshInfo()
+                        NotificationCenter.default.post(name: .rcForeground, object: nil)
+                    }
+                }
+            }
+        }
+        .task {
+            Diag.mark("root-task")
+            try? await Agent.shared.key("wake")
+            await app.connect()
+            sms.start()
+            try? await Task.sleep(nanoseconds: 2_500_000_000)
+            Diag.finishLaunch()
+            Diag.mark("launch-ok")
+        }
+    }
+
+    private var header: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 10) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 9)
+                        .fill(RCTheme.accent.opacity(0.12))
+                        .frame(width: 34, height: 34)
+                    Image(systemName: "dot.radiowaves.left.and.right")
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(RCTheme.accent)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    // V4.7 多设备：点型号可下拉切换设备
+                    DeviceSwitcher(store: deviceStore) {
+                        Task {
+                            await app.connect()
+                            NotificationCenter.default.post(name: .rcForeground, object: nil)
+                        }
+                    }
+                    HStack(spacing: 5) {
+                        if let a = app.deviceInfo?.android, !a.isEmpty {
+                            Text("Android \(a)").font(.system(size: 10)).foregroundColor(RCTheme.dim)
+                        }
+                        if app.deviceInfo?.root == true { TagView(text: "ROOT") }
+                    }
+                }
+                Spacer()
+                HStack(spacing: 4) {
+                    Circle().fill(app.connected ? RCTheme.green : RCTheme.red).frame(width: 7, height: 7)
+                    Text(app.connected ? "已连接" : "未连接")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundColor(app.connected ? RCTheme.green : RCTheme.red)
+                    if latency > 0 {
+                        Text("\(latency)ms")
+                            .font(.system(size: 9, design: .monospaced))
+                            .foregroundColor(RCTheme.dim)
+                    }
+                }
+                Button { showSettings = true } label: {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 17))
+                        .foregroundColor(RCTheme.sub)
+                }
+            }
+
+            HStack(spacing: 0) {
+                Button { toggleCharge() } label: {
+                    metric(batteryIcon, batteryText, batteryLabel, batteryColor)
+                }
+                .buttonStyle(.plain)
+                .disabled(chargeBusy)
+                divider
+                metric("cpu", cpuText, "CPU", RCTheme.text)
+                divider
+                metric("memorychip", memText, "内存", RCTheme.text)
+                divider
+                metric("thermometer.medium", tempText, "电池温度", tempColor)
+            }
+            .padding(.vertical, 6)
+            .background(RCTheme.fill.opacity(0.7))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+        .padding(.horizontal, 14)
+        .padding(.top, 10)
+        .padding(.bottom, 8)
+        .background(RCTheme.card)
+        .overlay(Rectangle().frame(height: 1).foregroundColor(RCTheme.line), alignment: .bottom)
+        .task {
+            while !Task.isCancelled {
+                await refreshStats()
+                try? await Task.sleep(nanoseconds: 15_000_000_000)
+            }
+        }
+    }
+
+    private var divider: some View {
+        Rectangle().fill(RCTheme.line).frame(width: 1, height: 22)
+    }
+
+    private func metric(_ icon: String, _ value: String, _ label: String, _ color: Color) -> some View {
+        VStack(spacing: 2) {
+            HStack(spacing: 3) {
+                Image(systemName: icon)
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundColor(RCTheme.dim)
+                Text(value)
+                    .font(.system(size: 12, weight: .semibold, design: .rounded))
+                    .foregroundColor(color)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            Text(label)
+                .font(.system(size: 9))
+                .foregroundColor(RCTheme.dim)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var charging: Bool {
+        let st = stats?.battery?.status ?? 0
+        return st == 2 || st == 5
+    }
+
+    private var batteryLabel: String {
+        let st = stats?.battery?.status ?? 0
+        if st == 5 { return "已充满" }
+        return st == 2 ? "充电中" : "电量"
+    }
+
+    private var batteryIcon: String {
+        let l = stats?.battery?.level ?? 0
+        let base = l > 85 ? "battery.100" : (l > 60 ? "battery.75" : (l > 35 ? "battery.50" : (l > 10 ? "battery.25" : "battery.0")))
+        return charging ? base + ".bolt" : base
+    }
+
+    /// 点电量：有电就停充，停着就恢复（走手机端 charge.sh）
+    private func toggleCharge() {
+        guard !chargeBusy else { return }
+        chargeBusy = true
+        Task {
+            do {
+                // 单次 exec 完成「读状态 + 反转」，避免多次请求把画面流挤掉
+                let r = try await Agent.shared.exec("sh /data/adb/rc-agent/charge.sh toggle", timeoutMS: 20000)
+                let msg = (r.output ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+                await MainActor.run { chargeToast = msg.isEmpty ? "已切换充电状态" : msg }
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                await refreshStats()
+                await MainActor.run {
+                    chargeToast = nil
+                    chargeBusy = false
+                }
+            } catch {
+                await MainActor.run {
+                    chargeToast = "操作失败：\(error.localizedDescription)"
+                    chargeBusy = false
+                }
+                try? await Task.sleep(nanoseconds: 2_500_000_000)
+                await MainActor.run { chargeToast = nil }
+            }
+        }
+    }
+
+    private var batteryText: String {
+        if let l = stats?.battery?.level { return "\(l)%" }
+        return "--"
+    }
+    private var batteryColor: Color {
+        if let l = stats?.battery?.level { return l < 20 ? RCTheme.red : RCTheme.text }
+        return RCTheme.text
+    }
+    private var cpuText: String {
+        if let u = stats?.cpu?.usage { return String(format: "%.0f%%", u) }
+        return "--"
+    }
+    private var memText: String {
+        guard let m = stats?.mem, let total = m.total_kb, total > 0 else { return "--" }
+        let usedGB = Double(total - (m.avail_kb ?? 0)) / 1024.0 / 1024.0
+        let totalGB = Double(total) / 1024.0 / 1024.0
+        return String(format: "%.1f/%.0fG", usedGB, totalGB)
+    }
+    /// 顶部温度显示电池温度（老板要求，不用 SoC 结温）
+    private var tempText: String {
+        if let t = stats?.temp_batt_c, t > 0 { return String(format: "%.0f°", t) }
+        if let t = stats?.battery?.temperature_c, t > 0 { return String(format: "%.0f°", t) }
+        if let t = stats?.temp_c, t > 0 { return String(format: "%.0f°", t) }
+        return "--"
+    }
+    private var tempColor: Color {
+        let t = stats?.temp_batt_c ?? stats?.battery?.temperature_c ?? 0
+        guard t > 0 else { return RCTheme.text }
+        return t >= 43 ? RCTheme.red : (t >= 38 ? RCTheme.orange : RCTheme.text)
+    }
+
+    private func refreshStats() async {
+        let t0 = Date()
+        do {
+            let s = try await Agent.shared.stats()
+            let ms = Int(Date().timeIntervalSince(t0) * 1000)
+            await MainActor.run {
+                stats = s
+                latency = ms
+                app.connected = true
+                statFails = 0
+            }
+        } catch {
+            // V4.7 修复：连续 2 次失败就把状态置为断开（原来永远显示绿点「已连接」）
+            await MainActor.run {
+                latency = 0
+                statFails += 1
+                if statFails >= 2 { app.connected = false }
+            }
+        }
+    }
+
+    private func errorBar(_ msg: String) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.triangle.fill").foregroundColor(RCTheme.orange)
+            Text(msg).font(.system(size: 12)).foregroundColor(RCTheme.text).lineLimit(2)
+            Spacer()
+            Button("重试") { Task { await app.connect() } }
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(RCTheme.accent)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(RCTheme.orange.opacity(0.10))
+    }
+}
+
+struct RCSettingsView: View {
+    @EnvironmentObject var app: AppState
+    @Environment(\.dismiss) var dismiss
+    @State private var testing = false
+    @State private var testResult: String?
+    @State private var ok = false
+
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("网关地址")) {
+                    TextField("https://110.42.185.227:18888", text: $app.baseURL)
+                        .keyboardType(.URL)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                }
+                Section(header: Text("访问令牌")) {
+                    TextField("与安卓端 agent.conf 的 TOKEN 一致", text: $app.token)
+                        .autocapitalization(.none)
+                        .disableAutocorrection(true)
+                        .font(.system(.footnote, design: .monospaced))
+                }
+                Section(header: Text("画质")) {
+                    Picker("画质", selection: $app.quality) {
+                        Text("流畅 540p").tag(0)
+                        Text("均衡 720p").tag(1)
+                        Text("高清 1080p").tag(2)
+                    }
+                    .pickerStyle(.segmented)
+                }
+                Section {
+                    Button {
+                        test()
+                    } label: {
+                        HStack {
+                            Text(testing ? "测试中…" : "测试连接")
+                            Spacer()
+                            if testing { ProgressView() }
+                        }
+                    }
+                    if let r = testResult {
+                        Text(r).font(.system(size: 12)).foregroundColor(ok ? RCTheme.green : RCTheme.red)
+                    }
+                }
+                if let crash = UserDefaults.standard.string(forKey: "rc.lastCrash"), !crash.isEmpty {
+                    Section(header: Text("上次崩溃记录")) {
+                        Text(crash)
+                            .font(.system(size: 10, design: .monospaced))
+                            .foregroundColor(RCTheme.red)
+                            .textSelection(.enabled)
+                        Button("清除记录") { UserDefaults.standard.removeObject(forKey: "rc.lastCrash") }
+                    }
+                }
+                Section(footer: Text("链路：iPhone → 上海云网关(18888) → SSH 反向隧道 → 安卓本机 8787。安卓端只监听 127.0.0.1，不暴露公网。")) {
+                    Button("重新连接隧道") {
+                        Task {
+                            app.apply()
+                            _ = try? await Agent.shared.reconnectTunnel()
+                            await app.connect()
+                        }
+                    }
+                }
+            }
+            .navigationTitle("连接设置")
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() } } }
+        }
+    }
+
+    private func test() {
+        testing = true
+        testResult = nil
+        app.apply()
+        Task {
+            defer { testing = false }
+            do {
+                let info = try await Agent.shared.info()
+                ok = true
+                testResult = "连接成功：\(info.displayModel) · Android \(info.android ?? "?") · root=\(info.root == true ? "是" : "否")"
+                app.deviceInfo = info
+                app.connected = true
+                app.lastError = nil
+            } catch {
+                ok = false
+                testResult = app.friendly(error)
+                app.connected = false
+            }
+        }
+    }
+}
+
+struct ConnectView: View {
+    @EnvironmentObject var app: AppState
+    @State private var checking = false
+    @State private var result: String?
+    @State private var ok = false
+
+    var body: some View {
+        ZStack {
+            RCTheme.bg.ignoresSafeArea()
+            VStack(alignment: .leading, spacing: 22) {
+                Spacer().frame(height: 30)
+                HStack(spacing: 12) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 14)
+                            .fill(RCTheme.accent.opacity(0.12))
+                            .frame(width: 52, height: 52)
+                        Image(systemName: "dot.radiowaves.left.and.right")
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundColor(RCTheme.accent)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("远程控制").font(.system(size: 24, weight: .bold)).foregroundColor(RCTheme.text)
+                        Text("iPhone → 上海云隧道 → 安卓被控端")
+                            .font(.system(size: 12)).foregroundColor(RCTheme.dim)
+                    }
+                }
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("网关地址").font(.system(size: 12)).foregroundColor(RCTheme.dim)
+                    TextField("https://110.42.185.227:18888", text: $app.baseURL)
+                        .keyboardType(.URL).autocapitalization(.none).disableAutocorrection(true)
+                        .font(.system(size: 14, design: .monospaced))
+                        .padding(12).background(RCTheme.card)
+                        .foregroundColor(RCTheme.text)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    Text("访问令牌").font(.system(size: 12)).foregroundColor(RCTheme.dim)
+                    TextField("agent.conf 里的 TOKEN", text: $app.token)
+                        .autocapitalization(.none).disableAutocorrection(true)
+                        .font(.system(size: 13, design: .monospaced))
+                        .padding(12).background(RCTheme.card)
+                        .foregroundColor(RCTheme.text)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+                Button { connect() } label: {
+                    HStack {
+                        if checking { ProgressView().tint(.white) }
+                        Text(checking ? "连接中…" : "连接手机")
+                            .font(.system(size: 15, weight: .bold))
+                    }
+                    .frame(maxWidth: .infinity).padding(.vertical, 14)
+                    .background(RCTheme.accent).foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .disabled(checking)
+                if let r = result {
+                    Text(r).font(.system(size: 12)).foregroundColor(ok ? RCTheme.green : RCTheme.red)
+                }
+                Spacer()
+                Text("前提：安卓已刷入「安卓被控端」Magisk 模块并联网，模块会自动与上海云建立隧道。")
+                    .font(.system(size: 11)).foregroundColor(RCTheme.dim)
+            }
+            .padding(.horizontal, 22)
+        }
+    }
+
+    private func connect() {
+        guard !app.token.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            ok = false
+            result = "请先填写访问令牌"
+            return
+        }
+        checking = true
+        result = nil
+        app.apply()
+        Task {
+            defer { checking = false }
+            do {
+                let info = try await Agent.shared.info()
+                app.deviceInfo = info
+                app.connected = true
+                app.lastError = nil
+                ok = true
+                result = "连接成功：\(info.displayModel)"
+            } catch {
+                ok = false
+                result = app.friendly(error)
+            }
+        }
+    }
+}

@@ -10,16 +10,11 @@ struct RootView: View {
     @EnvironmentObject var ble: BLEManager
     @ObservedObject var theme = ThemeManager.shared
     @ObservedObject var keepAlive = KeepAliveService.shared
-    @ObservedObject var updater = UpdateService.shared
     @ObservedObject var prefs = ModulePrefs.shared
 
     @Environment(\.colorScheme) private var scheme
     @State private var query = ""
     @State private var showAll = false
-    // 远程命令唤起的内嵌哔哩
-    @State private var remoteBiliOpen = false
-    @State private var remoteBiliAction = ""
-    @State private var remoteBiliKeyword = ""
 
     private var cols: [GridItem] {
         [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
@@ -87,27 +82,9 @@ struct RootView: View {
             }
             .sheet(isPresented: $showAll) { AllModulesView() }
         }
-        .fullScreenCover(isPresented: $remoteBiliOpen) {
-            EmbeddedAppView(app: EmbeddedApp(id: "biliplus", title: "哔哩Plus",
-                                             icon: "play.tv.fill",
-                                             colors: [Color(hex: 0x00A1D6), Color(hex: 0xF25D8E)],
-                                             engineRoute: "biliplus"))
-                .onAppear {
-                    // 引擎就绪后把远程关键词转发给 Flutter 哔哩
-                    ShellEmbed.sendBiliKeyword(action: remoteBiliAction,
-                                               keyword: remoteBiliKeyword)
-                }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: .bbOpenBiliEmbedded)) { note in
-            let info = note.userInfo as? [String: String] ?? [:]
-            remoteBiliAction = info["action"] ?? "play"
-            remoteBiliKeyword = info["keyword"] ?? ""
-            withAnimation(.easeIn(duration: 0.2)) { remoteBiliOpen = true }
-        }
         .onAppear {
             router.start(); idioms.start()
             KeepAliveService.shared.applySettings()
-            updater.silentCheck()
         }
         .preferredColorScheme(theme.preferredScheme)
     }
@@ -139,21 +116,6 @@ struct RootView: View {
                     Circle().fill(Theme.accentGradient).opacity(0.16).frame(width: 52, height: 52)
                     Text("🦞").font(.system(size: 28))
                 }
-            }
-            if updater.hasUpdate {
-                Button { updater.installUpdate() } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "arrow.down.circle.fill")
-                        Text("新版本 V\(updater.newVersion) 可安装").font(.system(size: 12, weight: .semibold))
-                        Spacer()
-                        Image(systemName: "chevron.right").font(.system(size: 10, weight: .bold))
-                    }
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 12).padding(.vertical, 8)
-                    .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Theme.gradient([Theme.success, Color(hex: 0x0FA968)])))
-                }
-                .buttonStyle(.plain)
-                .padding(.top, 2)
             }
         }
         .padding(.top, 8)
