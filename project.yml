@@ -24,6 +24,7 @@ targets:
         excludes:
           - "ROMs"
           - "NESIcons"
+          - "sites"
       - path: Resources/sites/vps
         type: folder
         buildPhase: resources
