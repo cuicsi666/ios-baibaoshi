@@ -30,9 +30,6 @@ targets:
       - path: Resources/NESIcons
         type: folder
         buildPhase: resources
-      - path: www
-        type: folder
-        buildPhase: resources
     dependencies:
       - target: KeyboardExt
         embed: true
