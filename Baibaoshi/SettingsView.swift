@@ -251,8 +251,8 @@ struct SettingsView: View {
                         Image(systemName: "shippingbox.fill").font(.system(size: 24, weight: .semibold)).foregroundColor(.white)
                     }
                     VStack(alignment: .leading, spacing: 3) {
-                        Text("百宝箱").font(BBFont.title(20))
-                        Text("V\(appVersion) · 崔老板专属全能工具台")
+                        Text("星辰").font(BBFont.title(20))
+                        Text("V\(appVersion) · 崔老板的星辰工具箱")
                             .font(.system(size: 11)).foregroundColor(.secondary)
                     }
                     Spacer()
@@ -303,12 +303,11 @@ final class AppIconManager: ObservableObject {
 
     /// 第一个为默认图标，其余为 Assets 里的备用图标（AppIcon1...5）
     let styles: [Style] = [
-        .init(id: "AppIcon",  name: "经典",   colors: [Color(hex: 0x7C8BA1), Color(hex: 0x3D4756)]),
-        .init(id: "AppIcon1", name: "极光青", colors: [Color(hex: 0x0EA5E9), Color(hex: 0x0F766E)]),
-        .init(id: "AppIcon2", name: "晨曦橙", colors: [Color(hex: 0xFBB03B), Color(hex: 0xF43F5E)]),
-        .init(id: "AppIcon3", name: "薄荷绿", colors: [Color(hex: 0x34D399), Color(hex: 0x0D9488)]),
-        .init(id: "AppIcon4", name: "霓虹紫", colors: [Color(hex: 0x8B5CF6), Color(hex: 0xEC4899)]),
-        .init(id: "AppIcon5", name: "珊瑚蓝", colors: [Color(hex: 0x38BDF8), Color(hex: 0x6366F1)]),
+        .init(id: "AppIcon",  name: "星海", colors: [Color(hex: 0x4F8DFD), Color(hex: 0x7C4DFF)]),
+        .init(id: "AppIcon1", name: "朝霞", colors: [Color(hex: 0xFF9A62), Color(hex: 0xFF5F8F)]),
+        .init(id: "AppIcon2", name: "极光", colors: [Color(hex: 0x2ED6C4), Color(hex: 0x38A3FF)]),
+        .init(id: "AppIcon3", name: "樱紫", colors: [Color(hex: 0xB388FF), Color(hex: 0xFF8BCB)]),
+        .init(id: "AppIcon4", name: "琥珀", colors: [Color(hex: 0xFFC24B), Color(hex: 0xFF8A3D)]),
     ]
 
     @Published var current: String = UIApplication.shared.alternateIconName ?? "AppIcon"

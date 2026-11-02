@@ -318,7 +318,7 @@ struct EffQuoteView: View {
 
             HStack {
                 Spacer()
-                Text("— 百宝箱 · 每日一言")
+                Text("— 星辰 · 每日一言")
                     .font(BBFont.cap(11))
                     .foregroundColor(.white.opacity(0.8))
             }
@@ -484,7 +484,7 @@ struct EffQuoteView: View {
 
     private func shareCurrent() {
         BBHaptic.tap()
-        QuoteShare.present("\(current.text)\n\n—— \(cat.title) · 百宝箱")
+        QuoteShare.present("\(current.text)\n\n—— \(cat.title) · 星辰")
     }
 
     private func showToast(_ text: String) {

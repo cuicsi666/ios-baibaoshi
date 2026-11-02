@@ -64,7 +64,7 @@ struct RootView: View {
                     HStack(spacing: 6) {
                         Image(systemName: "shippingbox.fill")
                             .foregroundStyle(Theme.accentGradient)
-                        Text("百宝箱").font(.headline)
+                        Text("星辰").font(.headline)
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -234,7 +234,7 @@ struct RootView: View {
 
     private var footer: some View {
         VStack(spacing: 6) {
-            Text("百宝箱 V\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "9.0") · \(ModuleRegistry.all.count) 个功能")
+            Text("星辰 V\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "14.0") · \(ModuleRegistry.all.count) 个功能")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
             if keepAlive.enabled {

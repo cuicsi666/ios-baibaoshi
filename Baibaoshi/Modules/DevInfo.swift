@@ -256,7 +256,7 @@ enum DevCollector {
 
     /// 一键复制用的纯文本汇总
     static func plainText(_ sections: [DevSection]) -> String {
-        var lines = ["【百宝箱 · 设备信息】", dateTime(Date()), ""]
+        var lines = ["【星辰 · 设备信息】", dateTime(Date()), ""]
         for section in sections {
             lines.append("◆ \(section.title)")
             for row in section.rows { lines.append("· \(row.key)：\(row.value)") }

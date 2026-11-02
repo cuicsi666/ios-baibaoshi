@@ -24,10 +24,6 @@ enum ModuleRegistry {
                    colors: Theme.router, category: .core, keywords: ["路由器", "openwrt", "cpu", "温度"]) {
             RouterMonitorView()
         },
-        ToolModule("aiusage", "AI 用量", "今日花销 · 历史记录", icon: "brain.head.profile",
-                   colors: Theme.nav, category: .core, keywords: ["ai", "token", "花销", "api"]) {
-            AIUsageView()
-        },
         ToolModule("settings", "设置", "主题 · 图标 · 保活", icon: "gearshape.fill",
                    colors: [Color(hex: 0x8E9AAF), Color(hex: 0x5C6672)], category: .core, keywords: ["设置", "主题", "图标", "保活"]) {
             SettingsView()
