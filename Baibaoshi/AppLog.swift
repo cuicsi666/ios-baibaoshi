@@ -107,7 +107,7 @@ final class AppLog {
         let last = ud.object(forKey: "applog.lastUpload") as? Date
         let due = (last == nil) || Date().timeIntervalSince(last!) > 86400
         guard hadCrash || due else { return }
-        guard let size = (try? FileManager.default.attributesOfItem(atPath: shared.logURL.path)[.size]) as? Int, size > 200 else { return }
+        guard let size = (try? FileManager.default.attributesOfItem(atPath: shared.logURL.path)[.size]) as? Int, size > 0 else { return }
         ud.set(Date(), forKey: "applog.lastUpload")
         if hadCrash {
             AppLog.log("Diag", "检测到崩溃记录，自动上传日志")
