@@ -3,15 +3,6 @@ import SwiftUI
 struct RCFeatureView: View {
     @StateObject private var state = AppState()
 
-    init() {
-        Diag.mark("app-init")
-        Diag.startReporter()
-        // 捕获 Objective-C 异常，留存到下次启动查看
-        NSSetUncaughtExceptionHandler { ex in
-            let text = "\(ex.name.rawValue) \(ex.reason ?? "")\n" + ex.callStackSymbols.joined(separator: "\n")
-            UserDefaults.standard.set(text, forKey: "rc.lastCrash")
-        }
-    }
 
     var body: some View {
             Group {
@@ -25,6 +16,9 @@ struct RCFeatureView: View {
             .preferredColorScheme(.light)
             .onOpenURL { url in
                 handleURL(url)
+            }
+            .onAppear {
+                Diag.startReporter()
             }
     }
 }

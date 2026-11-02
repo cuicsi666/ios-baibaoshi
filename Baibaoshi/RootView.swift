@@ -59,27 +59,7 @@ struct RootView: View {
             }
             .background(BBAuroraBackground(scheme: scheme))
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "shippingbox.fill")
-                            .foregroundStyle(Theme.accentGradient)
-                        Text("星辰").font(.headline)
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        BBHaptic.tap()
-                        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) {
-                            theme.isDark.toggle()
-                        }
-                    } label: {
-                        Image(systemName: theme.isDark ? "sun.max.fill" : "moon.fill")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(theme.isDark ? .orange : Theme.accent)
-                    }
-                }
-            }
+            .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showAll) { AllModulesView() }
         }
         .onAppear {
@@ -92,7 +72,25 @@ struct RootView: View {
     // MARK: 头部
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 8) {
+                Image(systemName: "star.fill")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(Theme.accentGradient)
+                Text("星辰").font(.system(size: 20, weight: .bold, design: .rounded))
+                Spacer()
+                Button {
+                    BBHaptic.tap()
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { theme.isDark.toggle() }
+                } label: {
+                    Image(systemName: theme.isDark ? "sun.max.fill" : "moon.fill")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(theme.isDark ? .orange : Theme.accent)
+                        .frame(width: 34, height: 34)
+                        .background(Circle().fill(Theme.cardBg(scheme == .dark)))
+                }
+                .buttonStyle(.plain)
+            }
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text("\(greeting)，崔老板")
@@ -173,7 +171,7 @@ struct RootView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(recents) { m in
-                        NavigationLink(destination: m.destination().onAppear { prefs.markRecent(m.id) }) {
+                        NavigationLink { m.destination().onAppear { prefs.markRecent(m.id) } } label: {
                             HStack(spacing: 7) {
                                 Image(systemName: m.icon)
                                     .font(.system(size: 12, weight: .semibold))
@@ -203,8 +201,9 @@ struct RootView: View {
     }
 
     @ViewBuilder private func cardFor(_ m: ToolModule) -> some View {
-        NavigationLink(destination: m.destination()
-            .onAppear { prefs.markRecent(m.id) }) {
+        NavigationLink {
+            m.destination().onAppear { prefs.markRecent(m.id) }
+        } label: {
             BBModuleCard(module: m, favorite: prefs.isFavorite(m.id))
         }
         .buttonStyle(.plain)
@@ -284,7 +283,7 @@ struct AllModulesView: View {
                         let mods = ModuleRegistry.modules(in: cat).filter { $0.matches(query) }
                         if !mods.isEmpty {
                             ForEach(mods) { m in
-                                NavigationLink(destination: m.destination().onAppear { prefs.markRecent(m.id) }) {
+                                NavigationLink { m.destination().onAppear { prefs.markRecent(m.id) } } label: {
                                     HStack(spacing: 12) {
                                         ZStack {
                                             RoundedRectangle(cornerRadius: 10, style: .continuous)
@@ -323,7 +322,7 @@ struct AllModulesView: View {
             .navigationTitle("全部功能")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button("完成") { dismiss() }
                 }
             }

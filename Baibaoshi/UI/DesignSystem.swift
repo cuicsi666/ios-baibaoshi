@@ -111,22 +111,14 @@ struct BBAuroraBackground: View {
     var body: some View {
         ZStack {
             Theme.background(scheme)
-            GeometryReader { geo in
-                let w = geo.size.width
-                let h = geo.size.height
-                ZStack {
-                    Circle()
-                        .fill(theme.accent.primary.opacity(scheme == .dark ? 0.28 : 0.16))
-                        .frame(width: w * 0.9)
-                        .blur(radius: 90)
-                        .offset(x: -w * 0.28, y: -h * 0.30)
-                    Circle()
-                        .fill(theme.accent.secondary.opacity(scheme == .dark ? 0.22 : 0.13))
-                        .frame(width: w * 0.8)
-                        .blur(radius: 90)
-                        .offset(x: w * 0.32, y: h * 0.28)
-                }
-            }
+            // 静态柔光（不使用大半径 blur，避免新系统上 GPU 卡死）
+            LinearGradient(
+                colors: [theme.accent.primary.opacity(scheme == .dark ? 0.22 : 0.12),
+                         Color.clear,
+                         theme.accent.secondary.opacity(scheme == .dark ? 0.18 : 0.10)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
         }
         .ignoresSafeArea()
     }
