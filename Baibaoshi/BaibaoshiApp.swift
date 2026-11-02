@@ -33,6 +33,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         UNUserNotificationCenter.current().delegate = self
         AppLog.log("Launch", "didFinishLaunching begin")
 
+        // 内置站点：本地服务器 + API 反代
+        LocalSiteServer.shared.register(.init(id: "vps", folder: "vps", apiBase: "https://vps.cuicsi.cn"))
+        LocalSiteServer.shared.register(.init(id: "panel", folder: "panel", apiBase: "http://6.6.6.130:7867"))
+        LocalSiteServer.shared.register(.init(id: "g", folder: "g", apiBase: nil))
+        LocalSiteServer.shared.start()
+
         // 重活延后，先让首帧渲染出来（避免权限/蓝牙/定位初始化阻塞主线程导致白屏）
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
             AppLog.log("Launch", "post-launch init start")

@@ -57,7 +57,10 @@ struct RootView: View {
                 .padding(.horizontal, BBSpacing.screen)
                 .padding(.bottom, 30)
             }
-            .background(BBAuroraBackground(scheme: scheme))
+            .background(
+                BBAuroraBackground(scheme: scheme)
+                    .overlay(alignment: .top) { TwinkleStars() }
+            )
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showAll) { AllModulesView() }
@@ -110,10 +113,6 @@ struct RootView: View {
                     }
                 }
                 Spacer()
-                ZStack {
-                    Circle().fill(Theme.accentGradient).opacity(0.16).frame(width: 52, height: 52)
-                    Text("🦞").font(.system(size: 28))
-                }
             }
         }
         .padding(.top, 8)

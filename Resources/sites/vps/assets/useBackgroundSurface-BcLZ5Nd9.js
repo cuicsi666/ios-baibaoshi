@@ -1,0 +1,1 @@
+import{q as e}from"./index-Dfdp04s2.js";import{j as n}from"./vue-vendor-CxNL65NX.js";function p(){const r=e(),o=n(()=>r.backgroundEnabled);function u(a,t){return o.value?t:a}return{hasCustomBackground:o,pickSurfaceClass:u}}export{p as u};

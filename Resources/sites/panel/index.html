@@ -1,0 +1,448 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>反代 API · 总览面板</title>
+<style>
+:root{
+  --bg:#f5f7fb; --card:#fff; --line:#e8edf6; --line2:#f1f4fa;
+  --tx:#101828; --dim:#667085; --dim2:#98a2b3;
+  --brand:#4f6ef7; --brand2:#8b5cf6; --ok:#0f9d58; --warn:#d97706; --bad:#e5484d;
+  --sh:0 1px 2px rgba(16,24,40,.05),0 8px 24px -14px rgba(16,24,40,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  padding:22px 18px 44px;max-width:1200px;margin:0 auto;-webkit-font-smoothing:antialiased}
+.hd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.hd h1{font-size:21px;font-weight:700;letter-spacing:-.2px;display:flex;align-items:center;gap:9px}
+.hd .sub{color:var(--dim);font-size:12.5px;margin-top:5px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--ok);display:inline-block}
+.dot.bad{background:var(--bad)}
+.btn{font:inherit;font-size:12.5px;padding:8px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--tx);
+  cursor:pointer;transition:.16s;box-shadow:0 1px 1px rgba(16,24,40,.03)}
+.btn:hover{border-color:#cdd7ea;transform:translateY(-1px)}
+.btn.pr{background:linear-gradient(135deg,var(--brand),var(--brand2));border:0;color:#fff;box-shadow:0 6px 16px -6px rgba(79,110,247,.6)}
+.btn.gh{background:#f8fafd}
+.banner{background:#fff8ec;border:1px solid #fbe4c2;color:#92400e;border-radius:12px;padding:10px 14px;font-size:12.5px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+.banner.bad{background:#fff1f1;border-color:#fbd5d6;color:#b42318}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:22px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;box-shadow:var(--sh);min-width:0;overflow:hidden}
+.tile .k{color:var(--dim);font-size:12px;display:flex;gap:5px;align-items:center}
+.tile .v{font-size:22px;font-weight:700;margin-top:6px;letter-spacing:-.5px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .u{font-size:12px;color:var(--dim2);font-weight:500;margin-left:3px}
+.tile.brand{background:linear-gradient(160deg,#f6f8ff,#fff);border-color:#dfe6ff}
+.tile.brand .v{background:linear-gradient(120deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tile.ok .v{color:var(--ok)} .tile.bad .v{color:var(--bad)} .tile.warn .v{color:var(--warn)}
+
+.sec{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:var(--dim);margin:26px 2px 12px}
+.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.sec .act{margin-left:auto;display:flex;gap:8px}
+
+.nodes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.node{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--sh);min-width:0;transition:.18s}
+.node:hover{box-shadow:0 2px 4px rgba(16,24,40,.05),0 14px 32px -16px rgba(16,24,40,.2)}
+/* 四个节点配色：绿 / 金 / 青 / 蓝 */
+.node{position:relative;overflow:hidden}
+.node:before{content:'';position:absolute;left:0;right:0;top:0;height:3px;border-radius:16px 16px 0 0}
+.node.c-green{border-color:#a7f3d0;background:linear-gradient(180deg,#f2fdf9 0%,#fff 55%)}
+.node.c-green:before{background:linear-gradient(90deg,#10b981,#34d399)}
+.node.c-green .big .n{color:#059669}
+.node.c-gold{border-color:#fde68a;background:linear-gradient(180deg,#fffbeb 0%,#fff 55%)}
+.node.c-gold:before{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.node.c-gold .big .n{color:#b45309}
+.node.c-cyan{border-color:#a5f3fc;background:linear-gradient(180deg,#ecfeff 0%,#fff 55%)}
+.node.c-cyan:before{background:linear-gradient(90deg,#06b6d4,#22d3ee)}
+.node.c-cyan .big .n{color:#0e7490}
+.node.c-blue{border-color:#bfdbfe;background:linear-gradient(180deg,#eff6ff 0%,#fff 55%)}
+.node.c-blue:before{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+.node.c-blue .big .n{color:#1d4ed8}
+.node.c-purple{border-color:#ddd6fe;background:linear-gradient(180deg,#f5f3ff 0%,#fff 55%)}
+.node.c-purple:before{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+.node.c-purple .big .n{color:#6d28d9}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.nm{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:650;min-width:0}
+.nm .d{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(15,157,88,.12);flex:0 0 auto}
+.nm .d.off{background:var(--bad);box-shadow:0 0 0 4px rgba(229,72,77,.12)}
+.nm .tx{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ds{font-size:11px;color:var(--dim2);font-weight:400}
+.pill{font-size:10.5px;padding:2px 8px;border-radius:99px;background:#f2f7ff;color:#3b6bd6;border:1px solid #e2ebff;white-space:nowrap}
+.pill.bad{background:#fff1f1;color:#c0262c;border-color:#fbd5d6}
+.pill.warn{background:#fff8ec;color:#b45309;border-color:#fbe4c2}
+.big{display:flex;align-items:baseline;gap:6px}
+.big .n{font-size:24px;font-weight:700;letter-spacing:-.8px;font-variant-numeric:tabular-nums}
+.big .cny{font-size:11.5px;color:var(--dim)}
+.bar{height:6px;background:var(--line2);border-radius:99px;overflow:hidden;margin:9px 0 3px}
+.bar>i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#6d8cf8,#8b5cf6)}
+.meta{display:flex;flex-wrap:wrap;gap:3px 12px;margin-top:8px;font-size:11.5px;color:var(--dim)}
+.meta b{color:var(--tx);font-weight:600;font-variant-numeric:tabular-nums}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+.tbl th{color:var(--dim2);font-weight:500;font-size:10.5px;text-align:left;padding:5px 5px;border-bottom:1px solid var(--line2);white-space:nowrap}
+.tbl td{padding:6px 5px;border-bottom:1px solid var(--line2);white-space:nowrap}
+.tbl tr:last-child td{border-bottom:0}
+.tag{font-size:10px;padding:1px 6px;border-radius:6px;background:#f2f7ff;color:#3b6bd6}
+.tag.ok{background:#effbf4;color:#0f9d58} .tag.bad{background:#fff1f1;color:#c0262c} .tag.warn{background:#fff8ec;color:#b45309}
+.acc{cursor:pointer}
+.acc:hover td{background:#fafbff}
+.det{display:none;background:#fbfcfe;font-size:11px;color:var(--dim)}
+.det td{padding:8px 10px;white-space:normal}
+.det b{color:var(--tx)}
+.err{color:var(--bad);font-size:12px}
+.empty{color:var(--dim2);font-size:12px;padding:14px 0;text-align:center}
+
+.calhead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.calhead .cm{font-size:15px;font-weight:700}
+.calhead .cs{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+.calhead .cs b{font-variant-numeric:tabular-nums}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.wd{font-size:11px;color:var(--dim2);text-align:center;padding:2px 0 4px}
+.cell{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 6px 7px;min-height:64px;min-width:0;overflow:hidden;cursor:pointer;transition:.15s}
+.cell:hover{border-color:#c9d4ea;box-shadow:0 4px 12px -6px rgba(16,24,40,.18)}
+.cell.blank{background:transparent;border:0;cursor:default;min-height:0}
+.cell.empty{background:#fbfcfe;border-color:var(--line2)}
+.cell.today{border-color:#b9c7ff;box-shadow:0 0 0 3px rgba(79,110,247,.08)}
+.cell.sel{border-color:#8b5cf6;box-shadow:0 0 0 3px rgba(139,92,246,.12)}
+.cd{font-size:11.5px;font-weight:650;display:flex;justify-content:space-between;align-items:center}
+.cell.empty .cd{color:var(--dim2);font-weight:500}
+.td{font-size:9px;color:#4f6ef7;background:#eef2ff;border-radius:99px;padding:0 4px;font-weight:600;line-height:1.5}/*s*/
+.ci{font-size:11.5px;color:var(--ok);margin-top:3px;font-variant-numeric:tabular-nums}
+.ce{font-size:11.5px;color:#4f6ef7;font-variant-numeric:tabular-nums}
+.cr{font-size:9.5px;color:var(--dim2);margin-top:1px;font-variant-numeric:tabular-nums}
+.lgnd{display:flex;gap:16px;font-size:11.5px;color:var(--dim);margin-top:10px;flex-wrap:wrap}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 16px;box-shadow:var(--sh);overflow-x:auto}
+.cal,.events{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--sh);overflow:hidden}
+#events{max-height:620px;overflow-y:auto}
+.ev{display:flex;gap:10px;align-items:center;padding:7px 2px;border-bottom:1px solid var(--line2);font-size:12px}
+.ev:last-child{border-bottom:0}
+.ev .t{color:var(--dim2);font-size:11px;width:66px;flex:0 0 auto;font-variant-numeric:tabular-nums}
+.ev .n{color:var(--dim);width:88px;flex:0 0 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev .m{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ev .ms{color:var(--dim2);font-size:11px;flex:0 0 auto}
+.ev.bad .m{color:var(--bad)}
+.foot{color:var(--dim2);font-size:11.5px;margin-top:10px;line-height:1.6}
+.copy{border:1px solid var(--line);background:#fff;border-radius:7px;font:inherit;font-size:10.5px;padding:1px 7px;cursor:pointer;color:var(--dim);margin-left:4px}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.nodes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){
+  body{padding:14px 12px 34px}
+  .hd h1{font-size:18px}
+  .grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .tile{padding:8px 7px;border-radius:11px;overflow:hidden}.tile .v{font-size:13.5px;margin-top:3px;letter-spacing:-.2px}.tile .k{font-size:9.5px;gap:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .u{font-size:9px;margin-left:1px}
+  /* 首屏只露上面两台节点，第二行滑动后才出现 */
+  .nodes{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .node{padding:10px;border-radius:14px}
+  .node .top{margin-bottom:7px;gap:4px}
+  .node .nm{font-size:12px;gap:5px}
+  .node .pill{font-size:9px;padding:1px 6px}
+  .node .big .n{font-size:19px;letter-spacing:-.4px}
+  .node .big .cny{font-size:9.5px}
+  .node .bar{height:5px;margin:7px 0 2px}
+  .node .meta{font-size:10px;gap:1px 8px;margin-top:6px}
+  .node .tbl{font-size:10px;margin-top:6px}
+  .node .tbl th{font-size:9px;padding:4px 3px}
+  .node .tbl td{padding:4px 3px;font-size:10px}
+  .node .det td{font-size:9.5px;padding:6px 4px}
+  .node .err{font-size:10px}
+  .hide-sm{display:none}
+  .calgrid{gap:3px}.cell{min-height:46px;padding:4px 3px;border-radius:8px}.cd{font-size:10px;gap:2px}.ci,.ce{font-size:9.5px}.cr{font-size:8.5px}.td{font-size:8px;padding:0 3px}.cal{padding:10px 8px}.calhead{gap:6px;margin-bottom:8px}.wd{font-size:10px;padding:1px 0 3px}
+  .ci,.ce{font-size:11px}
+  .ev .n{width:64px}.ev .t{width:52px}
+}
+/* ===== 加载动效 ===== */
+#loadbar{position:fixed;left:0;top:0;height:3px;width:0;opacity:0;z-index:9999;
+background:linear-gradient(90deg,#60a5fa,#a78bfa,#f472b6);box-shadow:0 0 12px rgba(96,165,250,.55);
+transition:width .38s cubic-bezier(.2,.7,.3,1),opacity .3s ease}
+#loadbar.on{opacity:1;width:72%}
+#loadbar.done{opacity:0;width:100%}
+.spin{display:inline-block;width:11px;height:11px;margin-right:6px;border:2px solid rgba(255,255,255,.35);
+border-top-color:#fff;border-radius:50%;animation:_sp .72s linear infinite;vertical-align:-1px}
+.btn.gh .spin{border-color:rgba(24,32,47,.18);border-top-color:#18202f}
+@keyframes _sp{to{transform:rotate(360deg)}}
+@keyframes _fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.fadeup{animation:_fadeUp .4s cubic-bezier(.2,.7,.3,1) both}
+@keyframes _pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes _pop{0%{transform:scale(.985);box-shadow:0 0 0 0 rgba(59,130,246,.30)}
+100%{transform:scale(1);box-shadow:0 0 0 14px rgba(59,130,246,0)}}
+
+/* ===== UI 美化（2026-10-31）===== */
+body{background:
+  radial-gradient(900px 420px at 10% -12%, rgba(99,102,241,.10), transparent 62%),
+  radial-gradient(760px 400px at 100% -5%, rgba(59,130,246,.09), transparent 58%),
+  var(--bg);
+  background-attachment:fixed}
+.hd h1{background:linear-gradient(92deg,#18202f 10%,#4f46e5 58%,#7c3aed 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.hd h1 .star{-webkit-text-fill-color:initial;color:#6366f1;
+  filter:drop-shadow(0 0 9px rgba(129,140,248,.6));display:inline-block;
+  animation:_twinkle 3.4s ease-in-out infinite}
+@keyframes _twinkle{0%,100%{opacity:1;transform:scale(1) rotate(0)}
+  50%{opacity:.7;transform:scale(.92) rotate(-8deg)}}
+.tile{border-radius:16px;transition:box-shadow .22s ease,transform .22s ease,border-color .22s ease}
+.tile:hover{transform:translateY(-2px);border-color:#dfe7f5;
+  box-shadow:0 2px 6px rgba(16,24,40,.05),0 18px 34px -20px rgba(16,24,40,.28)}
+.node,.cal,.events,.card{transition:box-shadow .22s ease,transform .22s ease,border-color .22s ease}
+.node:hover{transform:translateY(-2px);box-shadow:0 3px 8px rgba(16,24,40,.05),0 22px 40px -22px rgba(16,24,40,.3)}
+.tbl tr:hover td{background:#fafcff}
+.bar i{background:linear-gradient(90deg,#60a5fa,#818cf8)}
+.sec:before{content:"";width:6px;height:6px;border-radius:50%;
+  background:linear-gradient(135deg,#60a5fa,#a78bfa);box-shadow:0 0 0 3px rgba(96,165,250,.14);margin-right:2px}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cfd9e9;border-radius:9px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:#b7c4da;background-clip:content-box}
+</style></head><body>
+
+<div id="loadbar"></div>
+<div class="hd">
+  <div>
+    <h1><span class="star">✨</span>反代 API · 总览面板</h1>
+    <div class="sub"><span><span class="dot" id="livedot"></span> 四节点实时余额</span><span id="ts">加载中…</span></div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn gh" id="sync">同步余额</button>
+    <button class="btn pr" id="rf">刷新</button>
+  </div>
+</div>
+
+<div id="banner"></div>
+<div class="grid" id="totals"></div>
+
+<div class="sec">节点明细</div>
+<div class="nodes" id="nodes"></div>
+
+<div class="sec">本月每日明细 <span style="font-weight:400;color:var(--dim2)">点某天看分节点明细</span></div>
+<div class="cal" id="cal"></div>
+
+<div class="sec">实时请求日志 <span style="font-weight:400;color:var(--dim2)" id="evcount"></span></div>
+<div class="events" id="events"></div>
+
+<div class="sec">面板登录</div>
+<div id="creds"></div>
+
+<div class="foot" style="text-align:center;margin-top:26px">1 积分 = ¥0.02 · 每 60 秒自动刷新 · 每 5 分钟记录可用率并检查告警</div>
+
+<script>
+var f=function(n){return Number(n||0).toLocaleString('zh-CN');};
+var money=function(n){return '¥'+Number(n||0).toFixed(2);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var state={month:null, selDay:null, data:null};
+
+function fmtTok(n){
+  n=Number(n||0);
+  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(1)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return String(n);
+}
+function tile(k,v,u,cls,icon){
+  return '<div class="tile '+(cls||'')+'"><div class="k">'+(icon||'')+' '+k+'</div><div class="v">'+v+(u?'<span class="u">'+u+'</span>':'')+'</div></div>';
+}
+function renderTotals(d){
+  var t=d.totals||{}, h='';
+  // ── 💰 余额篇 ──
+  h+=tile('总剩余积分', f(t.remain), '', 'brand', '💰');
+  h+=tile('折合金额', money(t.remain*0.02), '', '', '💴');
+  h+=tile('今日新增', '+'+(f(Math.round(t.today_income||0))), '积分', 'ok', '📈');
+  // ── 💸 消耗篇 ──
+  h+=tile('今日消耗', f(Math.round(t.today_credit||0)), '积分', '', '⚡');
+  h+=tile('今日花销', money((t.today_credit||0)*0.02), '', '', '💸');
+  h+=tile('今日调用', f(t.today_req), '次', '', '🔁');
+  h+=tile('累计请求', f(t.total_req), '次', '', '📊');
+  // ── 📊 质量篇 ──
+  h+=tile('缓存命中率', (t.cache_rate==null?'—':(t.cache_rate*100).toFixed(1)+'%'), '', (t.cache_rate!=null&&t.cache_rate>=0.8?'ok':(t.cache_rate!=null&&t.cache_rate<0.5?'warn':'')), '⚡');
+  h+=tile('TOKEN 累计', fmtTok(t.total_tokens), '', '', '🧮');
+  h+=tile('今日 TOKEN', fmtTok(t.today_tokens), '', '', '🔤');
+  // ── 👤 账号篇 ──
+  h+=tile('账号/异常', f(t.accounts)+' / '+f(t.abnormal), '个', (t.abnormal?'bad':'ok'), '👤');
+  h+=tile('凭证临期', f(t.expiring), '个', (t.expiring?'warn':''), '🔑');
+  document.getElementById('totals').innerHTML=h;
+
+  var bn='';
+  if(t.offline) bn+='<div class="banner bad">🔴 有 '+t.offline+' 个节点连不上，数据可能不完整</div>';
+  else if(t.abnormal||t.expiring) bn+='<div class="banner">⚠️ 存在 '+t.abnormal+' 个异常账号'+(t.expiring?'、'+t.expiring+' 个凭证临期':'')+'，建议尽快处理</div>';
+  document.getElementById('banner').innerHTML=bn;
+  var ld=document.getElementById('livedot'); if(t.offline) ld.classList.add('bad'); else ld.classList.remove('bad');
+}
+
+function acctDetail(a){
+  var packs=(a.credit_packs||[]).map(function(p){
+    return esc(p.name)+' '+f(p.remain)+'/'+f(p.size);}).join(' · ');
+  var tasks=(a.task&&a.task.kinds||[]).map(function(k){return esc(k.name)+(k.enabled===false?'(关)':'');}).join(' ');
+  return '<tr class="det"><td colspan="5">'
+    +'<div><b>已挂载</b> '+esc(a.mounted_text||'—')+'　<b>凭证</b> '+(a.remain_days!=null?f(a.remain_days)+' 天':'—')+'　<b>已服务</b> '+f(a.served_requests)+' 次</div>'
+    +'<div style="margin-top:4px"><b>已消耗</b> '+f(a.consumed_credit)+' 积分　<b>失败</b> '+f(a.breaker)+' 次　<b>状态</b> '+esc(a.run_state||'—')+'</div>'
+    +(packs?'<div style="margin-top:4px"><b>套餐</b> '+packs+'</div>':'')
+    +(tasks?'<div style="margin-top:4px"><b>任务</b> '+tasks+'</div>':'')
+    +'</td></tr>';
+}
+
+function acctRow(a){
+  var st=[];
+  if(a.disabled) st.push('<span class="tag bad">停用</span>');
+  else if(a.token_dead) st.push('<span class="tag bad">凭证失效</span>');
+  else if(a.cooling) st.push('<span class="tag warn">冷却</span>');
+  else if(a.in_pool) st.push('<span class="tag ok">在池</span>');
+  else st.push('<span class="tag">'+(a.group?('分组:'+esc(a.group)):'离池')+'</span>');
+  if(a.breaker>=3) st.push('<span class="tag bad">熔断'+a.breaker+'</span>');
+  return '<tr class="acc" data-acc="'+esc(a.full_uid)+'"><td>'+esc(a.nickname||a.uid)+'</td>'
+    +'<td class="r">'+f(a.credits)+'</td><td class="r">'+st.join(' ')+'</td>'
+    +'<td class="r hide-sm">'+(a.today_income?'+'+f(a.today_income):'—')+'</td>'
+    +'<td class="r hide-sm">'+(a.remain_days!=null?f(a.remain_days)+'天':'—')+'</td></tr>'
+    +acctDetail(a);
+}
+
+var NODE_COLOR={'fn':'c-green','sh':'c-gold','jp':'c-cyan','ph':'c-blue'};
+function nodeCard(n){
+  var ccls=NODE_COLOR[n.id]||'';
+  var c=n.credit||{}, s=n.stats||{}, pct=c.size?Math.min(100,Math.round((c.used||0)*100/(c.size||1))):0;
+  var up=n.uptime||{}, tot=(up.ok||0)+(up.fail||0), rate=tot?Math.round((up.ok||0)*100/tot):null;
+  var head='<div class="top"><div class="nm"><span class="d'+(n.ok?'':' off')+'"></span><span class="tx">'+esc(n.name)+'</span></div>'
+    +(n.ok?'<span class="pill">'+(rate!=null?'可用 '+rate+'%':'在线')+'</span>':'<span class="pill bad">离线</span>')+'</div>';
+  if(!n.ok) return '<div class="node '+ccls+'">'+head+'<div class="err">连接失败：'+esc(n.err||'未知')+'</div></div>';
+  var b='<div class="big"><span class="n">'+f(c.remain)+'</span><span class="cny">积分 · '+money(c.remain*0.02)+'</span></div>';
+  b+='<div class="bar"><i style="width:'+pct+'%"></i></div>';
+  b+='<div class="meta"><span>已用 <b>'+f(c.used)+'</b>/<b>'+(c.size?f(c.size):'—')+'</b></span><span>账号 <b>'+f(c.accounts)+'</b></span><span>今日新增 <b style="color:var(--ok)">+'+(f(Math.round(n.today_income||0)))+'</b></span></div>';
+  b+='<div class="meta"><span>今日 <b>'+f(s.today_requests)+'</b> 次</span><span>消耗 <b>'+f(Math.round(s.today_credit||0))+'</b></span><span>累计 <b>'+f(s.total_requests)+'</b></span></div>';
+  var accs=n.accounts||[];
+  if(accs.length){
+    b+='<table class="tbl"><tr><th>账号</th><th class="r">余额</th><th class="r">状态</th><th class="r hide-sm">今日</th><th class="r hide-sm">凭证</th></tr>'
+      +accs.map(acctRow).join('')+'</table>';
+  }
+  var tops=s.top_models||[];
+  if(tops.length) b+='<div class="meta" style="margin-top:8px"><span>'+tops.map(function(m){return esc(m.model)+' <b>'+f(m.requests)+'</b>';}).join(' · ')+'</span></div>';
+  return '<div class="node '+ccls+'">'+head+b+'</div>';
+}
+
+function renderCalendar(d){
+  var map={};
+  (d.calendar||[]).forEach(function(x){ map[x.day]=x; });
+  if(!state.month){ var n0=new Date(); state.month={y:n0.getFullYear(),m:n0.getMonth()}; }
+  var y=state.month.y, m=state.month.m;
+  var now=new Date(), todayKey=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  var first=new Date(y,m,1), startIdx=(first.getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+  var sIn=0,sEx=0,sRq=0;
+  for(var i=1;i<=days;i++){
+    var k=y+'-'+String(m+1).padStart(2,'0')+'-'+String(i).padStart(2,'0');
+    var v=map[k]; if(v){sIn+=v.income||0;sEx+=v.expense||0;sRq+=v.requests||0;}
+  }
+  var head='<div class="calhead"><div class="cm">'+y+' 年 '+(m+1)+' 月</div>'
+    +'<div class="cs"><span>新增 <b style="color:var(--ok)">+'+f(Math.round(sIn))+'</b></span>'
+    +'<span>消耗 <b style="color:#4f6ef7">'+f(Math.round(sEx))+'</b></span>'
+    +'<span>调用 <b>'+f(sRq)+'</b> 次</span>'
+    +'<span>净 <b style="color:'+((sIn-sEx)>=0?'var(--ok)':'var(--bad)')+'">'+((sIn-sEx)>=0?'+':'')+f(Math.round(sIn-sEx))+'</b></span></div>'
+    +'<div style="display:flex;gap:6px"><button class="btn gh" data-mv="-1">◀</button><button class="btn gh" data-mv="1">▶</button></div></div>';
+  var wk=['一','二','三','四','五','六','日'].map(function(w){return '<div class="wd">周'+w+'</div>';}).join('');
+  var cells='';
+  for(var i=0;i<startIdx;i++) cells+='<div class="cell blank"></div>';
+  for(var day=1;day<=days;day++){
+    var key=y+'-'+String(m+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    var v=map[key]||{income:0,expense:0,requests:0};
+    var has=(v.income>0||v.expense>0||v.requests>0);
+    var cls='cell'+(key===todayKey?' today':'')+(has?'':' empty')+(state.selDay===key?' sel':'');
+    cells+='<div class="'+cls+'" data-day="'+key+'">'
+      +'<div class="cd">'+day+(key===todayKey?'<span class="td">今天</span>':'')+'</div>'
+      +(has?('<div class="ci">+'+f(Math.round(v.income||0))+'</div><div class="ce">-'+f(Math.round(v.expense||0))+'</div><div class="cr">'+f(v.requests||0)+' 次</div>')
+           :'<div class="cr" style="margin-top:6px">—</div>')
+      +'</div>';
+  }
+  var detail='';
+  if(state.selDay){
+    var dd=map[state.selDay];
+    if(dd&&dd.nodes&&Object.keys(dd.nodes).length){
+      detail='<div style="margin-top:14px;border-top:1px solid var(--line2);padding-top:12px">'
+        +'<div style="font-size:12.5px;font-weight:600;margin-bottom:6px">'+esc(state.selDay)+' 分节点明细</div>'
+        +'<table class="tbl"><tr><th>节点</th><th class="r">新增</th><th class="r">消耗</th><th class="r">调用</th></tr>'
+        +Object.keys(dd.nodes).map(function(nm){var x=dd.nodes[nm];
+            return '<tr><td>'+esc(nm)+'</td><td class="r" style="color:var(--ok)">+'+f(Math.round(x.income||0))+'</td><td class="r" style="color:#4f6ef7">'+f(Math.round(x.expense||0))+'</td><td class="r">'+f(x.requests||0)+'</td></tr>';}).join('')
+        +'</table></div>';
+    } else {
+      detail='<div class="foot">'+esc(state.selDay)+' 暂无记录</div>';
+    }
+  }
+  document.getElementById('cal').innerHTML=head+'<div class="calgrid">'+wk+cells+'</div>'
+    +'<div class="lgnd"><span><b style="color:var(--ok)">+</b> 当日新增积分</span><span><b style="color:#4f6ef7">-</b> 当日消耗积分</span><span>底部小字为调用次数</span></div>'+detail;
+}
+
+function renderEvents(d){
+  var ev=d.events||[];
+  var el=document.getElementById('events');
+  var cnt=document.getElementById('evcount');
+  if(cnt) cnt.textContent='（共 '+ev.length+' 条，最多保留 1000）';
+  if(!ev.length){ el.innerHTML='<div class="empty">暂无请求记录</div>'; return; }
+  el.innerHTML=ev.map(function(e){
+    var t=new Date((e.at||0)*1000);
+    var hh=String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0')+':'+String(t.getSeconds()).padStart(2,'0');
+    return '<div class="ev'+(e.ok?'':' bad')+'">'
+      +'<span class="t">'+hh+'</span>'
+      +'<span class="n">'+esc(e.node)+'</span>'
+      +'<span class="m">'+esc(e.model)+(e.ok?'':' · '+esc(e.err||'失败'))+'</span>'
+      +'<span class="ms">'+(e.elapsed!=null?e.elapsed+'ms':'')+(e.tokens?' · '+f(e.tokens)+' tok':'')+'</span>'
+      +'<span>'+ (e.ok?'<span class="tag ok">OK</span>':'<span class="tag bad">FAIL</span>') +'</span></div>';
+  }).join('');
+}
+
+function renderCreds(d){
+  var c=d.creds||{};
+  var urls=(d.nodes||[]).map(function(n){return n.web||'';}).filter(Boolean);
+  document.getElementById('creds').innerHTML='<div class="card"><table class="tbl">'
+    +'<tr><th>用户名</th><th>密码</th><th>面板地址</th></tr>'
+    +'<tr><td>'+esc(c.user)+'<button class="copy" data-copy="'+esc(c.user)+'">复制</button></td>'
+    +'<td>'+esc(c.pass)+'<button class="copy" data-copy="'+esc(c.pass)+'">复制</button></td>'
+    +'<td class="hide-sm" style="color:#667085">'+urls.map(function(u){
+        return '<a href="'+esc(u)+'" target="_blank" rel="noopener" style="border-bottom:1px dashed #c3cddd">'+esc(String(u).replace('http://',''))+'</a>';
+      }).join(' · ')+'</td></tr></table>'
+    +'<div class="foot">四节点面板账号密码相同（仅内网使用）</div></div>';
+}
+
+var _busy=false;
+function load(){
+  var bar=document.getElementById('loadbar');
+  if(!_busy){ bar.className='on'; }
+  _busy=true;
+  return fetch('/api/overview',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+    state.data=d;
+    document.getElementById('ts').textContent='更新于 '+new Date((d.ts||0)*1000).toLocaleTimeString('zh-CN');
+    renderTotals(d);
+    document.getElementById('nodes').innerHTML=(d.nodes||[]).map(nodeCard).join('');
+    renderCalendar(d); renderEvents(d); renderCreds(d);
+    // 淡入 + 完成进度条
+    var tot=document.getElementById('totals'), nd=document.getElementById('nodes');
+    [tot,nd].forEach(function(el){
+      if(!el) return; el.classList.remove('fadeup'); void el.offsetWidth; el.classList.add('fadeup');
+    });
+    bar.className='done'; setTimeout(function(){bar.className='';},480); _busy=false;
+  }).catch(function(e){
+    document.getElementById('ts').textContent='加载失败：'+e;
+    bar.className=''; _busy=false;
+  });
+}
+
+document.addEventListener('click',function(ev){
+  var cp=ev.target.closest('[data-copy]');
+  if(cp){ ev.preventDefault(); var t=cp.getAttribute('data-copy');
+    if(navigator.clipboard) navigator.clipboard.writeText(t);
+    var o=cp.textContent; cp.textContent='已复制'; setTimeout(function(){cp.textContent=o;},1200); return; }
+  var mv=ev.target.closest('[data-mv]');
+  if(mv){ var d=parseInt(mv.getAttribute('data-mv'),10); var m=state.month.m+d, y=state.month.y+(m>11?1:(m<0?-1:0));
+    state.month={y:y,m:(m+12)%12}; state.selDay=null; renderCalendar(state.data||{}); return; }
+  var cell=ev.target.closest('[data-day]');
+  if(cell){ state.selDay=cell.getAttribute('data-day'); renderCalendar(state.data||{}); return; }
+  var acc=ev.target.closest('[data-acc]');
+  if(acc){ var row=acc.nextElementSibling; if(row&&row.classList.contains('det')) row.style.display=(row.style.display==='table-row'?'none':'table-row'); return; }
+});
+
+var syncBtn=document.getElementById('sync');
+syncBtn.addEventListener('click',function(){
+  syncBtn.innerHTML='<span class="spin"></span>同步中'; syncBtn.disabled=true;
+  fetch('/api/sync',{method:'POST'}).then(function(r){return r.json();}).then(function(j){
+    syncBtn.textContent='已同步'; setTimeout(function(){syncBtn.textContent='同步余额'; syncBtn.disabled=false; load();},900);
+  }).catch(function(){ syncBtn.textContent='同步失败'; setTimeout(function(){syncBtn.textContent='同步余额'; syncBtn.disabled=false;},1500); });
+});
+var rb=document.getElementById('rf');
+rb.addEventListener('click',function(){ if(_busy){return;} rb.innerHTML='<span class="spin"></span>刷新中'; load().then(function(){ rb.textContent='刷新'; }); });
+
+load();
+setInterval(load,60000);
+</script>
+</body></html>

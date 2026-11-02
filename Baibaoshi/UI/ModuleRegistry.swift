@@ -16,6 +16,18 @@ enum ModuleRegistry {
                    colors: [Color(hex: 0x3B82F6), Color(hex: 0x22D3EE)], category: .core, keywords: ["远程", "控制", "手机", "安卓", "短信", "小米"]) {
             RCFeatureView()
         },
+        ToolModule("site_vps", "VPS 监控", "6 台设备 · 实时状态", icon: "chart.line.uptrend.xyaxis",
+                   colors: [Color(hex: 0x4F6EF7), Color(hex: 0x8B5CF6)], category: .core, keywords: ["vps", "监控", "服务器", "面板"]) {
+            WebCardView(title: "VPS 监控", siteID: "vps")
+        },
+        ToolModule("site_panel", "反代面板", "四节点 · 用量总览", icon: "chart.bar.xaxis",
+                   colors: [Color(hex: 0x0EA5E9), Color(hex: 0x22D3EE)], category: .core, keywords: ["反代", "workbuddy", "节点", "积分"]) {
+            WebCardView(title: "反代面板", siteID: "panel")
+        },
+        ToolModule("site_g", "日子", "闪闪发光 · 记录生活", icon: "sun.max.fill",
+                   colors: [Color(hex: 0xFFB74D), Color(hex: 0xFF7043)], category: .fun, keywords: ["日子", "宝宝", "老婆", "记录", "成语"]) {
+            WebCardView(title: "日子", siteID: "g")
+        },
         ToolModule("vmon", "V监控", "ESXi + OpenWrt 直连", icon: "server.rack",
                    colors: [Color(hex: 0x2C3E50), Color(hex: 0x4CA1AF)], category: .core, keywords: ["esxi", "服务器", "虚拟机", "ssh"]) {
             VAppPlayerView()
