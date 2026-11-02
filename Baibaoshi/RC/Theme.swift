@@ -16,18 +16,6 @@ enum RCTheme {
     static let fill = Color(hex: 0xF0F3F7)
 }
 
-extension Color {
-    init(hex: UInt32) {
-        self.init(
-            .sRGB,
-            red: Double((hex >> 16) & 0xFF) / 255.0,
-            green: Double((hex >> 8) & 0xFF) / 255.0,
-            blue: Double(hex & 0xFF) / 255.0,
-            opacity: 1.0
-        )
-    }
-}
-
 struct RCCard<Content: View>: View {
     var content: () -> Content
     init(@ViewBuilder content: @escaping () -> Content) { self.content = content }
