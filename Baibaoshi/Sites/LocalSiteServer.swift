@@ -123,7 +123,6 @@ final class LocalSiteServer {
         var rel = segs.dropFirst().joined(separator: "/")
         if rel.isEmpty { rel = "index.html" }
         guard let resDir = Bundle.main.resourceURL?
-                .appendingPathComponent("sites")
                 .appendingPathComponent(site.folder) else {
             completion(404, "text/plain", Data("no bundle".utf8)); return
         }

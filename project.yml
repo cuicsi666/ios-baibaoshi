@@ -24,7 +24,13 @@ targets:
         excludes:
           - "ROMs"
           - "NESIcons"
-      - path: Resources/sites
+      - path: Resources/sites/vps
+        type: folder
+        buildPhase: resources
+      - path: Resources/sites/panel
+        type: folder
+        buildPhase: resources
+      - path: Resources/sites/g
         type: folder
         buildPhase: resources
       - path: Resources/ROMs
