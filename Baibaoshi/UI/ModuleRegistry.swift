@@ -18,11 +18,11 @@ enum ModuleRegistry {
         },
         ToolModule("site_vps", "VPS 监控", "6 台设备 · 实时状态", icon: "chart.line.uptrend.xyaxis",
                    colors: [Color(hex: 0x4F6EF7), Color(hex: 0x8B5CF6)], category: .core, keywords: ["vps", "监控", "服务器", "面板"]) {
-            WebCardView(title: "VPS 监控", siteID: "vps")
+            WebCardView(title: "VPS 监控", siteID: "vps", remote: "https://vps.cuicsi.cn")
         },
         ToolModule("site_panel", "反代面板", "四节点 · 用量总览", icon: "chart.bar.xaxis",
                    colors: [Color(hex: 0x0EA5E9), Color(hex: 0x22D3EE)], category: .core, keywords: ["反代", "workbuddy", "节点", "积分"]) {
-            WebCardView(title: "反代面板", siteID: "panel")
+            WebCardView(title: "反代面板", siteID: "panel", remote: "http://6.6.6.130:7867")
         },
         ToolModule("site_g", "日子", "闪闪发光 · 记录生活", icon: "sun.max.fill",
                    colors: [Color(hex: 0xFFB74D), Color(hex: 0xFF7043)], category: .fun, keywords: ["日子", "宝宝", "老婆", "记录", "成语"]) {

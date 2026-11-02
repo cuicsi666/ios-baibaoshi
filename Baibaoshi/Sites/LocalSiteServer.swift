@@ -73,11 +73,14 @@ final class LocalSiteServer {
             let rawPath = String(parts[1])
 
             var contentLength = 0
+            var referer = ""
             for line in lines.dropFirst() {
                 let kv = line.split(separator: ":", maxSplits: 1)
-                if kv.count == 2, kv[0].lowercased() == "content-length" {
-                    contentLength = Int(kv[1].trimmingCharacters(in: .whitespaces)) ?? 0
-                }
+                guard kv.count == 2 else { continue }
+                let key = kv[0].lowercased()
+                let val = kv[1].trimmingCharacters(in: .whitespaces)
+                if key == "content-length" { contentLength = Int(val) ?? 0 }
+                if key == "referer" { referer = val }
             }
 
             if bodyData.count < contentLength {
@@ -85,7 +88,7 @@ final class LocalSiteServer {
                 return
             }
 
-            self.route(method: method, rawPath: rawPath, body: bodyData) { status, ctype, payload in
+            self.route(method: method, rawPath: rawPath, body: bodyData, referer: referer) { status, ctype, payload in
                 var header = "HTTP/1.1 \(status)\r\n"
                 header += "Content-Type: \(ctype)\r\n"
                 header += "Content-Length: \(payload.count)\r\n"
@@ -100,27 +103,39 @@ final class LocalSiteServer {
 
     // MARK: - 路由
 
-    private func route(method: String, rawPath: String, body: Data,
+    private func route(method: String, rawPath: String, body: Data, referer: String,
                        completion: @escaping (Int, String, Data) -> Void) {
         let comps = rawPath.split(separator: "?", maxSplits: 1)
         let path = String(comps[0])
         let query = comps.count > 1 ? "?" + String(comps[1]) : ""
 
         let segs = path.split(separator: "/").map(String.init)
-        guard let siteID = segs.first, let site = sites[siteID] else {
+
+        // 站点识别：优先第一段；否则用 Referer 推断（页面内的绝对路径请求）
+        var site: Site?
+        var innerPath = path
+        if let first = segs.first, let s0 = sites[first] {
+            site = s0
+            innerPath = "/" + segs.dropFirst().joined(separator: "/")
+        } else if let refPath = URL(string: referer)?.path,
+                  let fb = refPath.split(separator: "/").first.map(String.init),
+                  let s1 = sites[fb] {
+            site = s1
+            innerPath = path
+        }
+        guard let site = site else {
             completion(404, "text/plain", Data("not found".utf8))
             return
         }
 
-        // /<site>/api/... → 反向代理
-        if segs.count >= 2, segs[1] == "api", let base = site.apiBase {
-            let rest = "/" + segs.dropFirst().joined(separator: "/")
-            proxy(method: method, url: base + rest + query, body: body, completion: completion)
+        // /api/... → 反向代理到真实站点
+        if innerPath.hasPrefix("/api/"), let base = site.apiBase {
+            proxy(method: method, url: base + innerPath + query, body: body, completion: completion)
             return
         }
 
         // 静态文件
-        var rel = segs.dropFirst().joined(separator: "/")
+        var rel = String(innerPath.dropFirst())
         if rel.isEmpty { rel = "index.html" }
         guard let resDir = Bundle.main.resourceURL?
                 .appendingPathComponent(site.folder) else {
