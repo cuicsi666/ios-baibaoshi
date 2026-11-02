@@ -95,7 +95,30 @@ struct SectionProbe: View {
                 title("6 · BBAuroraBackground")
                 ProbeBox { BBAuroraBackground(scheme: .light).frame(height: 60) }
 
-                title("7 · 完整 RootView")
+                title("7 · 简化首页（无 NavigationStack）")
+                ProbeBox {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("星辰 · 简化首页").font(.system(size: 24, weight: .bold)).foregroundColor(.black)
+                            ForEach(Array(ModuleRegistry.all.prefix(6))) { m in
+                                HStack(spacing: 8) {
+                                    Image(systemName: m.icon).foregroundColor(.white)
+                                        .frame(width: 30, height: 30)
+                                        .background(Circle().fill(Color.blue))
+                                    Text(m.title).font(.system(size: 15, weight: .semibold)).foregroundColor(.black)
+                                    Spacer()
+                                }
+                                .padding(8)
+                                .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
+                            }
+                        }
+                        .padding(8)
+                    }
+                    .frame(height: 320)
+                    .background(Color(hex: 0xF4F6FB))
+                }
+
+                title("8 · 完整 RootView")
                 Section {
                     RootView()
                         .environmentObject(router)
