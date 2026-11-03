@@ -14,10 +14,13 @@ struct RootView: View {
 
     @Environment(\.colorScheme) private var scheme
     @State private var query = ""
+    @State private var quoteIndex = Int.random(in: 0..<DailyQuotes.all.count)
     @State private var showAll = false
 
     private var cols: [GridItem] {
-        [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
+        [GridItem(.flexible(), spacing: 8),
+         GridItem(.flexible(), spacing: 8),
+         GridItem(.flexible(), spacing: 8)]
     }
 
     var greeting: String {
@@ -96,9 +99,27 @@ struct RootView: View {
             }
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("\(greeting)，崔老板")
-                        .font(.system(size: 26, weight: .bold, design: .rounded))
-                        .foregroundColor(.primary)
+                    Button {
+                        BBHaptic.select()
+                        withAnimation(.easeInOut(duration: 0.28)) {
+                            quoteIndex = (quoteIndex + 1) % DailyQuotes.all.count
+                        }
+                    } label: {
+                        Text(DailyQuotes.all[quoteIndex % DailyQuotes.all.count].text)
+                            .font(.system(size: 20, weight: .heavy, design: .serif))
+                            .foregroundStyle(
+                                LinearGradient(colors: DailyQuotes.all[quoteIndex % DailyQuotes.all.count].colors,
+                                               startPoint: .leading, endPoint: .trailing)
+                            )
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .shadow(color: DailyQuotes.all[quoteIndex % DailyQuotes.all.count].colors[0].opacity(0.28),
+                                    radius: 9, y: 3)
+                    }
+                    .buttonStyle(.plain)
+                    .id(quoteIndex)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
                     HStack(spacing: 6) {
                         Text(dateText)
                             .font(.system(size: 12, weight: .medium))
@@ -170,7 +191,7 @@ struct RootView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(recents) { m in
-                        NavigationLink { m.destination().onAppear { prefs.markRecent(m.id) } } label: {
+                        NavigationLink { m.destination().onAppear { prefs.markRecent(m.id) }.bbSubPage() } label: {
                             HStack(spacing: 7) {
                                 Image(systemName: m.icon)
                                     .font(.system(size: 12, weight: .semibold))
@@ -201,7 +222,7 @@ struct RootView: View {
 
     @ViewBuilder private func cardFor(_ m: ToolModule) -> some View {
         NavigationLink {
-            m.destination().onAppear { prefs.markRecent(m.id) }
+            m.destination().onAppear { prefs.markRecent(m.id) }.bbSubPage()
         } label: {
             BBModuleCard(module: m, favorite: prefs.isFavorite(m.id))
         }
@@ -265,6 +286,7 @@ struct AllModulesView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var scheme
     @State private var query = ""
+    @State private var quoteIndex = Int.random(in: 0..<DailyQuotes.all.count)
     @ObservedObject var prefs = ModulePrefs.shared
 
     var body: some View {
@@ -282,7 +304,7 @@ struct AllModulesView: View {
                         let mods = ModuleRegistry.modules(in: cat).filter { $0.matches(query) }
                         if !mods.isEmpty {
                             ForEach(mods) { m in
-                                NavigationLink { m.destination().onAppear { prefs.markRecent(m.id) } } label: {
+                                NavigationLink { m.destination().onAppear { prefs.markRecent(m.id) }.bbSubPage() } label: {
                                     HStack(spacing: 12) {
                                         ZStack {
                                             RoundedRectangle(cornerRadius: 10, style: .continuous)

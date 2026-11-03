@@ -22,10 +22,10 @@ struct TwinkleStars: View {
             Color(hex: 0xFFAB40)    // 橙
         ]
         var list: [Star] = []
-        for _ in 0..<6 {
+        for _ in 0..<12 {
             list.append(Star(x: .random(in: 0.08...0.92),
                              y: .random(in: 0.05...0.85),
-                             size: .random(in: 3...9),
+                             size: .random(in: 5...13),
                              color: palette.randomElement() ?? .white,
                              phase: .random(in: 0...(2 * .pi)),
                              speed: .random(in: 1.0...3.4)))
@@ -41,7 +41,7 @@ struct TwinkleStars: View {
                     ForEach(Array(stars.enumerated()), id: \.offset) { _, s in
                         let pulse = 0.30 + 0.70 * abs(sin(t * s.speed + s.phase))
                         let d = s.size * (0.65 + 0.55 * pulse)
-                        Circle()
+                        StarShape(points: 5)
                             .fill(s.color)
                             .frame(width: d, height: d)
                             .opacity(pulse)
@@ -54,5 +54,25 @@ struct TwinkleStars: View {
         }
         .frame(height: 220)
         .allowsHitTesting(false)
+    }
+}
+
+
+/// 五角星
+struct StarShape: Shape {
+    var points: Int = 5
+    func path(in rect: CGRect) -> Path {
+        let c = CGPoint(x: rect.midX, y: rect.midY)
+        let R = min(rect.width, rect.height) / 2
+        let r = R * 0.42
+        var p = Path()
+        for i in 0..<(points * 2) {
+            let ang = -CGFloat.pi / 2 + CGFloat(i) * .pi / CGFloat(points)
+            let rad = (i % 2 == 0) ? R : r
+            let pt = CGPoint(x: c.x + cos(ang) * rad, y: c.y + sin(ang) * rad)
+            if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
+        }
+        p.closeSubpath()
+        return p
     }
 }

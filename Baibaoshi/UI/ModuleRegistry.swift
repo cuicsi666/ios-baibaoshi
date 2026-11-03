@@ -143,6 +143,10 @@ enum ModuleRegistry {
                    colors: [Color(hex: 0x36D1DC), Color(hex: 0x3B9EFF)], category: .device, keywords: ["剪贴板", "复制", "历史", "粘贴"]) {
             DevClipboardView()
         },
+        ToolModule("blockota", "屏蔽更新", "停止 iOS 系统 OTA 推送", icon: "shield.lefthalf.filled",
+                   colors: [Color(hex: 0x6366F1), Color(hex: 0x22D3EE)], category: .device, keywords: ["更新", "屏蔽", "ota", "系统", "描述文件"]) {
+            UpdateBlockerView()
+        },
         ToolModule("net", "网络工具", "公网IP · 延迟 · 状态码", icon: "network",
                    colors: [Color(hex: 0x4E54C8), Color(hex: 0x2E5BFF)], category: .device, keywords: ["网络", "ip", "ping", "延迟", "测速"]) {
             NetToolsView()
