@@ -814,15 +814,15 @@ static void PlayConfirmSound(void) {
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        // 纯白大圆角卡片 + 柔和投影（新视觉）
-        self.backgroundColor = [UIColor whiteColor];
-        self.layer.cornerRadius = 20;
-        self.layer.borderWidth = 0.5;
-        self.layer.borderColor = [UIColor colorWithRed:0.91 green:0.93 blue:0.97 alpha:1].CGColor;
-        self.layer.shadowColor = [UIColor colorWithRed:0.16 green:0.24 blue:0.42 alpha:1].CGColor;
-        self.layer.shadowOpacity = 0.07;
-        self.layer.shadowOffset = CGSizeMake(0, 6);
-        self.layer.shadowRadius = 16;
+        // 液态玻璃卡片：半透明白底 + 内高光描边 + 柔影
+        self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.72];
+        self.layer.cornerRadius = 22;
+        self.layer.borderWidth = 1.0;
+        self.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.65].CGColor;
+        self.layer.shadowColor = [UIColor colorWithRed:0.18 green:0.26 blue:0.46 alpha:1].CGColor;
+        self.layer.shadowOpacity = 0.08;
+        self.layer.shadowOffset = CGSizeMake(0, 10);
+        self.layer.shadowRadius = 24;
     }
     return self;
 }
@@ -847,19 +847,17 @@ static void PlayConfirmSound(void) {
         _iconBadge = [UIView new];
         _iconBadge.layer.cornerRadius = 12;
         CAGradientLayer *cg = [CAGradientLayer layer];
-        cg.colors = @[(id)[UIColor colorWithRed:0.29 green:0.42 blue:0.95 alpha:1].CGColor,
-                      (id)[UIColor colorWithRed:0.60 green:0.34 blue:0.95 alpha:1].CGColor];
+        cg.colors = @[(id)[UIColor colorWithRed:0.86 green:0.91 blue:1.00 alpha:1].CGColor,
+                      (id)[UIColor colorWithRed:0.80 green:0.86 blue:0.99 alpha:1].CGColor];
         cg.startPoint = CGPointMake(0, 0);
         cg.endPoint = CGPointMake(1, 1);
         cg.frame = CGRectMake(0, 0, 36, 36);
         [_iconBadge.layer addSublayer:cg];
-        _iconBadge.layer.shadowColor = [UIColor colorWithRed:0.29 green:0.42 blue:0.95 alpha:1].CGColor;
-        _iconBadge.layer.shadowOpacity = 0.22;
-        _iconBadge.layer.shadowOffset = CGSizeMake(0, 3);
-        _iconBadge.layer.shadowRadius = 6;
+        _iconBadge.layer.borderWidth = 0.6;
+        _iconBadge.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.85].CGColor;
         [self addSubview:_iconBadge];
         _iconView = [UIImageView new];
-        _iconView.tintColor = UIColor.whiteColor;
+        _iconView.tintColor = [UIColor colorWithRed:0.24 green:0.38 blue:0.92 alpha:1];
         _iconView.contentMode = UIViewContentModeScaleAspectFit;
         _iconView.frame = CGRectMake(8, 8, 20, 20);
         [_iconBadge addSubview:_iconView];
@@ -901,8 +899,10 @@ static void PlayConfirmSound(void) {
         if ([l isKindOfClass:[CAGradientLayer class]]) { g = (CAGradientLayer *)l; break; }
     }
     if (g && colors.count >= 2) {
-        g.colors = @[(id)((UIColor *)colors[0]).CGColor, (id)((UIColor *)colors[1]).CGColor];
-        _iconBadge.layer.shadowColor = ((UIColor *)colors[0]).CGColor;
+        UIColor *c0 = (UIColor *)colors[0];
+        g.colors = @[(id)[c0 colorWithAlphaComponent:0.20].CGColor,
+                     (id)[c0 colorWithAlphaComponent:0.10].CGColor];
+        _iconView.tintColor = c0;
     }
 }
 @end
@@ -934,13 +934,11 @@ static void PlayConfirmSound(void) {
         mg.endPoint = CGPointMake(1, 1);
         mg.frame = CGRectMake(0, 0, 36, 36);
         [_iconBadge.layer addSublayer:mg];
-        _iconBadge.layer.shadowColor = [UIColor colorWithRed:0.13 green:0.72 blue:0.48 alpha:1].CGColor;
-        _iconBadge.layer.shadowOpacity = 0.22;
-        _iconBadge.layer.shadowOffset = CGSizeMake(0, 3);
-        _iconBadge.layer.shadowRadius = 6;
+        _iconBadge.layer.borderWidth = 0.6;
+        _iconBadge.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.85].CGColor;
         [self addSubview:_iconBadge];
         _iconView = [UIImageView new];
-        _iconView.tintColor = UIColor.whiteColor;
+        _iconView.tintColor = [UIColor colorWithRed:0.13 green:0.60 blue:0.45 alpha:1];
         _iconView.contentMode = UIViewContentModeScaleAspectFit;
         _iconView.frame = CGRectMake(8, 8, 20, 20);
         [_iconBadge addSubview:_iconView];
@@ -999,8 +997,10 @@ static void PlayConfirmSound(void) {
         if ([l isKindOfClass:[CAGradientLayer class]]) { g = (CAGradientLayer *)l; break; }
     }
     if (g && colors.count >= 2) {
-        g.colors = @[(id)((UIColor *)colors[0]).CGColor, (id)((UIColor *)colors[1]).CGColor];
-        _iconBadge.layer.shadowColor = ((UIColor *)colors[0]).CGColor;
+        UIColor *c0 = (UIColor *)colors[0];
+        g.colors = @[(id)[c0 colorWithAlphaComponent:0.20].CGColor,
+                     (id)[c0 colorWithAlphaComponent:0.10].CGColor];
+        _iconView.tintColor = c0;
     }
 }
 @end
@@ -1026,7 +1026,7 @@ static void PlayConfirmSound(void) {
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.75];
         _iconLabel = [UILabel new];
         _iconLabel.font = [UIFont systemFontOfSize:14];
         [self addSubview:_iconLabel];
@@ -1045,27 +1045,24 @@ static void PlayConfirmSound(void) {
         _snapBtn = [UIButton buttonWithType:UIButtonTypeSystem];
         _snapBtn.titleLabel.font = [UIFont systemFontOfSize:10];
         [_snapBtn setTitle:@"📸 快照" forState:UIControlStateNormal];
-        _snapBtn.layer.borderWidth = 0.6;
-        _snapBtn.layer.borderColor = BB_NEON_BLUE.CGColor;
-        _snapBtn.layer.cornerRadius = 6;
+        _snapBtn.layer.cornerRadius = 8;
+        _snapBtn.backgroundColor = [BB_NEON_BLUE colorWithAlphaComponent:0.12];
         [_snapBtn setTitleColor:BB_NEON_BLUE forState:UIControlStateNormal];
         [_snapBtn addTarget:self action:@selector(snapTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_snapBtn];
         _autoBtn = [UIButton buttonWithType:UIButtonTypeSystem];
         _autoBtn.titleLabel.font = [UIFont systemFontOfSize:10];
         [_autoBtn setTitle:@"⚡自启:关" forState:UIControlStateNormal];
-        _autoBtn.layer.borderWidth = 0.6;
-        _autoBtn.layer.cornerRadius = 6;
-        _autoBtn.layer.borderColor = BB_DARK_GRAY.CGColor;
+        _autoBtn.layer.cornerRadius = 8;
+        _autoBtn.backgroundColor = [BB_DARK_GRAY colorWithAlphaComponent:0.10];
         [_autoBtn setTitleColor:BB_DARK_GRAY forState:UIControlStateNormal];
         [_autoBtn addTarget:self action:@selector(autoTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_autoBtn];
         _rebootBtn = [UIButton buttonWithType:UIButtonTypeSystem];
         _rebootBtn.titleLabel.font = [UIFont systemFontOfSize:10];
         [_rebootBtn setTitle:@"🔄 重启" forState:UIControlStateNormal];
-        _rebootBtn.layer.borderWidth = 0.6;
-        _rebootBtn.layer.cornerRadius = 6;
-        _rebootBtn.layer.borderColor = [UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1].CGColor;
+        _rebootBtn.layer.cornerRadius = 8;
+        _rebootBtn.backgroundColor = [[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1] colorWithAlphaComponent:0.12];
         [_rebootBtn setTitleColor:[UIColor colorWithRed:1.00 green:0.60 blue:0.10 alpha:1] forState:UIControlStateNormal];
         [_rebootBtn addTarget:self action:@selector(rebootTapped) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_rebootBtn];
@@ -1188,13 +1185,17 @@ static void PlayConfirmSound(void) {
     self.title = @"ESXi 监控";
 
     // 左上角：连接状态圆点 + 文字
-    UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 40)];
-    self.statusDot = [[UIView alloc] initWithFrame:CGRectMake(0, 13, 14, 14)];
+    UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 82, 30)];
+    dotView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
+    dotView.layer.cornerRadius = 15;
+    dotView.layer.borderWidth = 0.5;
+    dotView.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.8].CGColor;
+    self.statusDot = [[UIView alloc] initWithFrame:CGRectMake(8, 8, 14, 14)];
     self.statusDot.layer.cornerRadius = 7;
     self.statusDot.backgroundColor = BB_NEON_RED;
     [dotView addSubview:self.statusDot];
     self.statusDotLabel = [UILabel new];
-    self.statusDotLabel.frame = CGRectMake(18, 9, 58, 22);
+    self.statusDotLabel.frame = CGRectMake(26, 4, 54, 22);
     self.statusDotLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
     self.statusDotLabel.text = @"未连接";
     self.statusDotLabel.textColor = BB_NEON_RED;
@@ -2664,13 +2665,17 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     self.title = @"OpenWrt";
 
     // 左上角状态
-    UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 76, 40)];
-    self.statusDot = [[UIView alloc] initWithFrame:CGRectMake(0, 13, 14, 14)];
+    UIView *dotView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 82, 30)];
+    dotView.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
+    dotView.layer.cornerRadius = 15;
+    dotView.layer.borderWidth = 0.5;
+    dotView.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.8].CGColor;
+    self.statusDot = [[UIView alloc] initWithFrame:CGRectMake(8, 8, 14, 14)];
     self.statusDot.layer.cornerRadius = 7;
     self.statusDot.backgroundColor = BB_NEON_RED;
     [dotView addSubview:self.statusDot];
     self.statusDotLabel = [UILabel new];
-    self.statusDotLabel.frame = CGRectMake(18, 9, 58, 22);
+    self.statusDotLabel.frame = CGRectMake(26, 4, 54, 22);
     self.statusDotLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
     self.statusDotLabel.text = @"未连接";
     self.statusDotLabel.textColor = BB_NEON_RED;
