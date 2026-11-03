@@ -814,15 +814,15 @@ static void PlayConfirmSound(void) {
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        // 浅灰磨砂卡片底（白背景适配）
-        self.backgroundColor = [UIColor colorWithRed:1.0 green:1.0 blue:1.0 alpha:0.85];
-        self.layer.cornerRadius = 14;
+        // 纯白大圆角卡片 + 柔和投影（新视觉）
+        self.backgroundColor = [UIColor whiteColor];
+        self.layer.cornerRadius = 20;
         self.layer.borderWidth = 0.5;
-        self.layer.borderColor = [UIColor colorWithRed:0.85 green:0.88 blue:0.93 alpha:1].CGColor;
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.shadowOpacity = 0.05;
-        self.layer.shadowOffset = CGSizeMake(0, 2);
-        self.layer.shadowRadius = 6;
+        self.layer.borderColor = [UIColor colorWithRed:0.91 green:0.93 blue:0.97 alpha:1].CGColor;
+        self.layer.shadowColor = [UIColor colorWithRed:0.16 green:0.24 blue:0.42 alpha:1].CGColor;
+        self.layer.shadowOpacity = 0.07;
+        self.layer.shadowOffset = CGSizeMake(0, 6);
+        self.layer.shadowRadius = 16;
     }
     return self;
 }
@@ -842,14 +842,14 @@ static void PlayConfirmSound(void) {
     self = [super initWithFrame:frame];
     if (self) {
         _titleLabel = [UILabel new];
-        _titleLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightRegular];
-        _titleLabel.textColor = [UIColor colorWithRed:0.55 green:0.65 blue:0.80 alpha:1];
+        _titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
+        _titleLabel.textColor = [UIColor colorWithRed:0.46 green:0.53 blue:0.64 alpha:1];
         _valueLabel = [UILabel new];
-        _valueLabel.font = [UIFont systemFontOfSize:32 weight:UIFontWeightBold];
-        _valueLabel.textColor = BB_WHITE_TEXT;
+        _valueLabel.font = [UIFont systemFontOfSize:34 weight:UIFontWeightHeavy];
+        _valueLabel.textColor = [UIColor colorWithRed:0.10 green:0.13 blue:0.20 alpha:1];
         _subLabel = [UILabel new];
-        _subLabel.font = [UIFont systemFontOfSize:12];
-        _subLabel.textColor = [UIColor colorWithRed:0.45 green:0.55 blue:0.70 alpha:1];
+        _subLabel.font = [UIFont systemFontOfSize:11 weight:UIFontWeightMedium];
+        _subLabel.textColor = [UIColor colorWithRed:0.52 green:0.58 blue:0.68 alpha:1];
         [self addSubview:_titleLabel];
         [self addSubview:_valueLabel];
         [self addSubview:_subLabel];
@@ -863,10 +863,10 @@ static void PlayConfirmSound(void) {
 }
 - (void)layoutSubviews {
     [super layoutSubviews];
-    _titleLabel.frame = CGRectMake(14, 10, self.bounds.size.width - 100, 18);
-    _rightLabel.frame = CGRectMake(self.bounds.size.width - 96, 10, 82, 18);
-    _valueLabel.frame = CGRectMake(14, 30, self.bounds.size.width - 28, 40);
-    _subLabel.frame = CGRectMake(14, 72, self.bounds.size.width - 28, 16);
+    _titleLabel.frame = CGRectMake(16, 13, self.bounds.size.width - 104, 16);
+    _rightLabel.frame = CGRectMake(self.bounds.size.width - 96, 13, 82, 16);
+    _valueLabel.frame = CGRectMake(16, 31, self.bounds.size.width - 32, 42);
+    _subLabel.frame = CGRectMake(16, 75, self.bounds.size.width - 32, 15);
 }
 @end
 
@@ -885,11 +885,11 @@ static void PlayConfirmSound(void) {
     self = [super initWithFrame:frame];
     if (self) {
         _titleLabel = [UILabel new];
-        _titleLabel.font = [UIFont systemFontOfSize:13 weight:UIFontWeightRegular];
-        _titleLabel.textColor = [UIColor colorWithRed:0.60 green:0.72 blue:0.85 alpha:1];
+        _titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
+        _titleLabel.textColor = [UIColor colorWithRed:0.46 green:0.53 blue:0.64 alpha:1];
         [self addSubview:_titleLabel];
         _valueLabel = [UILabel new];
-        _valueLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightBold];
+        _valueLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightHeavy];
         _valueLabel.textColor = BB_WHITE_TEXT;
         [self addSubview:_valueLabel];
         _pctLabel = [UILabel new];
@@ -900,7 +900,7 @@ static void PlayConfirmSound(void) {
         _bar = [UIProgressView new];
         _bar.progressTintColor = BB_NEON_GREEN;
         _bar.trackTintColor = [UIColor colorWithWhite:0.9 alpha:0.5];
-        _bar.layer.cornerRadius = 3;
+        _bar.layer.cornerRadius = 4;
         _bar.clipsToBounds = YES;
         [self addSubview:_bar];
     }
@@ -908,10 +908,10 @@ static void PlayConfirmSound(void) {
 }
 - (void)layoutSubviews {
     [super layoutSubviews];
-    _titleLabel.frame = CGRectMake(14, 10, self.bounds.size.width - 28, 18);
-    _valueLabel.frame = CGRectMake(14, 30, self.bounds.size.width - 90, 22);
-    _pctLabel.frame = CGRectMake(self.bounds.size.width - 66, 30, 52, 22);
-    _bar.frame = CGRectMake(14, 58, self.bounds.size.width - 28, 6);
+    _titleLabel.frame = CGRectMake(16, 13, self.bounds.size.width - 32, 16);
+    _valueLabel.frame = CGRectMake(16, 33, self.bounds.size.width - 92, 24);
+    _pctLabel.frame = CGRectMake(self.bounds.size.width - 68, 33, 52, 24);
+    _bar.frame = CGRectMake(16, 64, self.bounds.size.width - 32, 8);
 }
 - (void)setPct:(double)pct {
     float p = (float)(pct < 0 ? 0 : (pct > 100 ? 100 : pct));
@@ -1107,7 +1107,7 @@ static void PlayConfirmSound(void) {
     [super viewDidLoad];
 
     // 主流简洁背景：iOS 系统分组灰白
-    self.view.backgroundColor = BB_BG_COLOR;
+    self.view.backgroundColor = [UIColor colorWithRed:0.949 green:0.965 blue:0.988 alpha:1];
 
     // 标题（纯文字，状态圆点移到右上角）
     self.title = @"ESXi 监控";
@@ -1143,41 +1143,41 @@ static void PlayConfirmSound(void) {
     CGFloat y = 16, w = self.view.bounds.size.width - 32, gap = 12;
     CGFloat cardW = (w - gap) / 2;
 
-    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 96)];
+    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 104)];
     self.tempCard.titleLabel.text = @"🌡 NVMe 温度";
     [self.scrollView addSubview:self.tempCard];
-    self.cpuCard  = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 96)];
+    self.cpuCard  = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 104)];
     self.cpuCard.titleLabel.text = @"⚙ CPU 负载";
     [self.scrollView addSubview:self.cpuCard];
-    y += 96 + gap;
-    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 96)];
+    y += 104 + gap;
+    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 92)];
     self.upCard.titleLabel.text = @"⏱ 运行时间";
-    self.upCard.valueLabel.font = [UIFont systemFontOfSize:24 weight:UIFontWeightBold];
+    self.upCard.valueLabel.font = [UIFont systemFontOfSize:28 weight:UIFontWeightHeavy];
     [self.scrollView addSubview:self.upCard];
-    y += 96 + gap;
+    y += 92 + gap;
 
     // 内存（进度条卡片）
     UILabel *sMem = [self sectionLabelWithTitle:@"内存"];
     sMem.frame = CGRectMake(16, y, w, 20); y += 26;
-    self.memCard = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 78)];
+    self.memCard = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 84)];
     self.memCard.titleLabel.text = @"系统内存";
     self.memCard.valueLabel.text = @"--";
     [self.scrollView addSubview:self.memCard];
-    y += 78 + 14;
+    y += 84 + 14;
 
     // 存储（双进度条卡片）
     UILabel *s1 = [self sectionLabelWithTitle:@"存储"];
     s1.frame = CGRectMake(16, y, w, 20); y += 26;
-    self.ds1Card = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 78)];
+    self.ds1Card = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 84)];
     self.ds1Card.titleLabel.text = @"NVMe 存储";
     self.ds1Card.valueLabel.text = @"--";
     [self.scrollView addSubview:self.ds1Card];
-    y += 78 + 12;
-    self.ds2Card = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 78)];
+    y += 84 + 12;
+    self.ds2Card = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 84)];
     self.ds2Card.titleLabel.text = @"USB 存储";
     self.ds2Card.valueLabel.text = @"--";
     [self.scrollView addSubview:self.ds2Card];
-    y += 78 + 16;
+    y += 84 + 16;
 
     // 虚拟机
     UILabel *s2 = [self sectionLabelWithTitle:@"虚拟机"];
@@ -1234,7 +1234,7 @@ static void PlayConfirmSound(void) {
     [rebootHostBtn addTarget:self action:@selector(confirmRebootHost) forControlEvents:UIControlEventTouchUpInside];
     [hostCard addSubview:rebootHostBtn];
     [self.scrollView addSubview:hostCard];
-    y += 78 + 16;
+    y += 84 + 16;
 
     // 操作日志
     self.logTitle = [self sectionLabelWithTitle:@"📋 操作日志"];
@@ -2579,7 +2579,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = BB_BG_COLOR;
+    self.view.backgroundColor = [UIColor colorWithRed:0.949 green:0.965 blue:0.988 alpha:1];
     self.title = @"OpenWrt";
 
     // 左上角状态
@@ -2612,36 +2612,36 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     [self.scrollView addSubview:self.speedGauge];
     y += 90 + 14;
 
-    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 96)];
+    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 104)];
     self.tempCard.titleLabel.text = @"🌡 CPU 温度";
     [self.scrollView addSubview:self.tempCard];
-    self.loadCard = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 96)];
+    self.loadCard = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 104)];
     self.loadCard.titleLabel.text = @"📊 CPU 负载";
     [self.scrollView addSubview:self.loadCard];
-    y += 96 + gap;
-    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 96)];
+    y += 104 + gap;
+    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 92)];
     self.upCard.titleLabel.text = @"⏱ 运行时间";
-    self.upCard.valueLabel.font = [UIFont systemFontOfSize:24 weight:UIFontWeightBold];
+    self.upCard.valueLabel.font = [UIFont systemFontOfSize:28 weight:UIFontWeightHeavy];
     [self.scrollView addSubview:self.upCard];
-    y += 96 + gap;
+    y += 92 + gap;
 
     // 内存
     UILabel *sMem = [self sectionLabelWithTitle:@"内存"];
     sMem.frame = CGRectMake(16, y, w, 20); y += 26;
-    self.memCard = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 78)];
+    self.memCard = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 84)];
     self.memCard.titleLabel.text = @"系统内存";
     self.memCard.valueLabel.text = @"--";
     [self.scrollView addSubview:self.memCard];
-    y += 78 + 14;
+    y += 84 + 14;
 
     // 硬盘
     UILabel *sDisk = [self sectionLabelWithTitle:@"硬盘空间"];
     sDisk.frame = CGRectMake(16, y, w, 20); y += 26;
-    self.diskCard = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 78)];
+    self.diskCard = [[MeterCard alloc] initWithFrame:CGRectMake(16, y, w, 84)];
     self.diskCard.titleLabel.text = @"Overlay 存储";
     self.diskCard.valueLabel.text = @"--";
     [self.scrollView addSubview:self.diskCard];
-    y += 78 + 14;
+    y += 84 + 14;
 
     // 外网流量 (vnstat)
     UILabel *sTraffic = [self sectionLabelWithTitle:@"📶 外网流量 (vnstat)"];
@@ -3256,7 +3256,7 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = BB_BG_COLOR;
+    self.view.backgroundColor = [UIColor colorWithRed:0.949 green:0.965 blue:0.988 alpha:1];
     self.title = @"工具箱";
 
     self.scrollView = [UIScrollView new];
@@ -3650,6 +3650,17 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
                                             selectedImage:[UIImage systemImageNamed:@"wrench.and.screwdriver.fill"]];
 
     self.viewControllers = @[nav1, nav2, nav3];
+
+    if (@available(iOS 15.0, *)) {
+        UITabBarAppearance *ap = [UITabBarAppearance new];
+        [ap configureWithDefaultBackground];
+        ap.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.94];
+        ap.shadowColor = [UIColor colorWithRed:0.90 green:0.92 blue:0.96 alpha:1];
+        self.tabBar.standardAppearance = ap;
+        self.tabBar.scrollEdgeAppearance = ap;
+    }
+    self.tabBar.tintColor = [UIColor colorWithRed:0.31 green:0.43 blue:0.86 alpha:1];
+    self.tabBar.unselectedItemTintColor = [UIColor colorWithRed:0.62 green:0.66 blue:0.74 alpha:1];
     [self.dashboard setupBackgroundKeepAlive];
 
     // 并行连接两台设备：触发 viewDidLoad 后立即首刷
