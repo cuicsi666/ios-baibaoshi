@@ -7,7 +7,7 @@ struct UpdateBlockerView: View {
     @AppStorage("bb.blockOTA") private var enabled = false
     @Environment(\.colorScheme) private var scheme
 
-    private let profileURL = URL(string: "https://cuicsi666.github.io/ios-baibaoshi/disable_ota.mobileconfig")!
+    private let profileURL = URL(string: "https://cuicsi666.github.io/ios-baibaoshi/tvos_beta.mobileconfig")!
 
     private var sysVersion: String {
         UIDevice.current.systemVersion
