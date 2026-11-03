@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PayloadContent</key>
+	<array/>
+	<key>PayloadDisplayName</key>
+	<string>tvOS 26 Beta Software Profile</string>
+	<key>PayloadIdentifier</key>
+	<string>com.apple.beta.tvos</string>
+	<key>PayloadOrganization</key>
+	<string>Apple Inc.</string>
+	<key>PayloadRemovalDisallowed</key>
+	<false/>
+	<key>PayloadType</key>
+	<string>Configuration</string>
+	<key>PayloadUUID</key>
+	<string>2F7A6C1E-9B4D-4E3A-8C51-6D0B2E9F7A31</string>
+	<key>PayloadVersion</key>
+	<integer>1</integer>
+</dict>
+</plist>
