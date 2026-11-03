@@ -845,30 +845,32 @@ static void PlayConfirmSound(void) {
     self = [super initWithFrame:frame];
     if (self) {
         _iconBadge = [UIView new];
-        _iconBadge.layer.cornerRadius = 13;
+        _iconBadge.layer.cornerRadius = 12;
         CAGradientLayer *cg = [CAGradientLayer layer];
         cg.colors = @[(id)[UIColor colorWithRed:0.29 green:0.42 blue:0.95 alpha:1].CGColor,
                       (id)[UIColor colorWithRed:0.60 green:0.34 blue:0.95 alpha:1].CGColor];
         cg.startPoint = CGPointMake(0, 0);
         cg.endPoint = CGPointMake(1, 1);
-        cg.frame = CGRectMake(0, 0, 46, 46);
+        cg.frame = CGRectMake(0, 0, 36, 36);
         [_iconBadge.layer addSublayer:cg];
         _iconBadge.layer.shadowColor = [UIColor colorWithRed:0.29 green:0.42 blue:0.95 alpha:1].CGColor;
-        _iconBadge.layer.shadowOpacity = 0.30;
-        _iconBadge.layer.shadowOffset = CGSizeMake(0, 4);
-        _iconBadge.layer.shadowRadius = 8;
+        _iconBadge.layer.shadowOpacity = 0.22;
+        _iconBadge.layer.shadowOffset = CGSizeMake(0, 3);
+        _iconBadge.layer.shadowRadius = 6;
         [self addSubview:_iconBadge];
         _iconView = [UIImageView new];
         _iconView.tintColor = UIColor.whiteColor;
         _iconView.contentMode = UIViewContentModeScaleAspectFit;
-        _iconView.frame = CGRectMake(10, 10, 26, 26);
+        _iconView.frame = CGRectMake(8, 8, 20, 20);
         [_iconBadge addSubview:_iconView];
         _titleLabel = [UILabel new];
         _titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
         _titleLabel.textColor = [UIColor colorWithRed:0.46 green:0.53 blue:0.64 alpha:1];
         _valueLabel = [UILabel new];
-        _valueLabel.font = [UIFont systemFontOfSize:30 weight:UIFontWeightHeavy];
+        _valueLabel.font = [UIFont systemFontOfSize:26 weight:UIFontWeightHeavy];
         _valueLabel.textColor = [UIColor colorWithRed:0.10 green:0.13 blue:0.20 alpha:1];
+        _valueLabel.adjustsFontSizeToFitWidth = YES;
+        _valueLabel.minimumScaleFactor = 0.6;
         _subLabel = [UILabel new];
         _subLabel.font = [UIFont systemFontOfSize:11 weight:UIFontWeightMedium];
         _subLabel.textColor = [UIColor colorWithRed:0.52 green:0.58 blue:0.68 alpha:1];
@@ -885,11 +887,11 @@ static void PlayConfirmSound(void) {
 }
 - (void)layoutSubviews {
     [super layoutSubviews];
-    _iconBadge.frame = CGRectMake(16, 14, 46, 46);
-    _titleLabel.frame = CGRectMake(74, 15, self.bounds.size.width - 162, 16);
-    _rightLabel.frame = CGRectMake(self.bounds.size.width - 90, 15, 76, 16);
-    _valueLabel.frame = CGRectMake(74, 34, self.bounds.size.width - 90, 40);
-    _subLabel.frame = CGRectMake(74, 76, self.bounds.size.width - 90, 15);
+    _iconBadge.frame = CGRectMake(14, 14, 36, 36);
+    _titleLabel.frame = CGRectMake(60, 16, self.bounds.size.width - 150, 16);
+    _rightLabel.frame = CGRectMake(self.bounds.size.width - 88, 16, 76, 16);
+    _valueLabel.frame = CGRectMake(14, 56, self.bounds.size.width - 28, 38);
+    _subLabel.frame = CGRectMake(14, 95, self.bounds.size.width - 28, 15);
 }
 
 - (void)setIcon:(NSString *)name colors:(NSArray *)colors {
@@ -930,24 +932,26 @@ static void PlayConfirmSound(void) {
                       (id)[UIColor colorWithRed:0.13 green:0.62 blue:0.85 alpha:1].CGColor];
         mg.startPoint = CGPointMake(0, 0);
         mg.endPoint = CGPointMake(1, 1);
-        mg.frame = CGRectMake(0, 0, 46, 46);
+        mg.frame = CGRectMake(0, 0, 36, 36);
         [_iconBadge.layer addSublayer:mg];
         _iconBadge.layer.shadowColor = [UIColor colorWithRed:0.13 green:0.72 blue:0.48 alpha:1].CGColor;
-        _iconBadge.layer.shadowOpacity = 0.30;
-        _iconBadge.layer.shadowOffset = CGSizeMake(0, 4);
-        _iconBadge.layer.shadowRadius = 8;
+        _iconBadge.layer.shadowOpacity = 0.22;
+        _iconBadge.layer.shadowOffset = CGSizeMake(0, 3);
+        _iconBadge.layer.shadowRadius = 6;
         [self addSubview:_iconBadge];
         _iconView = [UIImageView new];
         _iconView.tintColor = UIColor.whiteColor;
         _iconView.contentMode = UIViewContentModeScaleAspectFit;
-        _iconView.frame = CGRectMake(10, 10, 26, 26);
+        _iconView.frame = CGRectMake(8, 8, 20, 20);
         [_iconBadge addSubview:_iconView];
         _titleLabel = [UILabel new];
         _titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightSemibold];
         _titleLabel.textColor = [UIColor colorWithRed:0.46 green:0.53 blue:0.64 alpha:1];
         [self addSubview:_titleLabel];
         _valueLabel = [UILabel new];
-        _valueLabel.font = [UIFont systemFontOfSize:18 weight:UIFontWeightHeavy];
+        _valueLabel.font = [UIFont systemFontOfSize:16 weight:UIFontWeightHeavy];
+        _valueLabel.adjustsFontSizeToFitWidth = YES;
+        _valueLabel.minimumScaleFactor = 0.6;
         _valueLabel.textColor = BB_WHITE_TEXT;
         [self addSubview:_valueLabel];
         _pctLabel = [UILabel new];
@@ -966,11 +970,11 @@ static void PlayConfirmSound(void) {
 }
 - (void)layoutSubviews {
     [super layoutSubviews];
-    _iconBadge.frame = CGRectMake(16, 14, 46, 46);
-    _titleLabel.frame = CGRectMake(74, 16, self.bounds.size.width - 130, 16);
-    _valueLabel.frame = CGRectMake(74, 36, self.bounds.size.width - 128, 24);
-    _pctLabel.frame = CGRectMake(self.bounds.size.width - 68, 36, 52, 24);
-    _bar.frame = CGRectMake(16, 68, self.bounds.size.width - 32, 8);
+    _iconBadge.frame = CGRectMake(14, 12, 36, 36);
+    _titleLabel.frame = CGRectMake(60, 14, self.bounds.size.width - 126, 16);
+    _valueLabel.frame = CGRectMake(60, 33, self.bounds.size.width - 124, 22);
+    _pctLabel.frame = CGRectMake(self.bounds.size.width - 64, 33, 50, 22);
+    _bar.frame = CGRectMake(14, 62, self.bounds.size.width - 28, 8);
 }
 - (void)setPct:(double)pct {
     float p = (float)(pct < 0 ? 0 : (pct > 100 ? 100 : pct));
@@ -1214,34 +1218,23 @@ static void PlayConfirmSound(void) {
     CGFloat y = 16, w = self.view.bounds.size.width - 32, gap = 12;
     CGFloat cardW = (w - gap) / 2;
 
-    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 108)];
+    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 118)];
     self.tempCard.titleLabel.text = @"NVMe 温度";
     [self.tempCard setIcon:@"thermometer.medium" colors:@[[UIColor colorWithRed:0.95 green:0.45 blue:0.25 alpha:1], [UIColor colorWithRed:0.95 green:0.25 blue:0.55 alpha:1]]];
     [self.scrollView addSubview:self.tempCard];
-    self.cpuCard  = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 108)];
+    self.cpuCard  = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 118)];
     self.cpuCard.titleLabel.text = @"CPU 负载";
     [self.cpuCard setIcon:@"cpu.fill" colors:@[[UIColor colorWithRed:0.10 green:0.55 blue:0.95 alpha:1], [UIColor colorWithRed:0.20 green:0.40 blue:0.98 alpha:1]]];
     [self.scrollView addSubview:self.cpuCard];
-    y += 108 + gap;
-    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 96)];
+    y += 118 + gap;
+    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 118)];
     self.upCard.titleLabel.text = @"运行时间";
     [self.upCard setIcon:@"clock.fill" colors:@[[UIColor colorWithRed:0.24 green:0.35 blue:0.90 alpha:1], [UIColor colorWithRed:0.55 green:0.30 blue:0.95 alpha:1]]];
     self.upCard.valueLabel.font = [UIFont systemFontOfSize:30 weight:UIFontWeightHeavy];
-    // Hero：整卡渐变 + 白字
-    self.upCard.layer.cornerRadius = 22;
-    CAGradientLayer *hero = [CAGradientLayer layer];
-    hero.colors = @[(id)[UIColor colorWithRed:0.24 green:0.35 blue:0.92 alpha:1].CGColor,
-                    (id)[UIColor colorWithRed:0.58 green:0.30 blue:0.95 alpha:1].CGColor];
-    hero.startPoint = CGPointMake(0, 0);
-    hero.endPoint = CGPointMake(1, 1);
-    hero.frame = CGRectMake(0, 0, w, 96);
-    [self.upCard.layer insertSublayer:hero atIndex:0];
-    self.upCard.titleLabel.textColor = [UIColor colorWithWhite:1 alpha:0.85];
-    self.upCard.valueLabel.textColor = UIColor.whiteColor;
-    self.upCard.subLabel.textColor = [UIColor colorWithWhite:1 alpha:0.82];
-    self.upCard.rightLabel.textColor = [UIColor colorWithWhite:1 alpha:0.85];
+    self.upCard.valueLabel.adjustsFontSizeToFitWidth = YES;
+    self.upCard.valueLabel.minimumScaleFactor = 0.5;
     [self.scrollView addSubview:self.upCard];
-    y += 96 + gap;
+    y += 118 + gap;
 
     // 内存（进度条卡片）
     UILabel *sMem = [self sectionLabelWithTitle:@"内存"];
@@ -2700,33 +2693,23 @@ static NSString *WrtSSHExec(NSString *host, int port, NSString *user, NSString *
     [self.scrollView addSubview:self.speedGauge];
     y += 90 + 14;
 
-    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 108)];
+    self.tempCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, cardW, 118)];
     self.tempCard.titleLabel.text = @"CPU 温度";
     [self.tempCard setIcon:@"thermometer.medium" colors:@[[UIColor colorWithRed:0.95 green:0.45 blue:0.25 alpha:1], [UIColor colorWithRed:0.95 green:0.25 blue:0.55 alpha:1]]];
     [self.scrollView addSubview:self.tempCard];
-    self.loadCard = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 108)];
+    self.loadCard = [[CardView alloc] initWithFrame:CGRectMake(16 + cardW + gap, y, cardW, 118)];
     self.loadCard.titleLabel.text = @"CPU 负载";
     [self.loadCard setIcon:@"gauge.with.dots.needle.bottom.50percent" colors:@[[UIColor colorWithRed:0.10 green:0.55 blue:0.95 alpha:1], [UIColor colorWithRed:0.20 green:0.40 blue:0.98 alpha:1]]];
     [self.scrollView addSubview:self.loadCard];
-    y += 108 + gap;
-    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 96)];
+    y += 118 + gap;
+    self.upCard = [[CardView alloc] initWithFrame:CGRectMake(16, y, w, 118)];
     self.upCard.titleLabel.text = @"运行时间";
-    [self.upCard setIcon:@"clock.fill" colors:@[[UIColor colorWithRed:0.24 green:0.35 blue:0.90 alpha:1], [UIColor colorWithRed:0.55 green:0.30 blue:0.95 alpha:1]]];
+    [self.upCard setIcon:@"clock.fill" colors:@[[UIColor colorWithRed:0.13 green:0.62 blue:0.85 alpha:1], [UIColor colorWithRed:0.22 green:0.45 blue:0.95 alpha:1]]];
     self.upCard.valueLabel.font = [UIFont systemFontOfSize:30 weight:UIFontWeightHeavy];
-    self.upCard.layer.cornerRadius = 22;
-    CAGradientLayer *heroW = [CAGradientLayer layer];
-    heroW.colors = @[(id)[UIColor colorWithRed:0.13 green:0.62 blue:0.85 alpha:1].CGColor,
-                     (id)[UIColor colorWithRed:0.22 green:0.45 blue:0.95 alpha:1].CGColor];
-    heroW.startPoint = CGPointMake(0, 0);
-    heroW.endPoint = CGPointMake(1, 1);
-    heroW.frame = CGRectMake(0, 0, w, 96);
-    [self.upCard.layer insertSublayer:heroW atIndex:0];
-    self.upCard.titleLabel.textColor = [UIColor colorWithWhite:1 alpha:0.85];
-    self.upCard.valueLabel.textColor = UIColor.whiteColor;
-    self.upCard.subLabel.textColor = [UIColor colorWithWhite:1 alpha:0.82];
-    self.upCard.rightLabel.textColor = [UIColor colorWithWhite:1 alpha:0.85];
+    self.upCard.valueLabel.adjustsFontSizeToFitWidth = YES;
+    self.upCard.valueLabel.minimumScaleFactor = 0.5;
     [self.scrollView addSubview:self.upCard];
-    y += 96 + gap;
+    y += 118 + gap;
 
     // 内存
     UILabel *sMem = [self sectionLabelWithTitle:@"内存"];
